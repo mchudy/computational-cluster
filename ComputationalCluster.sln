@@ -26,6 +26,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Server.Tests", "tests\ComputationalCluster.Server.Tests\ComputationalCluster.Server.Tests.csproj", "{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.TaskManager.Tests", "tests\ComputationalCluster.TaskManager.Tests\ComputationalCluster.TaskManager.Tests.csproj", "{CEBEA684-9B27-480D-B74B-71C98043D460}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{5B131F9C-0C1E-45E8-93EC-B2EF3FDFA822}"
+	ProjectSection(SolutionItems) = preProject
+		lib\UCCTaskSolver.dll = lib\UCCTaskSolver.dll
+		lib\UCCTaskSolver.XML = lib\UCCTaskSolver.XML
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
