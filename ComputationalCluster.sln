@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster", "ComputationalCluster\ComputationalCluster.csproj", "{B2CB3AF0-E23B-4D32-A210-8A1FBD29663E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Server", "ComputationalCluster.Server\ComputationalCluster.Server.csproj", "{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.TaskManager", "ComputationalCluster.TaskManager\ComputationalCluster.TaskManager.csproj", "{BC57A915-A9E2-4261-900D-FCE198C1B6DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Client", "ComputationalCluster.Client\ComputationalCluster.Client.csproj", "{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Node", "ComputationalCluster.Node\ComputationalCluster.Node.csproj", "{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.DVRPTaskSolver", "ComputationalCluster.DVRPTaskSolver\ComputationalCluster.DVRPTaskSolver.csproj", "{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +19,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B2CB3AF0-E23B-4D32-A210-8A1FBD29663E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2CB3AF0-E23B-4D32-A210-8A1FBD29663E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2CB3AF0-E23B-4D32-A210-8A1FBD29663E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2CB3AF0-E23B-4D32-A210-8A1FBD29663E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC57A915-A9E2-4261-900D-FCE198C1B6DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC57A915-A9E2-4261-900D-FCE198C1B6DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC57A915-A9E2-4261-900D-FCE198C1B6DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC57A915-A9E2-4261-900D-FCE198C1B6DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ComputationalCluster")]
+[assembly: AssemblyTitle("ComputationalCluster.DVRPTaskSolver")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ComputationalCluster")]
+[assembly: AssemblyProduct("ComputationalCluster.DVRPTaskSolver")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b2cb3af0-e23b-4d32-a210-8a1fbd29663e")]
+[assembly: Guid("e2eab193-3196-4bdf-99c5-daff165f64dd")]
 
 // Version information for an assembly consists of the following four values:
 //
