@@ -3,16 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Server", "ComputationalCluster.Server\ComputationalCluster.Server.csproj", "{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Server", "src\ComputationalCluster.Server\ComputationalCluster.Server.csproj", "{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.TaskManager", "ComputationalCluster.TaskManager\ComputationalCluster.TaskManager.csproj", "{BC57A915-A9E2-4261-900D-FCE198C1B6DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.TaskManager", "src\ComputationalCluster.TaskManager\ComputationalCluster.TaskManager.csproj", "{BC57A915-A9E2-4261-900D-FCE198C1B6DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Client", "ComputationalCluster.Client\ComputationalCluster.Client.csproj", "{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Client", "src\ComputationalCluster.Client\ComputationalCluster.Client.csproj", "{A55ECE12-9E7C-40D8-BC01-03445DB1AB48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Node", "ComputationalCluster.Node\ComputationalCluster.Node.csproj", "{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Node", "src\ComputationalCluster.Node\ComputationalCluster.Node.csproj", "{E59A52D4-AE24-409A-B0CB-3A9FABB9214E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.DVRPTaskSolver", "ComputationalCluster.DVRPTaskSolver\ComputationalCluster.DVRPTaskSolver.csproj", "{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.DVRPTaskSolver", "src\ComputationalCluster.DVRPTaskSolver\ComputationalCluster.DVRPTaskSolver.csproj", "{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7B366DBD-53C4-459B-BCBB-74A4696A63CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{674CE62B-9E41-4C7B-BB94-937DD25F83D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Client.Tests", "tests\ComputationalCluster.Client.Tests\ComputationalCluster.Client.Tests.csproj", "{617623BB-E0B1-443A-B8C5-9412F1785F89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.DVRPTaskSolver.Tests", "tests\ComputationalCluster.DVRPTaskSolver.Tests\ComputationalCluster.DVRPTaskSolver.Tests.csproj", "{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Node.Tests", "tests\ComputationalCluster.Node.Tests\ComputationalCluster.Node.Tests.csproj", "{A66667E3-08A1-4BD4-97EC-8000749E76DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.Server.Tests", "tests\ComputationalCluster.Server.Tests\ComputationalCluster.Server.Tests.csproj", "{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalCluster.TaskManager.Tests", "tests\ComputationalCluster.TaskManager.Tests\ComputationalCluster.TaskManager.Tests.csproj", "{CEBEA684-9B27-480D-B74B-71C98043D460}"
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +52,40 @@ Global
 		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{617623BB-E0B1-443A-B8C5-9412F1785F89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{617623BB-E0B1-443A-B8C5-9412F1785F89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{617623BB-E0B1-443A-B8C5-9412F1785F89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{617623BB-E0B1-443A-B8C5-9412F1785F89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A66667E3-08A1-4BD4-97EC-8000749E76DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A66667E3-08A1-4BD4-97EC-8000749E76DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A66667E3-08A1-4BD4-97EC-8000749E76DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A66667E3-08A1-4BD4-97EC-8000749E76DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258AE7D2-0657-4B37-9A4B-857DFADCD5E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEBEA684-9B27-480D-B74B-71C98043D460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEBEA684-9B27-480D-B74B-71C98043D460}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEBEA684-9B27-480D-B74B-71C98043D460}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEBEA684-9B27-480D-B74B-71C98043D460}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8292F6D-CF8A-4A2F-A4C2-54BB0D822284} = {7B366DBD-53C4-459B-BCBB-74A4696A63CF}
+		{BC57A915-A9E2-4261-900D-FCE198C1B6DE} = {7B366DBD-53C4-459B-BCBB-74A4696A63CF}
+		{A55ECE12-9E7C-40D8-BC01-03445DB1AB48} = {7B366DBD-53C4-459B-BCBB-74A4696A63CF}
+		{E59A52D4-AE24-409A-B0CB-3A9FABB9214E} = {7B366DBD-53C4-459B-BCBB-74A4696A63CF}
+		{E2EAB193-3196-4BDF-99C5-DAFF165F64DD} = {7B366DBD-53C4-459B-BCBB-74A4696A63CF}
+		{617623BB-E0B1-443A-B8C5-9412F1785F89} = {674CE62B-9E41-4C7B-BB94-937DD25F83D0}
+		{E1E3E020-F5C9-4F4F-ACE6-16BE6FCF9809} = {674CE62B-9E41-4C7B-BB94-937DD25F83D0}
+		{A66667E3-08A1-4BD4-97EC-8000749E76DA} = {674CE62B-9E41-4C7B-BB94-937DD25F83D0}
+		{258AE7D2-0657-4B37-9A4B-857DFADCD5E9} = {674CE62B-9E41-4C7B-BB94-937DD25F83D0}
+		{CEBEA684-9B27-480D-B74B-71C98043D460} = {674CE62B-9E41-4C7B-BB94-937DD25F83D0}
 	EndGlobalSection
 EndGlobal
