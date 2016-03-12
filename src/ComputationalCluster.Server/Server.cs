@@ -1,9 +1,12 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 
 namespace ComputationalCluster.Server
 {
@@ -41,16 +44,7 @@ namespace ComputationalCluster.Server
                         string messageString = reader.ReadLine();
                         Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
                         Message message = serializer.Deserialize(messageString);
-
-                        Console.WriteLine(message.GetType().ToString());
-                        //if (message.Type == RegisterType.ComputationalNode)
-                        //{
-                        //    Console.WriteLine("New node registered");
-                        //}
-                        //else if (message.Type == RegisterType.TaskManager)
-                        //{
-                        //    Console.WriteLine("New task manager registered");
-                        //}
+                        HandleMessage(message);
                     }
                 }
             }
@@ -62,6 +56,18 @@ namespace ComputationalCluster.Server
             {
                 client.Close();
             }
+        }
+
+        //TODO: DI container?
+        private void HandleMessage(Message message)
+        {
+            Type interfaceType = typeof(IMessageHandler<>).MakeGenericType(message.GetType());
+            var type = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .FirstOrDefault(p => interfaceType.IsAssignableFrom(p));
+            var instance = Activator.CreateInstance(type);
+            type.GetMethod("HandleMessage").Invoke(instance, new object[] { message });
         }
     }
 }
