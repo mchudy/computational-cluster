@@ -15,6 +15,6 @@ namespace ComputationalCluster.Common.Messages
 
         public uint Timeout { get; set; }
 
-        public IList<BackupCommunicationServer> BackupCommunicationServers { get; set; }
+        public List<BackupCommunicationServer> BackupCommunicationServers { get; set; }
     }
 }

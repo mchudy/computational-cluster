@@ -32,6 +32,7 @@ namespace ComputationalCluster.Node
                     networkStream.Flush();
                     Console.WriteLine(reader.ReadLine());
                 }
+
             }
             catch (Exception e)
             {

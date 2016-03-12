@@ -3,21 +3,24 @@ using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 
 namespace ComputationalCluster.Server
 {
     public class Server
     {
+        private readonly IMessageDispatcher messageDispatcher;
+        private readonly IMessageSerializer serializer;
         //TODO: read from config
         private readonly IPAddress address = IPAddress.Parse("127.0.0.1");
         private const int port = 9000;
 
-        //TODO: DI
-        private readonly IMessageSerializer serializer = new MessageSerializer();
+        public Server(IMessageDispatcher messageDispatcher, IMessageSerializer serializer)
+        {
+            this.messageDispatcher = messageDispatcher;
+            this.serializer = serializer;
+        }
 
         public void Start()
         {
@@ -44,7 +47,7 @@ namespace ComputationalCluster.Server
                         string messageString = reader.ReadLine();
                         Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
                         Message message = serializer.Deserialize(messageString);
-                        HandleMessage(message);
+                        messageDispatcher.Dispatch(message, client);
                     }
                 }
             }
@@ -56,18 +59,6 @@ namespace ComputationalCluster.Server
             {
                 client.Close();
             }
-        }
-
-        //TODO: DI container?
-        private void HandleMessage(Message message)
-        {
-            Type interfaceType = typeof(IMessageHandler<>).MakeGenericType(message.GetType());
-            var type = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .FirstOrDefault(p => interfaceType.IsAssignableFrom(p));
-            var instance = Activator.CreateInstance(type);
-            type.GetMethod("HandleMessage").Invoke(instance, new object[] { message });
         }
     }
 }
