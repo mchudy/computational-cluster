@@ -9,7 +9,7 @@ namespace ComputationalCluster.Common.Messages
     [System.Diagnostics.DebuggerStepThrough()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
-    public class NoOperationMessage
+    public class NoOperationMessage : Message
     {
         public IList<BackupCommunicationServer> BackupCommunicationServersList { get; set; }
     }

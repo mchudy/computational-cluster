@@ -7,7 +7,7 @@ namespace ComputationalCluster.Common.Messages
     [System.Diagnostics.DebuggerStepThrough()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "SolutionRequest")]
-    public class SolutionRequestMessage
+    public class SolutionRequestMessage : Message
     {
         public ulong Id { get; set; }
     }

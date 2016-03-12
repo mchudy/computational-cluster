@@ -40,8 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMessageHandler.cs" />
+    <Compile Include="Serialization\IMessageSerializer.cs" />
+    <Compile Include="Serialization\MessageSerializer.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />
     <Compile Include="Messages\ErrorMessage.cs" />
+    <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\NoOperationMessage.cs" />
     <Compile Include="Messages\PartialProblemsMessage.cs" />
     <Compile Include="Messages\SolutionRequestMessage.cs" />
@@ -56,6 +60,7 @@
     <Compile Include="Messages\RegisterMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.cs" />
     <Compile Include="Messages\SolutionMessage.cs" />
+    <Compile Include="Utils\Utf8StringWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

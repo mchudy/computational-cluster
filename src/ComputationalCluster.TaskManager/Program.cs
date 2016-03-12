@@ -1,9 +1,8 @@
 ﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace ComputationalCluster.TaskManager
 {
@@ -17,6 +16,7 @@ namespace ComputationalCluster.TaskManager
 
         private static void StartTaskManager()
         {
+            var serializer = new MessageSerializer();
             TcpClient client = new TcpClient();
             try
             {
@@ -26,22 +26,11 @@ namespace ComputationalCluster.TaskManager
                 using (var reader = new StreamReader(networkStream))
                 using (var writer = new StreamWriter(networkStream))
                 {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(RegisterMessage));
-                    var message = new RegisterMessage
+                    var message = new ErrorMessage
                     {
-                        Type = RegisterType.TaskManager,
-                        ParallelThreads = 3,
-                        SolvableProblems = new[] { "DVRP" }
+                        ErrorType = ErrorErrorType.ExceptionOccured
                     };
-                    string messageString;
-                    using (StringWriter textWriter = new StringWriter())
-                    {
-                        using (var xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings { Indent = false }))
-                        {
-                            xmlSerializer.Serialize(xmlWriter, message);
-                            messageString = textWriter.ToString();
-                        }
-                    }
+                    string messageString = serializer.Serialize(message);
                     writer.WriteLine(messageString);
                     writer.Flush();
                     networkStream.Flush();

@@ -1,9 +1,8 @@
 ﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace ComputationalCluster.Node
 {
@@ -47,23 +46,13 @@ namespace ComputationalCluster.Node
 
         private static string GetRegisterMessage()
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(RegisterMessage));
             var message = new RegisterMessage
             {
                 Type = RegisterType.ComputationalNode,
                 ParallelThreads = 3,
                 SolvableProblems = new[] { "DVRP" }
             };
-            string messageString;
-            using (StringWriter textWriter = new StringWriter())
-            {
-                using (var xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings { Indent = false }))
-                {
-                    xmlSerializer.Serialize(xmlWriter, message);
-                    messageString = textWriter.ToString();
-                }
-            }
-            return messageString;
+            return new MessageSerializer().Serialize(message);
         }
     }
 }

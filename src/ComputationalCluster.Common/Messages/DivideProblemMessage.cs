@@ -7,7 +7,7 @@ namespace ComputationalCluster.Common.Messages
     [System.Diagnostics.DebuggerStepThrough()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "DivideProblem")]
-    public class DivideProblemMessage
+    public class DivideProblemMessage : Message
     {
         public string ProblemType { get; set; }
 

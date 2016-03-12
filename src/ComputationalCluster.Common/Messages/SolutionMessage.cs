@@ -8,7 +8,7 @@ namespace ComputationalCluster.Common.Messages
     [System.Diagnostics.DebuggerStepThrough()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Solutions")]
-    public class SolutionMessage
+    public class SolutionMessage : Message
     {
         public string ProblemType { get; set; }
 

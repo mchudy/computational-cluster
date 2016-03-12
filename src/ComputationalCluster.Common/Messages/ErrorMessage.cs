@@ -7,7 +7,7 @@ namespace ComputationalCluster.Common.Messages
     [System.Diagnostics.DebuggerStepThrough()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Error")]
-    public class ErrorMessage
+    public class ErrorMessage : Message
     {
         public ErrorErrorType ErrorType { get; set; }
 

@@ -1,9 +1,9 @@
 ﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Xml.Serialization;
 
 namespace ComputationalCluster.Server
 {
@@ -12,6 +12,9 @@ namespace ComputationalCluster.Server
         //TODO: read from config
         private readonly IPAddress address = IPAddress.Parse("127.0.0.1");
         private const int port = 9000;
+
+        //TODO: DI
+        private readonly IMessageSerializer serializer = new MessageSerializer();
 
         public void Start()
         {
@@ -24,7 +27,7 @@ namespace ComputationalCluster.Server
             }
         }
 
-        private static void AcceptClient(TcpListener server)
+        private void AcceptClient(TcpListener server)
         {
             var client = server.AcceptTcpClient();
             Console.WriteLine($"New connection {client.Client.RemoteEndPoint}");
@@ -36,21 +39,18 @@ namespace ComputationalCluster.Server
                     using (var writer = new StreamWriter(stream))
                     {
                         string messageString = reader.ReadLine();
-                        XmlSerializer serializer = new XmlSerializer(typeof(RegisterMessage));
-                        RegisterMessage message;
                         Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
-                        using (var stringReader = new StringReader(messageString))
-                        {
-                            message = (RegisterMessage)serializer.Deserialize(stringReader);
-                        }
-                        if (message.Type == RegisterType.ComputationalNode)
-                        {
-                            Console.WriteLine("New node registered");
-                        }
-                        else if (message.Type == RegisterType.TaskManager)
-                        {
-                            Console.WriteLine("New task manager registered");
-                        }
+                        Message message = serializer.Deserialize(messageString);
+
+                        Console.WriteLine(message.GetType().ToString());
+                        //if (message.Type == RegisterType.ComputationalNode)
+                        //{
+                        //    Console.WriteLine("New node registered");
+                        //}
+                        //else if (message.Type == RegisterType.TaskManager)
+                        //{
+                        //    Console.WriteLine("New task manager registered");
+                        //}
                     }
                 }
             }
