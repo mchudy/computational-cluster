@@ -1,0 +1,67 @@
+﻿using ComputationalCluster.Common.Messages;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Xml.Serialization;
+
+namespace ComputationalCluster.Server
+{
+    public class Server
+    {
+        //TODO: read from config
+        private readonly IPAddress address = IPAddress.Parse("127.0.0.1");
+        private const int port = 9000;
+
+        public void Start()
+        {
+            TcpListener server = new TcpListener(address, port);
+            server.Start();
+            Console.WriteLine($"Started listening on {server.LocalEndpoint}");
+            while (true)
+            {
+                AcceptClient(server);
+            }
+        }
+
+        private static void AcceptClient(TcpListener server)
+        {
+            var client = server.AcceptTcpClient();
+            Console.WriteLine($"New connection {client.Client.RemoteEndPoint}");
+            try
+            {
+                using (var stream = client.GetStream())
+                {
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        string messageString = reader.ReadLine();
+                        XmlSerializer serializer = new XmlSerializer(typeof(RegisterMessage));
+                        RegisterMessage message;
+                        Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
+                        using (var stringReader = new StringReader(messageString))
+                        {
+                            message = (RegisterMessage)serializer.Deserialize(stringReader);
+                        }
+                        if (message.Type == RegisterType.ComputationalNode)
+                        {
+                            Console.WriteLine("New node registered");
+                        }
+                        else if (message.Type == RegisterType.TaskManager)
+                        {
+                            Console.WriteLine("New task manager registered");
+                        }
+                    }
+                }
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Connection lost");
+            }
+            finally
+            {
+                client.Close();
+            }
+        }
+    }
+}
