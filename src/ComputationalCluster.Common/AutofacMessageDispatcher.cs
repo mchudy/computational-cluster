@@ -7,7 +7,8 @@ namespace ComputationalCluster.Common
 {
     public class AutofacMessageDispatcher : IMessageDispatcher
     {
-        private static readonly string methodName = nameof(IMessageHandler<RegisterMessage>.HandleMessage);
+        private const string methodName = nameof(IMessageHandler<RegisterMessage>.HandleMessage);
+
         private readonly IComponentContext context;
 
         public AutofacMessageDispatcher(IComponentContext context)

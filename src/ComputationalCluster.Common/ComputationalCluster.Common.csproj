@@ -45,8 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacMessageDispatcher.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="IMessageDispatcher.cs" />
     <Compile Include="IMessageHandler.cs" />
+    <Compile Include="IMessenger.cs" />
+    <Compile Include="Messenger.cs" />
     <Compile Include="Serialization\IMessageSerializer.cs" />
     <Compile Include="Serialization\MessageSerializer.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />

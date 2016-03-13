@@ -15,7 +15,8 @@ namespace ComputationalCluster.Server
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
             builder.RegisterType<MessageSerializer>()
-                   .AsImplementedInterfaces();
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
             builder.RegisterType<Server>().AsSelf();
 
             var container = builder.Build();

@@ -29,7 +29,9 @@ namespace ComputationalCluster.Server.Handlers
                     Timeout = 100
                 };
                 var response = new MessageSerializer().Serialize(responseMessage);
-                writer.WriteLine(response);
+                writer.Write(response);
+                writer.Write(Constants.ETB);
+                writer.Write(response);
             }
         }
     }

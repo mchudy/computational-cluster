@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace ComputationalCluster.Server
 {
@@ -42,9 +43,10 @@ namespace ComputationalCluster.Server
                 using (var stream = client.GetStream())
                 {
                     using (var reader = new StreamReader(stream))
-                    using (var writer = new StreamWriter(stream))
                     {
-                        string messageString = reader.ReadLine();
+                        //TODO: not sure if message must end with ETB... probably should wait some timeout in case it doesn't
+                        string messageString = ReadMessage(reader);
+
                         Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
                         Message message = serializer.Deserialize(messageString);
                         messageDispatcher.Dispatch(message, client);
@@ -59,6 +61,25 @@ namespace ComputationalCluster.Server
             {
                 client.Close();
             }
+        }
+
+        private string ReadMessage(StreamReader reader)
+        {
+            return ReadToChar(reader, Constants.ETB);
+        }
+
+        //TODO: Read by blocks to optimize?; change into extension method
+        public static string ReadToChar(StreamReader sr, char splitCharacter)
+        {
+            char nextChar;
+            StringBuilder line = new StringBuilder();
+            while (sr.Peek() > 0)
+            {
+                nextChar = (char)sr.Read();
+                if (nextChar == splitCharacter) return line.ToString();
+                line.Append(nextChar);
+            }
+            return line.Length == 0 ? null : line.ToString();
         }
     }
 }
