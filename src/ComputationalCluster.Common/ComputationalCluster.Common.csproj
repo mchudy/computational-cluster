@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,8 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutofacMessageDispatcher.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="IMessageDispatcher.cs" />
+    <Compile Include="IMessageHandler.cs" />
+    <Compile Include="IMessenger.cs" />
+    <Compile Include="Messenger.cs" />
+    <Compile Include="Serialization\IMessageSerializer.cs" />
+    <Compile Include="Serialization\MessageSerializer.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />
     <Compile Include="Messages\ErrorMessage.cs" />
+    <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\NoOperationMessage.cs" />
     <Compile Include="Messages\PartialProblemsMessage.cs" />
     <Compile Include="Messages\SolutionRequestMessage.cs" />
@@ -56,6 +69,10 @@
     <Compile Include="Messages\RegisterMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.cs" />
     <Compile Include="Messages\SolutionMessage.cs" />
+    <Compile Include="Utils\Utf8StringWriter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
