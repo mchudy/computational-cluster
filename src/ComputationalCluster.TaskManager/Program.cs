@@ -1,6 +1,5 @@
-﻿using ComputationalCluster.Common;
-using ComputationalCluster.Common.Messages;
-using ComputationalCluster.Common.Serialization;
+﻿using Autofac;
+using ComputationalCluster.Common;
 using System;
 
 namespace ComputationalCluster.TaskManager
@@ -9,26 +8,18 @@ namespace ComputationalCluster.TaskManager
     {
         static void Main(string[] args)
         {
-            StartTaskManager();
-            Console.ReadLine();
-        }
+            var builder = new ContainerBuilder();
 
-        private static void StartTaskManager()
-        {
-            var serializer = new MessageSerializer();
-            var messenger = new Messenger(serializer);
-            var message = new ErrorMessage
-            {
-                ErrorType = ErrorErrorType.ExceptionOccured
-            };
-            try
-            {
-                messenger.SendMessageAndClose(message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            builder.RegisterModule<CommonModule>();
+            builder.RegisterType<TaskManager>()
+                .AsSelf()
+                .SingleInstance();
+
+            var container = builder.Build();
+            var taskManager = container.Resolve<TaskManager>();
+            taskManager.Start();
+
+            Console.ReadLine();
         }
     }
 }

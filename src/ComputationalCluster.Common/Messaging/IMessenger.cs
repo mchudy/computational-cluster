@@ -1,7 +1,7 @@
-﻿using ComputationalCluster.Common.Messages;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ComputationalCluster.Common.Messages;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Messaging
 {
     public interface IMessenger
     {

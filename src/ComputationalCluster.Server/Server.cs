@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ComputationalCluster.Common.Messaging;
 
 namespace ComputationalCluster.Server
 {

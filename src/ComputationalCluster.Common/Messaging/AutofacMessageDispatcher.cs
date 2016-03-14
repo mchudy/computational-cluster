@@ -1,9 +1,9 @@
-﻿using Autofac;
-using ComputationalCluster.Common.Messages;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Reflection;
+using Autofac;
+using ComputationalCluster.Common.Messages;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Messaging
 {
     public class AutofacMessageDispatcher : IMessageDispatcher
     {

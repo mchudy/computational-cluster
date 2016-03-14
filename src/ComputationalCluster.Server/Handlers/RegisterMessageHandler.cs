@@ -4,6 +4,7 @@ using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
 using System.Net.Sockets;
+using ComputationalCluster.Common.Messaging;
 
 namespace ComputationalCluster.Server.Handlers
 {

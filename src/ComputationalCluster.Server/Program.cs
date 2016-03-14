@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 
 namespace ComputationalCluster.Server

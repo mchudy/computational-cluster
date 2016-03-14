@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Messaging
 {
     //TODO: timeouts
     public class Messenger : IMessenger
@@ -13,10 +13,12 @@ namespace ComputationalCluster.Common
         public const char ETB = (char)23;
 
         private readonly IMessageSerializer serializer;
+        private readonly IConfiguration configuration;
 
-        public Messenger(IMessageSerializer serializer)
+        public Messenger(IMessageSerializer serializer, IConfiguration configuration)
         {
             this.serializer = serializer;
+            this.configuration = configuration;
         }
 
         public void SendMessageAndClose(Message message)
@@ -73,7 +75,7 @@ namespace ComputationalCluster.Common
 
         private NetworkStream OpenConnection(TcpClient client)
         {
-            client.Connect("127.0.0.1", 9000);
+            client.Connect(configuration.ServerAddress, configuration.ServerPort);
             Console.WriteLine("Connected to the server");
             return client.GetStream();
         }
