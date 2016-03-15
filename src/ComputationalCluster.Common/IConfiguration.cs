@@ -1,10 +1,8 @@
-﻿using System.Net;
-
-namespace ComputationalCluster.Common
+﻿namespace ComputationalCluster.Common
 {
     public interface IConfiguration
     {
-        IPAddress ServerAddress { get; set; }
+        string ServerAddress { get; set; }
         int ServerPort { get; set; }
     }
 }

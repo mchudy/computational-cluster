@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
+using ComputationalCluster.Server.Configuration;
 
 namespace ComputationalCluster.Server
 {
@@ -19,6 +19,9 @@ namespace ComputationalCluster.Server
                    .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterType<Server>().AsSelf();
+            builder.RegisterType<ServerConfiguration>()
+                   .As<IServerConfiguration>()
+                   .SingleInstance();
 
             var container = builder.Build();
             var server = container.Resolve<Server>();

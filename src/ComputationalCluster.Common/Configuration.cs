@@ -8,11 +8,11 @@ namespace ComputationalCluster.Common
     {
         public Configuration()
         {
-            LoadAddress();
+            ServerAddress = ConfigurationManager.AppSettings[nameof(ServerAddress)];
             LoadPortNumber();
         }
 
-        public IPAddress ServerAddress { get; set; }
+        public string ServerAddress { get; set; }
         public int ServerPort { get; set; }
 
         private void LoadPortNumber()
@@ -24,16 +24,6 @@ namespace ComputationalCluster.Common
                 throw new BadConfigException("Incorrect port number in configuration file");
             }
             ServerPort = port;
-        }
-
-        private void LoadAddress()
-        {
-            IPAddress address;
-            if (!IPAddress.TryParse(ConfigurationManager.AppSettings[nameof(ServerAddress)], out address))
-            {
-                throw new BadConfigException("Incorrect IP address in configuration file");
-            }
-            ServerAddress = address;
         }
 
         private bool IsValidPort(int port)

@@ -1,15 +1,23 @@
 ﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
+using ComputationalCluster.Server.Configuration;
 using System;
 using System.IO;
 using System.Net.Sockets;
-using ComputationalCluster.Common.Messaging;
 
 namespace ComputationalCluster.Server.Handlers
 {
     public class RegisterMessageHandler : IMessageHandler<RegisterMessage>
     {
+        private readonly IServerConfiguration configuration;
+
+        public RegisterMessageHandler(IServerConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public void HandleMessage(RegisterMessage message, TcpClient client)
         {
             Console.WriteLine("Received register message");
@@ -27,12 +35,13 @@ namespace ComputationalCluster.Server.Handlers
                 var responseMessage = new RegisterResponseMessage()
                 {
                     Id = 1,
-                    Timeout = 100
+                    Timeout = configuration.Timeout
                 };
                 var response = new MessageSerializer().Serialize(responseMessage);
                 writer.Write(response);
                 writer.Write(Constants.ETB);
                 writer.Write(response);
+                writer.Flush();
             }
         }
     }
