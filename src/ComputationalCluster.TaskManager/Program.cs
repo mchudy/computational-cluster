@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using ComputationalCluster.Common;
 using System;
 
@@ -16,9 +17,16 @@ namespace ComputationalCluster.TaskManager
                 .SingleInstance();
 
             var container = builder.Build();
-            var taskManager = container.Resolve<TaskManager>();
-            taskManager.Start();
 
+            try
+            {
+                var taskManager = container.Resolve<TaskManager>();
+                taskManager.Start();
+            }
+            catch (DependencyResolutionException e)
+            {
+                Console.Error.WriteLine(e.InnerException.Message);
+            }
             Console.ReadLine();
         }
     }

@@ -1,12 +1,12 @@
 ﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using ComputationalCluster.Common.Messaging;
 
 namespace ComputationalCluster.Server
 {
@@ -15,7 +15,6 @@ namespace ComputationalCluster.Server
         private readonly IMessageDispatcher messageDispatcher;
         private readonly IMessageSerializer serializer;
         //TODO: read from config
-        private readonly IPAddress address = IPAddress.Parse("127.0.0.1");
         private const int port = 9000;
 
         public Server(IMessageDispatcher messageDispatcher, IMessageSerializer serializer)
@@ -26,7 +25,7 @@ namespace ComputationalCluster.Server
 
         public void Start()
         {
-            TcpListener server = new TcpListener(address, port);
+            TcpListener server = new TcpListener(IPAddress.Any, port);
             server.Start();
             Console.WriteLine($"Started listening on {server.LocalEndpoint}");
             while (true)
