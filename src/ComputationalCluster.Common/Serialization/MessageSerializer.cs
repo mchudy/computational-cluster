@@ -21,7 +21,7 @@ namespace ComputationalCluster.Common.Serialization
 
         private static readonly Type[] messageTypes;
 
-        public bool Indent { get; set; }
+        public bool Indent { get; set; } = true;
 
         public string Serialize(Message message)
         {

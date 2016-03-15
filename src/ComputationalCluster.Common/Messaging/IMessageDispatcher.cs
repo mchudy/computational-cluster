@@ -1,7 +1,7 @@
-﻿using ComputationalCluster.Common.Messages;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
+using ComputationalCluster.Common.Messages;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Messaging
 {
     public interface IMessageDispatcher
     {

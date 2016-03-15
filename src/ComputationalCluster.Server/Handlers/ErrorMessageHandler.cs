@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messages;
 using System;
 using System.Net.Sockets;
+using ComputationalCluster.Common.Messaging;
 
 namespace ComputationalCluster.Server.Handlers
 {

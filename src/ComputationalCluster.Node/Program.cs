@@ -1,6 +1,6 @@
-﻿using ComputationalCluster.Common;
-using ComputationalCluster.Common.Messages;
-using ComputationalCluster.Common.Serialization;
+﻿using Autofac;
+using Autofac.Core;
+using ComputationalCluster.Common;
 using System;
 
 namespace ComputationalCluster.Node
@@ -9,27 +9,25 @@ namespace ComputationalCluster.Node
     {
         static void Main(string[] args)
         {
-            StartNode();
-            Console.ReadLine();
-        }
+            var builder = new ContainerBuilder();
 
-        private static void StartNode()
-        {
-            var messenger = new Messenger(new MessageSerializer());
-            var message = new RegisterMessage
-            {
-                Type = RegisterType.ComputationalNode,
-                ParallelThreads = 3,
-                SolvableProblems = new[] { "DVRP" }
-            };
+            builder.RegisterModule<CommonModule>();
+            builder.RegisterType<ComputationalNode>()
+                   .AsSelf()
+                   .SingleInstance();
+
+            var container = builder.Build();
+
             try
             {
-                messenger.SendMessage(message);
+                var node = container.Resolve<ComputationalNode>();
+                node.Start();
             }
-            catch (Exception e)
+            catch (DependencyResolutionException e)
             {
-                Console.WriteLine(e.Message);
+                Console.Error.WriteLine(e.InnerException.Message);
             }
+            Console.ReadLine();
         }
     }
 }
