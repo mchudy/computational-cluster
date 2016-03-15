@@ -53,6 +53,9 @@
     <Compile Include="Handlers\ErrorMessageHandler.cs" />
     <Compile Include="Handlers\RegisterMessageHandler.cs" />
     <Compile Include="Configuration\IServerConfiguration.cs" />
+    <Compile Include="Handlers\SolutionMessageHandler.cs" />
+    <Compile Include="Handlers\SolutionRequestMessageHandler.cs" />
+    <Compile Include="Handlers\SolveRequestMessageHandler.cs" />
     <Compile Include="Handlers\StatusMessageHandler.cs" />
     <Compile Include="IServerMessenger.cs" />
     <Compile Include="Program.cs" />
