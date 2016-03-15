@@ -31,7 +31,7 @@ namespace ComputationalCluster.Common.Messaging
                     WriteMessage(message, writer);
                 }
             }
-            Console.WriteLine("Closed connection to the server");
+            //Console.WriteLine("Closed connection to the server");
         }
 
         public IList<Message> SendMessage(Message message)
@@ -47,7 +47,7 @@ namespace ComputationalCluster.Common.Messaging
                     response = ReadMessages(reader);
                 }
             }
-            Console.WriteLine("Closed connection to the server");
+            //Console.WriteLine("Closed connection to the server");
             return response;
         }
 
@@ -71,7 +71,6 @@ namespace ComputationalCluster.Common.Messaging
         private void WriteMessage(Message message, StreamWriter writer)
         {
             string messageString = serializer.Serialize(message);
-            //TODO
             writer.Write(messageString);
             writer.Write(Constants.ETB);
             writer.Flush();
@@ -80,7 +79,7 @@ namespace ComputationalCluster.Common.Messaging
         private NetworkStream OpenConnection(TcpClient client)
         {
             client.Connect(configuration.ServerAddress, configuration.ServerPort);
-            Console.WriteLine("Connected to the server");
+            //Console.WriteLine("Connected to the server");
             return client.GetStream();
         }
     }

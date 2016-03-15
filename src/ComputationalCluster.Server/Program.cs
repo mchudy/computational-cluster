@@ -9,24 +9,34 @@ namespace ComputationalCluster.Server
     {
         static void Main(string[] args)
         {
+            var container = BuildContainer();
+
+            var server = container.Resolve<Server>();
+            server.Start();
+        }
+
+        private static IContainer BuildContainer()
+        {
             var builder = new ContainerBuilder();
 
             builder.RegisterType<MessageSerializer>()
                    .As<IMessageSerializer>();
-
+            builder.RegisterType<ServerMessenger>()
+                   .As<IServerMessenger>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<ServerContext>()
+                   .AsSelf()
+                   .SingleInstance();
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
                    .AsClosedTypesOf(typeof(IMessageHandler<>));
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
-
             builder.RegisterType<Server>().AsSelf();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()
                    .SingleInstance();
 
-            var container = builder.Build();
-            var server = container.Resolve<Server>();
-            server.Start();
+            return builder.Build();
         }
     }
 }

@@ -49,13 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\StreamReaderExtensions.cs" />
     <Compile Include="Handlers\ErrorMessageHandler.cs" />
     <Compile Include="Handlers\RegisterMessageHandler.cs" />
     <Compile Include="Configuration\IServerConfiguration.cs" />
+    <Compile Include="Handlers\StatusMessageHandler.cs" />
+    <Compile Include="IServerMessenger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Configuration\ServerConfiguration.cs" />
+    <Compile Include="ServerContext.cs" />
+    <Compile Include="ServerMessenger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

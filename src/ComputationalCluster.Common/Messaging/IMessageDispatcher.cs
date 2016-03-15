@@ -1,10 +1,11 @@
-﻿using System.Net.Sockets;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
+using System.Net.Sockets;
 
 namespace ComputationalCluster.Common.Messaging
 {
     public interface IMessageDispatcher
     {
-        void Dispatch<T>(T message, TcpClient client) where T : Message;
+        void Dispatch<T>(T message, NetworkStream stream)
+            where T : Message;
     }
 }

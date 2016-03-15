@@ -3,11 +3,11 @@ using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
+using ComputationalCluster.Server.Extensions;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace ComputationalCluster.Server
 {
@@ -43,19 +43,17 @@ namespace ComputationalCluster.Server
             try
             {
                 using (var stream = client.GetStream())
+                using (var reader = new StreamReader(stream))
                 {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        //TODO: not sure if message must end with ETB... probably should wait some timeout in case it doesn't
-                        string messageString = ReadMessage(reader);
+                    //TODO: not sure if message must end with ETB... probably should wait some timeout in case it doesn't
+                    string messageString = reader.ReadToChar(Constants.ETB);
 
-                        Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
-                        string[] messagesXml = messageString.Split(Constants.ETB);
-                        foreach (var xml in messagesXml)
-                        {
-                            Message message = serializer.Deserialize(xml);
-                            messageDispatcher.Dispatch(message, client);
-                        }
+                    Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
+                    string[] messagesXml = messageString.Split(Constants.ETB);
+                    foreach (var xml in messagesXml)
+                    {
+                        Message message = serializer.Deserialize(xml);
+                        messageDispatcher.Dispatch(message, stream);
                     }
                 }
             }
@@ -67,25 +65,6 @@ namespace ComputationalCluster.Server
             {
                 client.Close();
             }
-        }
-
-        private string ReadMessage(StreamReader reader)
-        {
-            return ReadToChar(reader, Constants.ETB);
-        }
-
-        //TODO: Read by blocks to optimize?; change into extension method
-        public static string ReadToChar(StreamReader sr, char splitCharacter)
-        {
-            char nextChar;
-            StringBuilder line = new StringBuilder();
-            while (sr.Peek() > 0)
-            {
-                nextChar = (char)sr.Read();
-                if (nextChar == splitCharacter) return line.ToString();
-                line.Append(nextChar);
-            }
-            return line.Length == 0 ? null : line.ToString();
         }
     }
 }
