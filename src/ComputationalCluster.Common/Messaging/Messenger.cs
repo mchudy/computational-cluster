@@ -58,6 +58,10 @@ namespace ComputationalCluster.Common.Messaging
             var response = new List<Message>();
             foreach (var messageXml in messages)
             {
+                if (string.IsNullOrEmpty(messageXml))
+                {
+                    continue;
+                }
                 Console.WriteLine(messageXml);
                 response.Add(serializer.Deserialize(messageXml));
             }

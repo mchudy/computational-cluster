@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
+using System.Collections.Generic;
 
 namespace ComputationalCluster.Common.Messaging
 {

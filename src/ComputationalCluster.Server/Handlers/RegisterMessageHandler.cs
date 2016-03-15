@@ -4,6 +4,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
@@ -12,10 +13,12 @@ namespace ComputationalCluster.Server.Handlers
     public class RegisterMessageHandler : IMessageHandler<RegisterMessage>
     {
         private readonly IServerConfiguration configuration;
+        private readonly IMessageSerializer serializer;
 
-        public RegisterMessageHandler(IServerConfiguration configuration)
+        public RegisterMessageHandler(IServerConfiguration configuration, IMessageSerializer serializer)
         {
             this.configuration = configuration;
+            this.serializer = serializer;
         }
 
         public void HandleMessage(RegisterMessage message, TcpClient client)
@@ -30,17 +33,26 @@ namespace ComputationalCluster.Server.Handlers
                 Console.WriteLine("New task manager registered");
             }
             using (var stream = client.GetStream())
-            using (var writer = new StreamWriter(stream))
             {
-                var responseMessage = new RegisterResponseMessage()
+                var responseMessage = new RegisterResponseMessage
                 {
                     Id = 1,
                     Timeout = configuration.Timeout
                 };
-                var response = new MessageSerializer().Serialize(responseMessage);
-                writer.Write(response);
-                writer.Write(Constants.ETB);
-                writer.Write(response);
+                SendMessages(new List<Message> { responseMessage, responseMessage }, stream);
+            }
+        }
+
+        public void SendMessages(IList<Message> messages, NetworkStream stream)
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                foreach (var message in messages)
+                {
+                    string xml = serializer.Serialize(message);
+                    writer.Write(xml);
+                    writer.Write(Constants.ETB);
+                }
                 writer.Flush();
             }
         }

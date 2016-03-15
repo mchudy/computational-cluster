@@ -6,6 +6,7 @@ namespace ComputationalCluster.Node
 {
     public class ComputationalNode
     {
+        public const int ParallelThreads = 6;
         private readonly IMessenger messenger;
 
         public ComputationalNode(IMessenger messenger)
@@ -18,7 +19,7 @@ namespace ComputationalCluster.Node
             var message = new RegisterMessage
             {
                 Type = RegisterType.ComputationalNode,
-                ParallelThreads = 3,
+                ParallelThreads = ParallelThreads,
                 SolvableProblems = new[] { "DVRP" }
             };
             try

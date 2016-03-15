@@ -11,13 +11,14 @@ namespace ComputationalCluster.Server
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterType<MessageSerializer>()
+                   .As<IMessageSerializer>();
+
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
                    .AsClosedTypesOf(typeof(IMessageHandler<>));
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
-            builder.RegisterType<MessageSerializer>()
-                   .AsImplementedInterfaces()
-                   .SingleInstance();
+
             builder.RegisterType<Server>().AsSelf();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()

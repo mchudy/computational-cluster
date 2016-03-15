@@ -50,8 +50,12 @@ namespace ComputationalCluster.Server
                         string messageString = ReadMessage(reader);
 
                         Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
-                        Message message = serializer.Deserialize(messageString);
-                        messageDispatcher.Dispatch(message, client);
+                        string[] messagesXml = messageString.Split(Constants.ETB);
+                        foreach (var xml in messagesXml)
+                        {
+                            Message message = serializer.Deserialize(xml);
+                            messageDispatcher.Dispatch(message, client);
+                        }
                     }
                 }
             }
