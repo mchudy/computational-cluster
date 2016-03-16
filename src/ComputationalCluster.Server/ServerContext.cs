@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ComputationalCluster.Server
@@ -12,6 +13,8 @@ namespace ComputationalCluster.Server
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
         public IList<BackupServer> BackupServers { get; } = new List<BackupServer>();
+
+        public ConcurrentQueue<ProblemInstance> ProblemQueue { get; } = new ConcurrentQueue<ProblemInstance>();
 
         public int GetNextComponentId()
         {
@@ -40,6 +43,7 @@ namespace ComputationalCluster.Server
     {
         public IList<string> SolvableProblems { get; set; } = new List<string>();
         public int ThreadsCount { get; set; }
+        public bool ReceivedStatus { get; set; }
     }
 
     public class BackupServer : ClientComponent
@@ -54,6 +58,17 @@ namespace ComputationalCluster.Server
         public byte[] Data { get; set; }
         public ulong SolvingTimeout { get; set; }
         public string ProblemType { get; set; }
+        public ProblemStatus Status { get; set; }
+    }
 
+    public enum ProblemStatus
+    {
+        New,
+        Dividing,
+        Divided,
+        ComputationOngoing,
+        Partial,
+        Merging,
+        Final
     }
 }

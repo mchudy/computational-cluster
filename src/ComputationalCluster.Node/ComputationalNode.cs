@@ -56,7 +56,7 @@ namespace ComputationalCluster.Node
                 var statusMessage = GetStatus();
                 messenger.SendMessage(statusMessage);
                 Logger.Debug("Sending status");
-                Thread.Sleep((int)(timeout * 1000));
+                Thread.Sleep((int)(timeout * 1000 / 2));
             }
         }
 

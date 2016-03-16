@@ -42,7 +42,7 @@ namespace ComputationalCluster.Server
         private void AcceptClient(TcpListener server)
         {
             var client = server.AcceptTcpClient();
-            Logger.Info($"New connection {client.Client.RemoteEndPoint}");
+            Logger.Debug($"New connection {client.Client.RemoteEndPoint}");
             try
             {
                 using (var stream = client.GetStream())

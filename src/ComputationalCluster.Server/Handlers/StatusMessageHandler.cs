@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
+using log4net;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -18,6 +19,8 @@ namespace ComputationalCluster.Server.Handlers
             this.messenger = messenger;
         }
 
+        public ILog Logger { get; set; }
+
         public void HandleMessage(StatusMessage message, ITcpConnection connection)
         {
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
@@ -32,22 +35,42 @@ namespace ComputationalCluster.Server.Handlers
                 HandleTaskManager(taskManager, message, connection.GetStream());
                 return;
             }
+            Logger.Error("Status message from not registered component");
         }
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, NetworkStream stream)
         {
-
             taskManager.ReceivedStatus = true;
-            messenger.SendMessage(new NoOperationMessage
+            if (message.Threads.Any(t => t.State == StatusThreadState.Idle))
             {
-                BackupCommunicationServers = context.BackupServers.Select(
-                    s => new BackupCommunicationServer(s.Address, s.Port)).ToList()
-            }, stream);
+                var problemToDivide = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.New &&
+                                                            taskManager.SolvableProblems.Contains(p.ProblemType));
+                if (problemToDivide != null)
+                {
+                    problemToDivide.Status = ProblemStatus.Dividing;
+                    messenger.SendMessage(new DivideProblemMessage
+                    {
+                        Id = (ulong)problemToDivide.Id,
+                        ComputationalNodes = 10,
+                        NodeID = (ulong)taskManager.Id,
+                        ProblemType = problemToDivide.ProblemType
+                    }, stream);
+                }
+            }
+            else
+            {
+                //TODO: move to messenger?
+                messenger.SendMessage(new NoOperationMessage
+                {
+                    BackupCommunicationServers = context.BackupServers.Select(
+                        s => new BackupCommunicationServer(s.Address, s.Port)).ToList()
+                }, stream);
+            }
         }
 
         private void HandleNode(ComputationalNode node, StatusMessage message)
         {
-
+            node.ReceivedStatus = true;
         }
     }
 }

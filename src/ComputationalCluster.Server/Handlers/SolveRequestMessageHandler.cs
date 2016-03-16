@@ -22,13 +22,15 @@ namespace ComputationalCluster.Server.Handlers
         public void HandleMessage(SolveRequestMessage message, ITcpConnection connection)
         {
             int id = context.GetNextProblemId();
-            context.Problems.Add(new ProblemInstance
+            var problem = new ProblemInstance
             {
                 Id = id,
                 Data = message.Data,
                 ProblemType = message.ProblemType,
-                SolvingTimeout = message.SolvingTimeout
-            });
+                SolvingTimeout = message.SolvingTimeout,
+                Status = ProblemStatus.New
+            };
+            context.Problems.Add(problem);
             SendResponse(connection.GetStream(), id);
             Logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
             //TODO: add some problems queue for task managers and nodes

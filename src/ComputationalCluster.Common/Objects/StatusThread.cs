@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace ComputationalCluster.Common.Objects
@@ -14,20 +10,14 @@ namespace ComputationalCluster.Common.Objects
     {
         public StatusThreadState State { get; set; }
 
-        public ulong HowLong { get; set; }
+        public ulong? HowLong { get; set; }
+        public bool ShouldSerializeHowLong() => HowLong != null;
 
-        [XmlIgnore()]
-        public bool HowLongSpecified { get; set; }
+        public ulong? ProblemInstanceId { get; set; }
+        public bool ShouldSerializeProblemInstanceId() => ProblemInstanceId != null;
 
-        public ulong ProblemInstanceId { get; set; }
-
-        [XmlIgnore()]
-        public bool ProblemInstanceIdSpecified { get; set; }
-
-        public ulong TaskId { get; set; }
-
-        [XmlIgnore()]
-        public bool TaskIdSpecified { get; set; }
+        public ulong? TaskId { get; set; }
+        public bool ShouldSerializeTaskId() => TaskId != null;
 
         public string ProblemType { get; set; }
     }

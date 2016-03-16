@@ -34,12 +34,14 @@ namespace ComputationalCluster.Server.Handlers
             if (message.Type == RegisterType.ComputationalNode)
             {
                 Console.WriteLine($"New node registered - id {id}");
-                context.Nodes.Add(new ComputationalNode
+                var node = new ComputationalNode
                 {
                     Id = id,
                     SolvableProblems = message.SolvableProblems,
                     ThreadsCount = message.ParallelThreads
-                });
+                };
+                context.Nodes.Add(node);
+                Task.Run(() => CheckNodeTimeout(node));
             }
             else if (message.Type == RegisterType.TaskManager)
             {
@@ -72,22 +74,37 @@ namespace ComputationalCluster.Server.Handlers
             messenger.SendMessage(responseMessage, connection.GetStream());
         }
 
-        private void CheckTimeManagerTimeout(TaskManager manager)
+
+        //TODO: class for handling timeouts
+        private void CheckNodeTimeout(ComputationalNode node)
         {
             while (true)
             {
                 Thread.Sleep((int)(configuration.Timeout * 1000));
                 //TODO: ensure atomicity
-                if (!manager.ReceivedStatus)
+                if (!node.ReceivedStatus)
                 {
                     //TODO: proper deregistration handling
+                    context.Nodes.Remove(node);
+                    Logger.Error($"FAILURE - node with id {node.Id}");
+                    break;
+                }
+                node.ReceivedStatus = false;
+            }
+        }
+
+        private void CheckTimeManagerTimeout(TaskManager manager)
+        {
+            while (true)
+            {
+                Thread.Sleep((int)(configuration.Timeout * 1000));
+                if (!manager.ReceivedStatus)
+                {
                     context.TaskManagers.Remove(manager);
                     Logger.Error($"FAILURE - task manager with id {manager.Id}");
+                    break;
                 }
-                else
-                {
-                    manager.ReceivedStatus = false;
-                }
+                manager.ReceivedStatus = false;
             }
         }
     }
