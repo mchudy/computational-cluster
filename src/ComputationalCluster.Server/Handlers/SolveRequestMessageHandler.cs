@@ -27,6 +27,7 @@ namespace ComputationalCluster.Server.Handlers
                 SolvingTimeout = message.SolvingTimeout
             });
             SendResponse(connection.GetStream(), id);
+            System.Console.WriteLine("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
             //TODO: add some problems queue for task managers and nodes
         }
 

@@ -8,7 +8,7 @@ namespace ComputationalCluster.Server.Handlers
     {
         public void HandleMessage(SolutionRequestMessage message, ITcpConnection connection)
         {
-
+            
 
         }
     }
