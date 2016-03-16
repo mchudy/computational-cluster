@@ -1,5 +1,4 @@
-﻿using ComputationalCluster.Common;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ namespace ComputationalCluster.Node
 {
     public class ComputationalNode
     {
-        private readonly IConfiguration configuration;
         private readonly IMessenger messenger;
         private const int parallelThreads = 2;
         private uint timeout;

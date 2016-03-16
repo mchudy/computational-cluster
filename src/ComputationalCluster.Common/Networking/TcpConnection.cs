@@ -13,7 +13,7 @@ namespace ComputationalCluster.Common.Networking
             this.client = client;
         }
 
-        public EndPoint EndPoint => client.Client.RemoteEndPoint;
+        public IPEndPoint EndPoint => client.Client.RemoteEndPoint as IPEndPoint;
 
         public void Connect(string address, int port)
         {

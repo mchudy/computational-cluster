@@ -6,7 +6,7 @@ namespace ComputationalCluster.Common.Networking
 {
     public interface ITcpConnection : IDisposable
     {
-        EndPoint EndPoint { get; }
+        IPEndPoint EndPoint { get; }
         void Connect(string address, int port);
         NetworkStream GetStream();
     }

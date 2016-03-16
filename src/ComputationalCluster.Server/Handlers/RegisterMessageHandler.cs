@@ -56,6 +56,8 @@ namespace ComputationalCluster.Server.Handlers
                 context.BackupServers.Add(new BackupServer
                 {
                     Id = id,
+                    Address = connection.EndPoint.Address.ToString(),
+                    Port = (ushort)connection.EndPoint.Port
                 });
             }
             var responseMessage = new RegisterResponseMessage

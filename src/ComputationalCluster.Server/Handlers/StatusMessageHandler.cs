@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
+using ComputationalCluster.Common.Objects;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -35,10 +36,12 @@ namespace ComputationalCluster.Server.Handlers
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, NetworkStream stream)
         {
+
             taskManager.ReceivedStatus = true;
             messenger.SendMessage(new NoOperationMessage
             {
-
+                BackupCommunicationServers = context.BackupServers.Select(
+                    s => new BackupCommunicationServer(s.Address, s.Port)).ToList()
             }, stream);
         }
 

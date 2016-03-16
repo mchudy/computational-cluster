@@ -11,6 +11,6 @@ namespace ComputationalCluster.Common.Messages
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "NoOperation")]
     public class NoOperationMessage : Message
     {
-        public List<BackupCommunicationServer> BackupCommunicationServersList { get; set; }
+        public List<BackupCommunicationServer> BackupCommunicationServers { get; set; }
     }
 }
