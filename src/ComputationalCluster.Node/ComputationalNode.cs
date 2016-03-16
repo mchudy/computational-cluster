@@ -1,5 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,6 +20,8 @@ namespace ComputationalCluster.Node
             this.messenger = messenger;
         }
 
+        public ILog Logger { get; set; }
+
         public void Start()
         {
             var message = new RegisterMessage()
@@ -36,13 +39,13 @@ namespace ComputationalCluster.Node
                     var response = responseMessage;
                     timeout = response.Timeout;
                     id = response.Id;
-                    Console.WriteLine($"Registered with id {id}");
+                    Logger.Info($"Registered with id {id}");
                 }
                 Task.Run(() => SendStatus());
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.Error(e.Message);
             }
         }
 
@@ -52,7 +55,7 @@ namespace ComputationalCluster.Node
             {
                 var statusMessage = GetStatus();
                 messenger.SendMessage(statusMessage);
-                Console.WriteLine("Sending status");
+                Logger.Debug("Sending status");
                 Thread.Sleep((int)(timeout * 1000));
             }
         }

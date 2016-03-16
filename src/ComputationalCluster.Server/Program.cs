@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
@@ -19,6 +20,7 @@ namespace ComputationalCluster.Server
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterModule<LoggingModule>();
             builder.RegisterType<MessageSerializer>()
                    .As<IMessageSerializer>();
             builder.RegisterType<ServerMessenger>()

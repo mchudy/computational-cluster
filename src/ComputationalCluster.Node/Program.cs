@@ -11,7 +11,7 @@ namespace ComputationalCluster.Node
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule<CommonModule>();
+            builder.RegisterAssemblyModules(typeof(Constants).Assembly);
             builder.RegisterType<ComputationalNode>()
                    .AsSelf()
                    .SingleInstance();

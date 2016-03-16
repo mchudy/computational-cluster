@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
+using log4net;
 using System.Net.Sockets;
 
 namespace ComputationalCluster.Server.Handlers
@@ -16,6 +17,8 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
+        public ILog Logger { get; set; }
+
         public void HandleMessage(SolveRequestMessage message, ITcpConnection connection)
         {
             int id = context.GetNextProblemId();
@@ -27,7 +30,7 @@ namespace ComputationalCluster.Server.Handlers
                 SolvingTimeout = message.SolvingTimeout
             });
             SendResponse(connection.GetStream(), id);
-            System.Console.WriteLine("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
+            Logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
             //TODO: add some problems queue for task managers and nodes
         }
 

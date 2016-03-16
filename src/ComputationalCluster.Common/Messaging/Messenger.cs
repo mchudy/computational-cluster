@@ -1,7 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
-using System;
+using log4net;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -24,6 +24,7 @@ namespace ComputationalCluster.Common.Messaging
             this.configuration = configuration;
             this.connectionFactory = connectionFactory;
         }
+        public ILog Logger { get; set; }
 
         public void SendMessageAndClose(Message message)
         {
@@ -66,7 +67,7 @@ namespace ComputationalCluster.Common.Messaging
                 {
                     continue;
                 }
-                Console.WriteLine(messageXml);
+                Logger.Debug(messageXml);
                 response.Add(serializer.Deserialize(messageXml));
             }
             return response;

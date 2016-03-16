@@ -5,7 +5,7 @@ using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
 using ComputationalCluster.Server.Extensions;
-using System;
+using log4net;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -26,11 +26,13 @@ namespace ComputationalCluster.Server
             this.configuration = configuration;
         }
 
+        public ILog Logger { get; set; }
+
         public void Start()
         {
             TcpListener server = new TcpListener(IPAddress.Any, configuration.ListeningPort);
             server.Start();
-            Console.WriteLine($"Started listening on {server.LocalEndpoint}");
+            Logger.Info($"Started listening on {server.LocalEndpoint}");
             while (true)
             {
                 AcceptClient(server);
@@ -40,7 +42,7 @@ namespace ComputationalCluster.Server
         private void AcceptClient(TcpListener server)
         {
             var client = server.AcceptTcpClient();
-            Console.WriteLine($"New connection {client.Client.RemoteEndPoint}");
+            Logger.Info($"New connection {client.Client.RemoteEndPoint}");
             try
             {
                 using (var stream = client.GetStream())
@@ -49,7 +51,7 @@ namespace ComputationalCluster.Server
                     //TODO: not sure if message must end with ETB... probably should wait some timeout in case it doesn't
                     string messageString = reader.ReadToChar(Constants.ETB);
 
-                    Console.WriteLine($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
+                    Logger.Debug($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
                     string[] messagesXml = messageString.Split(Constants.ETB);
                     foreach (var xml in messagesXml)
                     {
@@ -61,7 +63,7 @@ namespace ComputationalCluster.Server
             }
             catch (IOException)
             {
-                Console.WriteLine("Connection lost");
+                Logger.Error("Connection lost");
             }
             finally
             {

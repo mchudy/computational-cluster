@@ -10,8 +10,7 @@ namespace ComputationalCluster.TaskManager
         static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
-
-            builder.RegisterModule<CommonModule>();
+            builder.RegisterAssemblyModules(typeof(Constants).Assembly);
             builder.RegisterType<TaskManager>()
                 .AsSelf()
                 .SingleInstance();

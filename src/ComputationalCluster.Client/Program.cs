@@ -10,7 +10,7 @@ namespace ComputationalCluster.Client
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule<CommonModule>();
+            builder.RegisterAssemblyModules(typeof(Constants).Assembly);
             builder.RegisterType<Client>()
                 .AsSelf()
                 .SingleInstance();

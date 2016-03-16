@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,10 +25,12 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
+        public ILog Logger { get; set; }
+
         public void HandleMessage(RegisterMessage message, ITcpConnection connection)
         {
             int id = context.GetNextComponentId();
-            Console.WriteLine("Received register message");
+            Logger.Info("Received register message");
             if (message.Type == RegisterType.ComputationalNode)
             {
                 Console.WriteLine($"New node registered - id {id}");
@@ -40,7 +43,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else if (message.Type == RegisterType.TaskManager)
             {
-                Console.WriteLine($"New task manager registered - id {id}");
+                Logger.Info($"New task manager registered - id {id}");
                 var taskManager = new TaskManager
                 {
                     Id = id,
@@ -52,7 +55,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else if (message.Type == RegisterType.CommunicationServer)
             {
-                Console.WriteLine($"New backup server registered - id {id}");
+                Logger.Info($"New backup server registered - id {id}");
                 context.BackupServers.Add(new BackupServer
                 {
                     Id = id,
@@ -79,7 +82,7 @@ namespace ComputationalCluster.Server.Handlers
                 {
                     //TODO: proper deregistration handling
                     context.TaskManagers.Remove(manager);
-                    Console.WriteLine($"FAILURE - task manager with id {manager.Id}");
+                    Logger.Error($"FAILURE - task manager with id {manager.Id}");
                 }
                 else
                 {

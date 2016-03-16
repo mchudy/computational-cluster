@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using log4net;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +18,8 @@ namespace ComputationalCluster.Client
             this.configuration = configuration;
             this.messenger = messenger;
         }
+
+        public ILog Logger { get; set; }
 
         public void Start()
         {
@@ -37,7 +40,7 @@ namespace ComputationalCluster.Client
                 {
                     var response = responseMessage;
                     id = response.Id;
-                    Console.WriteLine($"SolveRequestResponse with id {id}");
+                    Logger.Info($"SolveRequestResponse with id {id}");
                 }
 
             }
