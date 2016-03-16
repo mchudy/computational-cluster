@@ -3,6 +3,8 @@ using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ComputationalCluster.TaskManager
 {
@@ -40,17 +42,32 @@ namespace ComputationalCluster.TaskManager
                     id = response.Id;
                     Console.WriteLine($"Registered with id {id}");
                 }
-
-                var statusMessage = new StatusMessage
-                {
-                    Id = id
-                };
-                messenger.SendMessage(statusMessage);
+                Task.Run(() => SendStatus());
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        private void SendStatus()
+        {
+            while (true)
+            {
+                var statusMessage = GetStatus();
+                messenger.SendMessage(statusMessage);
+                Console.WriteLine("Sending status");
+                Thread.Sleep((int)(timeout * 1000));
+            }
+        }
+
+        private StatusMessage GetStatus()
+        {
+            var statusMessage = new StatusMessage
+            {
+                Id = id
+            };
+            return statusMessage;
         }
     }
 }

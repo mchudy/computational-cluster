@@ -32,7 +32,7 @@ namespace ComputationalCluster.Server.Handlers
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message)
         {
-
+            taskManager.ReceivedStatus = true;
         }
 
         private void HandleNode(ComputationalNode node, StatusMessage message)

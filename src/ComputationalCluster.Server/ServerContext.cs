@@ -33,6 +33,7 @@ namespace ComputationalCluster.Server
     {
         public IList<string> SolvableProblems { get; set; } = new List<string>();
         public int ThreadsCount { get; set; }
+        public bool ReceivedStatus { get; set; }
     }
 
     public class ComputationalNode : ClientComponent

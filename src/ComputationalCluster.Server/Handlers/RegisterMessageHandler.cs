@@ -5,6 +5,8 @@ using ComputationalCluster.Server.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -39,12 +41,14 @@ namespace ComputationalCluster.Server.Handlers
             else if (message.Type == RegisterType.TaskManager)
             {
                 Console.WriteLine($"New task manager registered - id {id}");
-                context.TaskManagers.Add(new TaskManager
+                var taskManager = new TaskManager
                 {
                     Id = id,
                     SolvableProblems = message.SolvableProblems,
                     ThreadsCount = message.ParallelThreads
-                });
+                };
+                context.TaskManagers.Add(taskManager);
+                Task.Run(() => CheckTimeManagerTimeout(taskManager));
             }
             else if (message.Type == RegisterType.CommunicationServer)
             {
@@ -61,6 +65,25 @@ namespace ComputationalCluster.Server.Handlers
                 BackupCommunicationServers = new List<BackupCommunicationServer>()
             };
             messenger.SendMessage(responseMessage, stream);
+        }
+
+        private void CheckTimeManagerTimeout(TaskManager manager)
+        {
+            while (true)
+            {
+                Thread.Sleep((int)(configuration.Timeout * 1000));
+                //TODO: ensure atomicity
+                if (!manager.ReceivedStatus)
+                {
+                    //TODO: proper deregistration handling
+                    context.TaskManagers.Remove(manager);
+                    Console.WriteLine($"FAILURE - task manager with id {manager.Id}");
+                }
+                else
+                {
+                    manager.ReceivedStatus = false;
+                }
+            }
         }
     }
 }
