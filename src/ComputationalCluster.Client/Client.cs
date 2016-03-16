@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ComputationalCluster.Common;
+﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using System;
+using System.Collections.Generic;
 
 namespace ComputationalCluster.Client
 {
@@ -30,7 +27,7 @@ namespace ComputationalCluster.Client
                 SolvingTimeoutSpecified = true,
                 Id = 123,
                 IdSpecified = false,
-                Data = new byte[] {1, 2, 3}              
+                Data = new byte[] { 1, 2, 3 }
             };
             try
             {
@@ -42,7 +39,7 @@ namespace ComputationalCluster.Client
                     id = response.Id;
                     Console.WriteLine($"SolveRequestResponse with id {id}");
                 }
-                
+
             }
             catch (Exception e)
             {
