@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 
 namespace ComputationalCluster.Common
@@ -15,6 +16,9 @@ namespace ComputationalCluster.Common
                    .As<IMessageSerializer>();
             builder.RegisterType<Messenger>()
                    .As<IMessenger>();
+            builder.RegisterType<TcpConnectionFactory>()
+                   .As<ITcpConnectionFactory>()
+                   .SingleInstance();
         }
     }
 }

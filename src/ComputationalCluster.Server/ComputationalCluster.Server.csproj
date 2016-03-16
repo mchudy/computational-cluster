@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Extensions\StreamReaderExtensions.cs" />
     <Compile Include="Handlers\ErrorMessageHandler.cs" />
+    <Compile Include="Handlers\PartialProblemMessageHandler.cs" />
     <Compile Include="Handlers\RegisterMessageHandler.cs" />
     <Compile Include="Configuration\IServerConfiguration.cs" />
     <Compile Include="Handlers\SolutionMessageHandler.cs" />

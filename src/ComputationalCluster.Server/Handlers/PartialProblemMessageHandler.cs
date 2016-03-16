@@ -5,12 +5,10 @@ using ComputationalCluster.Common.Networking;
 
 namespace ComputationalCluster.Server.Handlers
 {
-    public class SolutionMessageHandler : IMessageHandler<SolutionMessage>
+    public class PartialProblemMessageHandler : IMessageHandler<PartialProblemsMessage>
     {
-        public void HandleMessage(SolutionMessage message, ITcpConnection connection)
+        public void HandleMessage(PartialProblemsMessage message, ITcpConnection connection)
         {
-
-
         }
     }
 }

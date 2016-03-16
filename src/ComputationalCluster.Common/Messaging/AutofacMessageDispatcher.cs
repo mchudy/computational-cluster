@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using ComputationalCluster.Common.Messages;
-using System.Net.Sockets;
+using ComputationalCluster.Common.Networking;
 using System.Reflection;
 
 namespace ComputationalCluster.Common.Messaging
@@ -16,12 +16,12 @@ namespace ComputationalCluster.Common.Messaging
             this.context = context;
         }
 
-        public void Dispatch<T>(T message, NetworkStream stream) where T : Message
+        public void Dispatch<T>(T message, ITcpConnection connection) where T : Message
         {
             var type = typeof(IMessageHandler<>).MakeGenericType(message.GetType());
             var handler = context.Resolve(type);
             type.InvokeMember(methodName, BindingFlags.InvokeMethod, null, handler,
-                new object[] { message, stream });
+                new object[] { message, connection });
         }
     }
 }

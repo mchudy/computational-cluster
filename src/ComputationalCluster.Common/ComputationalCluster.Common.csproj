@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonModule.cs" />
+    <Compile Include="Networking\ITcpConnection.cs" />
     <Compile Include="Messaging\AutofacMessageDispatcher.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Constants.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Messaging\IMessageHandler.cs" />
     <Compile Include="Messaging\IMessenger.cs" />
     <Compile Include="Messaging\Messenger.cs" />
+    <Compile Include="Networking\ITcpConnectionFactory.cs" />
     <Compile Include="Serialization\IMessageSerializer.cs" />
     <Compile Include="Serialization\MessageSerializer.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />
@@ -73,6 +75,8 @@
     <Compile Include="Messages\RegisterMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.cs" />
     <Compile Include="Messages\SolutionMessage.cs" />
+    <Compile Include="Networking\TcpConnection.cs" />
+    <Compile Include="Networking\TcpConnectionFactory.cs" />
     <Compile Include="Utils\Utf8StringWriter.cs" />
   </ItemGroup>
   <ItemGroup>

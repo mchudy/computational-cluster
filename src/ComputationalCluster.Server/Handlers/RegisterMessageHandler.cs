@@ -1,10 +1,10 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +24,7 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public void HandleMessage(RegisterMessage message, NetworkStream stream)
+        public void HandleMessage(RegisterMessage message, ITcpConnection connection)
         {
             int id = context.GetNextComponentId();
             Console.WriteLine("Received register message");
@@ -55,7 +55,7 @@ namespace ComputationalCluster.Server.Handlers
                 Console.WriteLine($"New backup server registered - id {id}");
                 context.BackupServers.Add(new BackupServer
                 {
-                    Id = id
+                    Id = id,
                 });
             }
             var responseMessage = new RegisterResponseMessage
@@ -64,7 +64,7 @@ namespace ComputationalCluster.Server.Handlers
                 Timeout = configuration.Timeout,
                 BackupCommunicationServers = new List<BackupCommunicationServer>()
             };
-            messenger.SendMessage(responseMessage, stream);
+            messenger.SendMessage(responseMessage, connection.GetStream());
         }
 
         private void CheckTimeManagerTimeout(TaskManager manager)

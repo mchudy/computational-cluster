@@ -1,6 +1,5 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
-using System;
 
 namespace ComputationalCluster.Node
 {
@@ -22,14 +21,14 @@ namespace ComputationalCluster.Node
                 ParallelThreads = ParallelThreads,
                 SolvableProblems = new[] { "DVRP" }
             };
-            try
+            //try
             {
                 messenger.SendMessage(message);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
         }
     }
 }

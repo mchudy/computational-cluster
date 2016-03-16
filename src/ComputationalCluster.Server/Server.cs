@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
 using ComputationalCluster.Server.Extensions;
@@ -53,7 +54,8 @@ namespace ComputationalCluster.Server
                     foreach (var xml in messagesXml)
                     {
                         Message message = serializer.Deserialize(xml);
-                        messageDispatcher.Dispatch(message, stream);
+                        //TODO:
+                        messageDispatcher.Dispatch(message, new TcpConnection(client));
                     }
                 }
             }

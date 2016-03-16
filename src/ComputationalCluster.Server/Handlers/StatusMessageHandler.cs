@@ -1,5 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Networking;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -8,13 +9,15 @@ namespace ComputationalCluster.Server.Handlers
     public class StatusMessageHandler : IMessageHandler<StatusMessage>
     {
         private readonly ServerContext context;
+        private readonly IServerMessenger messenger;
 
-        public StatusMessageHandler(ServerContext context)
+        public StatusMessageHandler(ServerContext context, IServerMessenger messenger)
         {
             this.context = context;
+            this.messenger = messenger;
         }
 
-        public void HandleMessage(StatusMessage message, NetworkStream stream)
+        public void HandleMessage(StatusMessage message, ITcpConnection connection)
         {
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
@@ -25,14 +28,18 @@ namespace ComputationalCluster.Server.Handlers
             var taskManager = context.TaskManagers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (taskManager != null)
             {
-                HandleTaskManager(taskManager, message);
+                HandleTaskManager(taskManager, message, connection.GetStream());
                 return;
             }
         }
 
-        private void HandleTaskManager(TaskManager taskManager, StatusMessage message)
+        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, NetworkStream stream)
         {
             taskManager.ReceivedStatus = true;
+            messenger.SendMessage(new NoOperationMessage
+            {
+
+            }, stream);
         }
 
         private void HandleNode(ComputationalNode node, StatusMessage message)

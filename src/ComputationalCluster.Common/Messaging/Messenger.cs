@@ -1,4 +1,5 @@
 ﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 using System;
 using System.Collections.Generic;
@@ -14,16 +15,19 @@ namespace ComputationalCluster.Common.Messaging
 
         private readonly IMessageSerializer serializer;
         private readonly IConfiguration configuration;
+        private readonly ITcpConnectionFactory connectionFactory;
 
-        public Messenger(IMessageSerializer serializer, IConfiguration configuration)
+        public Messenger(IMessageSerializer serializer, IConfiguration configuration,
+            ITcpConnectionFactory connectionFactory)
         {
             this.serializer = serializer;
             this.configuration = configuration;
+            this.connectionFactory = connectionFactory;
         }
 
         public void SendMessageAndClose(Message message)
         {
-            using (TcpClient client = new TcpClient())
+            using (ITcpConnection client = connectionFactory.Create())
             {
                 using (var networkStream = OpenConnection(client))
                 using (var writer = new StreamWriter(networkStream))
@@ -37,7 +41,7 @@ namespace ComputationalCluster.Common.Messaging
         public IList<Message> SendMessage(Message message)
         {
             IList<Message> response;
-            using (TcpClient client = new TcpClient())
+            using (ITcpConnection client = connectionFactory.Create())
             {
                 using (var networkStream = OpenConnection(client))
                 using (var reader = new StreamReader(networkStream))
@@ -76,7 +80,7 @@ namespace ComputationalCluster.Common.Messaging
             writer.Flush();
         }
 
-        private NetworkStream OpenConnection(TcpClient client)
+        private NetworkStream OpenConnection(ITcpConnection client)
         {
             client.Connect(configuration.ServerAddress, configuration.ServerPort);
             //Console.WriteLine("Connected to the server");

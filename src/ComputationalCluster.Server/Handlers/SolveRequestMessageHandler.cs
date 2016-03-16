@@ -1,5 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Networking;
 using System.Net.Sockets;
 
 namespace ComputationalCluster.Server.Handlers
@@ -15,7 +16,7 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public void HandleMessage(SolveRequestMessage message, NetworkStream stream)
+        public void HandleMessage(SolveRequestMessage message, ITcpConnection connection)
         {
             int id = context.GetNextProblemId();
             context.Problems.Add(new ProblemInstance
@@ -25,7 +26,7 @@ namespace ComputationalCluster.Server.Handlers
                 ProblemType = message.ProblemType,
                 SolvingTimeout = message.SolvingTimeout
             });
-            SendResponse(stream, id);
+            SendResponse(connection.GetStream(), id);
             //TODO: add some problems queue for task managers and nodes
         }
 
