@@ -13,6 +13,7 @@ namespace ComputationalCluster.TaskManager
 {
     public class TaskManager
     {
+        private readonly object lockObject = new object();
         private const int parallelThreads = 8;
 
         //TODO: custom class?
@@ -85,7 +86,7 @@ namespace ComputationalCluster.TaskManager
                     Task.Run(() => HandleResponse(response));
                     Thread.Sleep((int)(timeout * 1000 / 2));
                 }
-                catch (SocketException e)
+                catch (SocketException)
                 {
                     Logger.Error("Server failure");
                 }
@@ -114,15 +115,53 @@ namespace ComputationalCluster.TaskManager
             }
         }
 
-        private void MergeSolutions(SolutionMessage solutionsMessage)
+        private void MergeSolutions(SolutionMessage message)
         {
+            var idleThread = TakeThread();
+            if (idleThread != null)
+            {
+                idleThread.State = StatusThreadState.Busy;
+                idleThread.TaskId = message.Id;
+                //TODO:
+                Thread.Sleep(5000);
+                messenger.SendMessage(new SolutionMessage
+                {
+                    Id = message.Id,
+                    ProblemType = message.ProblemType,
+                    Solutions = new[]
+                    {
+                        new Solution
+                        {
+                            TaskId = message.Id,
+                            Type = SolutionType.Final
+                        }
+                    }
+                });
+                ReleaseThread(idleThread);
+            }
+            else
+            {
+                Logger.Error("No idle thread available");
+                //TODO: send error message
+            }
+        }
 
-
+        private StatusThread TakeThread()
+        {
+            lock (lockObject)
+            {
+                var idleThread = threads.FirstOrDefault(t => t.State == StatusThreadState.Idle);
+                if (idleThread != null)
+                {
+                    idleThread.State = StatusThreadState.Busy;
+                }
+                return idleThread;
+            }
         }
 
         private void DivideProblems(DivideProblemMessage message)
         {
-            var idleThread = threads.FirstOrDefault(t => t.State == StatusThreadState.Idle);
+            var idleThread = TakeThread();
             if (idleThread != null)
             {
                 idleThread.State = StatusThreadState.Busy;
@@ -159,10 +198,13 @@ namespace ComputationalCluster.TaskManager
 
         private void ReleaseThread(StatusThread idleThread)
         {
-            idleThread.ProblemInstanceId = null;
-            idleThread.HowLong = null;
-            idleThread.State = StatusThreadState.Idle;
-            idleThread.ProblemType = null;
+            lock (lockObject)
+            {
+                idleThread.ProblemInstanceId = null;
+                idleThread.HowLong = null;
+                idleThread.State = StatusThreadState.Idle;
+                idleThread.ProblemType = null;
+            }
         }
 
         private StatusMessage GetStatus()
