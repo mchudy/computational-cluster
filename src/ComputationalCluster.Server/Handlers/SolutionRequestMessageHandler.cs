@@ -1,9 +1,9 @@
-﻿using System;
+﻿
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
-using System.Net.Sockets;
 using System.Linq;
+using System.IO;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -41,7 +41,7 @@ namespace ComputationalCluster.Server.Handlers
             //TODO: add some problems queue for task managers and nodes
         }
 
-        private void SendResponse(NetworkStream stream, SolutionMessage response)
+        private void SendResponse(Stream stream, SolutionMessage response)
         {
             messenger.SendMessage(response, stream);
         }
