@@ -3,7 +3,6 @@ using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Serialization;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Sockets;
 
 namespace ComputationalCluster.Server
 {
@@ -16,7 +15,7 @@ namespace ComputationalCluster.Server
             this.serializer = serializer;
         }
 
-        public void SendMessages(IList<Message> messages, NetworkStream stream)
+        public void SendMessages(IList<Message> messages, Stream stream)
         {
             using (var writer = new StreamWriter(stream))
             {
@@ -30,7 +29,7 @@ namespace ComputationalCluster.Server
             }
         }
 
-        public void SendMessage(Message message, NetworkStream stream)
+        public void SendMessage(Message message, Stream stream)
         {
             using (var writer = new StreamWriter(stream))
             {

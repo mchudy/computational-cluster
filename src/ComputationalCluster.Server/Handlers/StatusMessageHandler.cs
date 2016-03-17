@@ -1,10 +1,10 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using System.IO;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -38,7 +38,7 @@ namespace ComputationalCluster.Server.Handlers
             Logger.Error("Status message from not registered component");
         }
 
-        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, NetworkStream stream)
+        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, Stream stream)
         {
             taskManager.ReceivedStatus = true;
             if (message.Threads.Any(t => t.State == StatusThreadState.Idle))

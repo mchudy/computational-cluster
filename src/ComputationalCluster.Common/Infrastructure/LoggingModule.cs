@@ -1,9 +1,9 @@
-﻿using Autofac.Core;
-using log4net;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using Autofac.Core;
+using log4net;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Infrastructure
 {
     public class LoggingModule : Autofac.Module
     {

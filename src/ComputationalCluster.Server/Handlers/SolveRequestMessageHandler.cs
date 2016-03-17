@@ -2,7 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using log4net;
-using System.Net.Sockets;
+using System.IO;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -36,7 +36,7 @@ namespace ComputationalCluster.Server.Handlers
             //TODO: add some problems queue for task managers and nodes
         }
 
-        private void SendResponse(NetworkStream stream, int id)
+        private void SendResponse(Stream stream, int id)
         {
             var response = new SolveRequestResponseMessage
             {

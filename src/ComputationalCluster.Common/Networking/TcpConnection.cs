@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
@@ -20,7 +21,7 @@ namespace ComputationalCluster.Common.Networking
             client.Connect(address, port);
         }
 
-        public NetworkStream GetStream()
+        public Stream GetStream()
         {
             return client.GetStream();
         }

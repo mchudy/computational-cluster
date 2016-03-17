@@ -1,5 +1,4 @@
-﻿using ComputationalCluster.Common;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
@@ -17,15 +16,13 @@ namespace ComputationalCluster.TaskManager
 
         //TODO: custom class?
         private readonly StatusThread[] threads = new StatusThread[parallelThreads];
-        private readonly IConfiguration configuration;
         private readonly IMessenger messenger;
         private uint timeout;
         private ulong id;
         private List<BackupCommunicationServer> backupServers;
 
-        public TaskManager(IConfiguration configuration, IMessenger messenger)
+        public TaskManager(IMessenger messenger)
         {
-            this.configuration = configuration;
             this.messenger = messenger;
         }
 

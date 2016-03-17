@@ -3,7 +3,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 
-namespace ComputationalCluster.Common
+namespace ComputationalCluster.Common.Infrastructure
 {
     public class CommonModule : Module
     {

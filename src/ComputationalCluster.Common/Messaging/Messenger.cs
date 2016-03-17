@@ -4,7 +4,6 @@ using ComputationalCluster.Common.Serialization;
 using log4net;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Sockets;
 
 namespace ComputationalCluster.Common.Messaging
 {
@@ -81,7 +80,7 @@ namespace ComputationalCluster.Common.Messaging
             writer.Flush();
         }
 
-        private NetworkStream OpenConnection(ITcpConnection client)
+        private Stream OpenConnection(ITcpConnection client)
         {
             client.Connect(configuration.ServerAddress, configuration.ServerPort);
             //Console.WriteLine("Connected to the server");

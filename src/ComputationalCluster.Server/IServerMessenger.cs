@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Net.Sockets;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ComputationalCluster.Server
 {
     public interface IServerMessenger
     {
-        void SendMessage(Message message, NetworkStream stream);
-        void SendMessages(IList<Message> messages, NetworkStream stream);
+        void SendMessage(Message message, Stream stream);
+        void SendMessages(IList<Message> messages, Stream stream);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Net;
-using System.Net.Sockets;
 
 namespace ComputationalCluster.Common.Networking
 {
@@ -8,6 +8,6 @@ namespace ComputationalCluster.Common.Networking
     {
         IPEndPoint EndPoint { get; }
         void Connect(string address, int port);
-        NetworkStream GetStream();
+        Stream GetStream();
     }
 }
