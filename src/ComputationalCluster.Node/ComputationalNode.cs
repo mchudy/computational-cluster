@@ -1,5 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Objects;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ComputationalCluster.Node
         private readonly IMessenger messenger;
         private const int parallelThreads = 2;
         private uint timeout;
+        private NodeContext context;
         private ulong id;
 
         public ComputationalNode(IMessenger messenger)
@@ -54,9 +56,44 @@ namespace ComputationalCluster.Node
             while (true)
             {
                 var statusMessage = GetStatus();
-                messenger.SendMessage(statusMessage);
+                var response = messenger.SendMessage(statusMessage);
                 Logger.Debug("Sending status");
+                Task.Run(() => HandleResponse(response));
                 Thread.Sleep((int)(timeout * 1000 / 2));
+            }
+        }
+
+        private void HandleResponse(IList<Message> response)
+        {
+            Message message = response[0];
+
+            if (message is PartialProblemsMessage)
+            {
+                var partialProblemsMessage = (PartialProblemsMessage)message;
+                context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
+                context.CurrentProblemType = partialProblemsMessage.ProblemType;
+                context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
+                CreateNewSolutions();
+                //TODO
+                //Task.Run(() => ComputeSolutions());
+            }
+        }
+
+        private void ComputeSolutions()
+        {
+            return;
+        }
+
+        private void CreateNewSolutions()
+        {
+            context.CurrentSolutions = new List<Solution>();
+            foreach (var partialproblem in context.CurrentPartialProblems)
+            {
+                context.CurrentSolutions.Add(new Solution
+                {
+                    TaskId = partialproblem.TaskId,
+                    Type = SolutionType.Ongoing
+                });
             }
         }
 
