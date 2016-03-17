@@ -4,6 +4,8 @@ using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+
 
 namespace ComputationalCluster.Client
 {
@@ -11,7 +13,9 @@ namespace ComputationalCluster.Client
     {
         private readonly IMessenger messenger;
         private readonly IConfiguration configuration;
-        private ulong id;
+        private ulong solutionId;
+        private const uint waitTime = 3;
+        private byte[] finalSolutionData;
 
         public Client(IMessenger messenger, IConfiguration configuration)
         {
@@ -39,10 +43,53 @@ namespace ComputationalCluster.Client
                 if (responseMessage != null)
                 {
                     var response = responseMessage;
-                    id = response.Id;
-                    Logger.Info($"SolveRequestResponse with id {id}");
+
+                    Logger.Info($"SolveRequestResponse with id {solutionId}");
+
+                    solutionId = response.Id;
+                    Console.WriteLine($"SolveRequestResponse with id {solutionId}");
                 }
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            WaitForSolution();
+
+
+        }
+
+        private void WaitForSolution()
+        {
+            Thread.Sleep((int)(waitTime * 1000));
+
+            var message = new SolutionRequestMessage()
+            {
+                Id = solutionId
+            };
+            try
+            {
+                IList<Message> responses = messenger.SendMessage(message);
+                Console.WriteLine("Checking for solution...");
+                var responseMessage = responses[0] as SolutionMessage;
+                if (responseMessage != null)
+                {
+                    var response = responseMessage;
+                    if(response.ProblemType == "Ongoing")
+                    {
+                        Console.WriteLine("Computations still ongoing");
+                        
+                        WaitForSolution();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Final solution recieved");
+                        finalSolutionData = response.CommonData;
+                    }
+                }
+               
             }
             catch (Exception e)
             {
