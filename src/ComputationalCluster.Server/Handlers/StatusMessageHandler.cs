@@ -1,9 +1,9 @@
-﻿using System.IO;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System.IO;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -26,7 +26,7 @@ namespace ComputationalCluster.Server.Handlers
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
-                HandleNode(node, message);
+                HandleNode(node, message, connection.GetStream());
                 return;
             }
             var taskManager = context.TaskManagers.FirstOrDefault(t => t.Id == (int)message.Id);
@@ -68,9 +68,19 @@ namespace ComputationalCluster.Server.Handlers
             }
         }
 
-        private void HandleNode(ComputationalNode node, StatusMessage message)
+        private void HandleNode(ComputationalNode node, StatusMessage message, Stream stream)
         {
             node.ReceivedStatus = true;
+            var problemToSolve = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Divided);
+            if (problemToSolve != null)
+            {
+                messenger.SendMessage(new PartialProblemsMessage
+                {
+                    Id = (ulong)problemToSolve.Id,
+                    PartialProblems = problemToSolve.PartialProblems
+                }, stream);
+                problemToSolve.Status = ProblemStatus.ComputationOngoing;
+            }
         }
     }
 }

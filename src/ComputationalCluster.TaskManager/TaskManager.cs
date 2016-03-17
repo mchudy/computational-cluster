@@ -5,6 +5,7 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -76,11 +77,18 @@ namespace ComputationalCluster.TaskManager
         {
             while (true)
             {
-                Logger.Debug("Sending status");
-                var statusMessage = GetStatus();
-                var response = messenger.SendMessage(statusMessage);
-                Task.Run(() => HandleResponse(response));
-                Thread.Sleep((int)(timeout * 1000 / 2));
+                try
+                {
+                    Logger.Debug("Sending status");
+                    var statusMessage = GetStatus();
+                    var response = messenger.SendMessage(statusMessage);
+                    Task.Run(() => HandleResponse(response));
+                    Thread.Sleep((int)(timeout * 1000 / 2));
+                }
+                catch (SocketException e)
+                {
+                    Logger.Error("Server failure");
+                }
             }
         }
 
@@ -94,25 +102,55 @@ namespace ComputationalCluster.TaskManager
             else if (message is DivideProblemMessage)
             {
                 var divideMessage = (DivideProblemMessage)message;
-                var idleThread = threads.FirstOrDefault(t => t.State == StatusThreadState.Idle);
-                if (idleThread != null)
+                DivideProblems(divideMessage);
+            }
+            else if (message is SolutionMessage)
+            {
+                var solutionsMessage = (SolutionMessage)message;
+                MergeSolutions(solutionsMessage);
+            }
+        }
+
+        private void MergeSolutions(SolutionMessage solutionsMessage)
+        {
+
+
+        }
+
+        private void DivideProblems(DivideProblemMessage message)
+        {
+            var idleThread = threads.FirstOrDefault(t => t.State == StatusThreadState.Idle);
+            if (idleThread != null)
+            {
+                idleThread.State = StatusThreadState.Busy;
+                idleThread.ProblemInstanceId = message.Id;
+                idleThread.ProblemType = message.ProblemType;
+                //TODO:
+                Thread.Sleep(5000);
+                messenger.SendMessage(new PartialProblemsMessage
                 {
-                    idleThread.State = StatusThreadState.Busy;
-                    idleThread.ProblemInstanceId = divideMessage.Id;
-                    idleThread.ProblemType = divideMessage.ProblemType;
-                    //TODO:
-                    Thread.Sleep(5000);
-                    messenger.SendMessage(new PartialProblemsMessage
+                    Id = message.Id,
+                    ProblemType = message.ProblemType,
+                    PartialProblems = new[]
                     {
-                        Id = divideMessage.Id
-                    });
-                    ReleaseThread(idleThread);
-                }
-                else
-                {
-                    Logger.Error("No idle thread available");
-                    //TODO: send error message
-                }
+                        new PartialProblem
+                        {
+                            TaskId = 1,
+                            NodeID = id
+                        },
+                        new PartialProblem
+                        {
+                            TaskId = 1,
+                            NodeID = id
+                        }
+                    }
+                });
+                ReleaseThread(idleThread);
+            }
+            else
+            {
+                Logger.Error("No idle thread available");
+                //TODO: send error message
             }
         }
 

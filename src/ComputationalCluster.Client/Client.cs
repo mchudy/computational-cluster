@@ -14,7 +14,7 @@ namespace ComputationalCluster.Client
         private readonly IMessenger messenger;
         private readonly IConfiguration configuration;
         private ulong solutionId;
-        private const uint waitTime = 3;
+        private const uint waitTime = 6;
         private byte[] finalSolutionData;
 
         public Client(IMessenger messenger, IConfiguration configuration)
@@ -77,10 +77,10 @@ namespace ComputationalCluster.Client
                 if (responseMessage != null)
                 {
                     var response = responseMessage;
-                    if(response.ProblemType == "Ongoing")
+                    if (response.ProblemType == "Ongoing")
                     {
                         Console.WriteLine("Computations still ongoing");
-                        
+
                         WaitForSolution();
                     }
                     else
@@ -89,7 +89,7 @@ namespace ComputationalCluster.Client
                         finalSolutionData = response.CommonData;
                     }
                 }
-               
+
             }
             catch (Exception e)
             {

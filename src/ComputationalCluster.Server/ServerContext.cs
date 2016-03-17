@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using ComputationalCluster.Common.Objects;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -59,6 +60,7 @@ namespace ComputationalCluster.Server
         public ulong SolvingTimeout { get; set; }
         public string ProblemType { get; set; }
         public ProblemStatus Status { get; set; }
+        public PartialProblem[] PartialProblems { get; set; }
     }
 
     public enum ProblemStatus

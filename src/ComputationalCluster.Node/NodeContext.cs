@@ -1,12 +1,9 @@
 ﻿using ComputationalCluster.Common.Objects;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputationalCluster.Node
 {
+    //TODO: should keep track of all the threads
     public class NodeContext
     {
         public string CurrentProblemType { get; set; }

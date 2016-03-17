@@ -10,8 +10,6 @@ namespace ComputationalCluster.Common.Messaging
     //TODO: timeouts
     public class Messenger : IMessenger
     {
-        public const char ETB = (char)23;
-
         private readonly IMessageSerializer serializer;
         private readonly IConfiguration configuration;
         private readonly ITcpConnectionFactory connectionFactory;

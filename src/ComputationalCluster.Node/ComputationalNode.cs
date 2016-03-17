@@ -4,6 +4,7 @@ using ComputationalCluster.Common.Objects;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace ComputationalCluster.Node
         private readonly IMessenger messenger;
         private const int parallelThreads = 2;
         private uint timeout;
-        private NodeContext context;
+        private NodeContext context = new NodeContext();
         private ulong id;
 
         public ComputationalNode(IMessenger messenger)
@@ -75,13 +76,23 @@ namespace ComputationalCluster.Node
                 context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
                 CreateNewSolutions();
                 //TODO
-                //Task.Run(() => ComputeSolutions());
+                Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
             }
         }
 
-        private void ComputeSolutions()
+        private void ComputeSolutions(ulong id)
         {
-            return;
+            Thread.Sleep(5000);
+            Logger.Info("Sending solutions");
+            foreach (var solution in context.CurrentSolutions)
+            {
+                solution.Type = SolutionType.Partial;
+            }
+            messenger.SendMessage(new SolutionMessage
+            {
+                Id = id,
+                Solutions = context.CurrentSolutions.ToArray()
+            });
         }
 
         private void CreateNewSolutions()
