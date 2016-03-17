@@ -24,7 +24,8 @@ namespace ComputationalCluster.Server.Handlers
                 Id = id,
                 Data = message.Data,
                 ProblemType = message.ProblemType,
-                SolvingTimeout = message.SolvingTimeout
+                SolvingTimeout = message.SolvingTimeout,
+                Status = ProblemStatus.New
             });
             SendResponse(connection.GetStream(), id);
             System.Console.WriteLine("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);

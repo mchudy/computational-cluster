@@ -54,6 +54,17 @@ namespace ComputationalCluster.Server
         public byte[] Data { get; set; }
         public ulong SolvingTimeout { get; set; }
         public string ProblemType { get; set; }
+        public ProblemStatus Status { get; set; }
+    }
 
+    public enum ProblemStatus
+    {
+        New,
+        Dividing,
+        Divided,
+        ComputationOngoing,
+        Partial,
+        Merging,
+        Final
     }
 }
