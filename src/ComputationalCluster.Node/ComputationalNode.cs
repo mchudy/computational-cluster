@@ -17,6 +17,7 @@ namespace ComputationalCluster.Node
         private uint timeout;
         private NodeContext context = new NodeContext();
         private ulong id;
+        private readonly StatusThread[] threads = new StatusThread[parallelThreads];
 
         public ComputationalNode(IMessenger messenger)
         {
@@ -27,6 +28,8 @@ namespace ComputationalCluster.Node
 
         public void Start()
         {
+            InitializeThreads();
+
             var message = new RegisterMessage()
             {
                 Type = RegisterType.ComputationalNode,
@@ -66,18 +69,22 @@ namespace ComputationalCluster.Node
 
         private void HandleResponse(IList<Message> response)
         {
-            Message message = response[0];
+            if (response.Count == 0)
+                return;
+            
+                Message message = response[0];
 
-            if (message is PartialProblemsMessage)
-            {
-                var partialProblemsMessage = (PartialProblemsMessage)message;
-                context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
-                context.CurrentProblemType = partialProblemsMessage.ProblemType;
-                context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
-                CreateNewSolutions();
-                //TODO
-                Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
-            }
+                if (message is PartialProblemsMessage)
+                {
+                    var partialProblemsMessage = (PartialProblemsMessage)message;
+                    context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
+                    context.CurrentProblemType = partialProblemsMessage.ProblemType;
+                    context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
+                    CreateNewSolutions();
+                    //TODO
+                    Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
+                }
+            
         }
 
         private void ComputeSolutions(ulong id)
@@ -115,6 +122,17 @@ namespace ComputationalCluster.Node
                 Id = id
             };
             return statusMessage;
+        }
+
+        private void InitializeThreads()
+        {
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                threads[i] = new StatusThread
+                {
+                    State = StatusThreadState.Idle
+                };
+            }
         }
     }
 }

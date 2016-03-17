@@ -94,6 +94,9 @@ namespace ComputationalCluster.TaskManager
 
         private void HandleResponse(IList<Message> response)
         {
+            if (response.Count == 0)
+                return;
+
             Message message = response[0];
             if (message is NoOperationMessage)
             {

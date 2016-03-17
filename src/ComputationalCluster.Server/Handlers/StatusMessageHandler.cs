@@ -23,6 +23,7 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(StatusMessage message, ITcpConnection connection)
         {
+            System.Console.WriteLine("Received status message from component of id: " +message.Id);
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
