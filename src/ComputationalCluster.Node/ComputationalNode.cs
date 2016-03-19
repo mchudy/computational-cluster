@@ -12,6 +12,8 @@ namespace ComputationalCluster.Node
 {
     public class ComputationalNode
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(ComputationalNode));
+
         private readonly IMessenger messenger;
         private const int parallelThreads = 2;
         private uint timeout;
@@ -23,8 +25,6 @@ namespace ComputationalCluster.Node
         {
             this.messenger = messenger;
         }
-
-        public ILog Logger { get; set; }
 
         public void Start()
         {
@@ -45,13 +45,13 @@ namespace ComputationalCluster.Node
                     var response = responseMessage;
                     timeout = response.Timeout;
                     id = response.Id;
-                    Logger.Info($"Registered with id {id}");
+                    logger.Info($"Registered with id {id}");
                 }
                 Task.Run(() => SendStatus());
             }
             catch (Exception e)
             {
-                Logger.Error(e.Message);
+                logger.Error(e.Message);
             }
         }
 
@@ -61,7 +61,7 @@ namespace ComputationalCluster.Node
             {
                 var statusMessage = GetStatus();
                 var response = messenger.SendMessage(statusMessage);
-                Logger.Debug("Sending status");
+                logger.Debug("Sending status");
                 Task.Run(() => HandleResponse(response));
                 Thread.Sleep((int)(timeout * 1000 / 2));
             }
@@ -71,26 +71,26 @@ namespace ComputationalCluster.Node
         {
             if (response.Count == 0)
                 return;
-            
-                Message message = response[0];
 
-                if (message is PartialProblemsMessage)
-                {
-                    var partialProblemsMessage = (PartialProblemsMessage)message;
-                    context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
-                    context.CurrentProblemType = partialProblemsMessage.ProblemType;
-                    context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
-                    CreateNewSolutions();
-                    //TODO
-                    Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
-                }
-            
+            Message message = response[0];
+
+            if (message is PartialProblemsMessage)
+            {
+                var partialProblemsMessage = (PartialProblemsMessage)message;
+                context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
+                context.CurrentProblemType = partialProblemsMessage.ProblemType;
+                context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
+                CreateNewSolutions();
+                //TODO
+                Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
+            }
+
         }
 
         private void ComputeSolutions(ulong id)
         {
             Thread.Sleep(5000);
-            Logger.Info("Sending solutions");
+            logger.Info("Sending solutions");
             foreach (var solution in context.CurrentSolutions)
             {
                 solution.Type = SolutionType.Partial;

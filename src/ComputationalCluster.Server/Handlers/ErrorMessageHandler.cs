@@ -7,11 +7,11 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class ErrorMessageHandler : IMessageHandler<ErrorMessage>
     {
-        public ILog Logger { get; set; }
+        private static readonly ILog logger = LogManager.GetLogger(typeof(ErrorMessageHandler));
 
         public void HandleMessage(ErrorMessage message, ITcpConnection connection)
         {
-            Logger.Error("Received error message");
+            logger.Error("Received error message");
         }
     }
 }

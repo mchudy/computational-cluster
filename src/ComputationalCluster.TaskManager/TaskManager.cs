@@ -13,6 +13,8 @@ namespace ComputationalCluster.TaskManager
 {
     public class TaskManager
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(TaskManager));
+
         private readonly object lockObject = new object();
         private const int parallelThreads = 8;
 
@@ -27,8 +29,6 @@ namespace ComputationalCluster.TaskManager
         {
             this.messenger = messenger;
         }
-
-        public ILog Logger { get; set; }
 
         public void Start()
         {
@@ -64,7 +64,7 @@ namespace ComputationalCluster.TaskManager
                     var response = responseMessage;
                     timeout = response.Timeout;
                     id = response.Id;
-                    Logger.Info($"Registered with id {id}");
+                    logger.Info($"Registered with id {id}");
                 }
                 Task.Run(() => SendStatus());
             }
@@ -80,7 +80,7 @@ namespace ComputationalCluster.TaskManager
             {
                 try
                 {
-                    Logger.Debug("Sending status");
+                    logger.Debug("Sending status");
                     var statusMessage = GetStatus();
                     var response = messenger.SendMessage(statusMessage);
                     Task.Run(() => HandleResponse(response));
@@ -88,7 +88,7 @@ namespace ComputationalCluster.TaskManager
                 }
                 catch (SocketException)
                 {
-                    Logger.Error("Server failure");
+                    logger.Error("Server failure");
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace ComputationalCluster.TaskManager
             }
             else
             {
-                Logger.Error("No idle thread available");
+                logger.Error("No idle thread available");
                 //TODO: send error message
             }
         }
@@ -191,7 +191,7 @@ namespace ComputationalCluster.TaskManager
             }
             else
             {
-                Logger.Error("No idle thread available");
+                logger.Error("No idle thread available");
                 //TODO: send error message
             }
         }

@@ -11,6 +11,8 @@ namespace ComputationalCluster.Client
 {
     class Client
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Client));
+
         private readonly IMessenger messenger;
         private readonly IConfiguration configuration;
         private ulong solutionId;
@@ -22,8 +24,6 @@ namespace ComputationalCluster.Client
             this.configuration = configuration;
             this.messenger = messenger;
         }
-
-        public ILog Logger { get; set; }
 
         public void Start()
         {
@@ -44,7 +44,7 @@ namespace ComputationalCluster.Client
                 {
                     var response = responseMessage;
 
-                    Logger.Info($"SolveRequestResponse with id {solutionId}");
+                    logger.Info($"SolveRequestResponse with id {solutionId}");
 
                     solutionId = response.Id;
                     Console.WriteLine($"SolveRequestResponse with id {solutionId}");

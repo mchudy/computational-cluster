@@ -13,6 +13,8 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class RegisterMessageHandler : IMessageHandler<RegisterMessage>
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(RegisterMessageHandler));
+
         private readonly IServerConfiguration configuration;
         private readonly IServerMessenger messenger;
         private readonly ServerContext context;
@@ -25,12 +27,10 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public ILog Logger { get; set; }
-
         public void HandleMessage(RegisterMessage message, ITcpConnection connection)
         {
             int id = context.GetNextComponentId();
-            Logger.Info("Received register message");
+            logger.Info("Received register message");
             if (message.Type == RegisterType.ComputationalNode)
             {
                 Console.WriteLine($"New node registered - id {id}");
@@ -45,7 +45,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else if (message.Type == RegisterType.TaskManager)
             {
-                Logger.Info($"New task manager registered - id {id}");
+                logger.Info($"New task manager registered - id {id}");
                 var taskManager = new TaskManager
                 {
                     Id = id,
@@ -57,7 +57,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else if (message.Type == RegisterType.CommunicationServer)
             {
-                Logger.Info($"New backup server registered - id {id}");
+                logger.Info($"New backup server registered - id {id}");
                 context.BackupServers.Add(new BackupServer
                 {
                     Id = id,
@@ -86,7 +86,7 @@ namespace ComputationalCluster.Server.Handlers
                 {
                     //TODO: proper deregistration handling
                     context.Nodes.Remove(node);
-                    Logger.Error($"FAILURE - node with id {node.Id}");
+                    logger.Error($"FAILURE - node with id {node.Id}");
                     break;
                 }
                 node.ReceivedStatus = false;
@@ -101,7 +101,7 @@ namespace ComputationalCluster.Server.Handlers
                 if (!manager.ReceivedStatus)
                 {
                     context.TaskManagers.Remove(manager);
-                    Logger.Error($"FAILURE - task manager with id {manager.Id}");
+                    logger.Error($"FAILURE - task manager with id {manager.Id}");
                     break;
                 }
                 manager.ReceivedStatus = false;

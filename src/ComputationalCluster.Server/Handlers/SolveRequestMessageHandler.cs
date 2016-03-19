@@ -8,6 +8,7 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class SolveRequestMessageHandler : IMessageHandler<SolveRequestMessage>
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(SolveRequestMessageHandler));
         private readonly IServerMessenger messenger;
         private readonly ServerContext context;
 
@@ -16,8 +17,6 @@ namespace ComputationalCluster.Server.Handlers
             this.messenger = messenger;
             this.context = context;
         }
-
-        public ILog Logger { get; set; }
 
         public void HandleMessage(SolveRequestMessage message, ITcpConnection connection)
         {

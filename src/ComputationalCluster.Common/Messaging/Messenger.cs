@@ -10,6 +10,8 @@ namespace ComputationalCluster.Common.Messaging
     //TODO: timeouts
     public class Messenger : IMessenger
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Messenger));
+
         private readonly IMessageSerializer serializer;
         private readonly IConfiguration configuration;
         private readonly ITcpConnectionFactory connectionFactory;
@@ -21,7 +23,6 @@ namespace ComputationalCluster.Common.Messaging
             this.configuration = configuration;
             this.connectionFactory = connectionFactory;
         }
-        public ILog Logger { get; set; }
 
         public void SendMessageAndClose(Message message)
         {
@@ -64,7 +65,7 @@ namespace ComputationalCluster.Common.Messaging
                 {
                     continue;
                 }
-                Logger.Debug(messageXml);
+                logger.Debug(messageXml);
                 response.Add(serializer.Deserialize(messageXml));
             }
             return response;

@@ -50,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\CommonModule.cs" />
-    <Compile Include="Infrastructure\LoggingModule.cs" />
     <Compile Include="Networking\ITcpConnection.cs" />
     <Compile Include="Messaging\AutofacMessageDispatcher.cs" />
     <Compile Include="Configuration.cs" />

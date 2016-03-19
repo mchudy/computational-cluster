@@ -10,6 +10,8 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class StatusMessageHandler : IMessageHandler<StatusMessage>
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(StatusMessageHandler));
+
         private readonly ServerContext context;
         private readonly IServerMessenger messenger;
 
@@ -19,11 +21,9 @@ namespace ComputationalCluster.Server.Handlers
             this.messenger = messenger;
         }
 
-        public ILog Logger { get; set; }
-
         public void HandleMessage(StatusMessage message, ITcpConnection connection)
         {
-            System.Console.WriteLine("Received status message from component of id: " +message.Id);
+            System.Console.WriteLine("Received status message from component of id: " + message.Id);
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
@@ -36,7 +36,7 @@ namespace ComputationalCluster.Server.Handlers
                 HandleTaskManager(taskManager, message, connection.GetStream());
                 return;
             }
-            Logger.Error("Status message from not registered component");
+            logger.Error("Status message from not registered component");
         }
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, Stream stream)

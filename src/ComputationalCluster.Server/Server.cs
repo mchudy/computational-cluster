@@ -14,6 +14,8 @@ namespace ComputationalCluster.Server
 {
     public class Server
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Server));
+
         private readonly IMessageDispatcher messageDispatcher;
         private readonly IMessageSerializer serializer;
         private readonly IServerConfiguration configuration;
@@ -26,13 +28,11 @@ namespace ComputationalCluster.Server
             this.configuration = configuration;
         }
 
-        public ILog Logger { get; set; }
-
         public void Start()
         {
             TcpListener server = new TcpListener(IPAddress.Any, configuration.ListeningPort);
             server.Start();
-            Logger.Info($"Started listening on {server.LocalEndpoint}");
+            logger.Info($"Started listening on {server.LocalEndpoint}");
             while (true)
             {
                 AcceptClient(server);
@@ -42,7 +42,7 @@ namespace ComputationalCluster.Server
         private void AcceptClient(TcpListener server)
         {
             var client = server.AcceptTcpClient();
-            Logger.Info($"New connection {client.Client.RemoteEndPoint}");
+            logger.Info($"New connection {client.Client.RemoteEndPoint}");
             try
             {
                 using (var stream = client.GetStream())
@@ -51,7 +51,7 @@ namespace ComputationalCluster.Server
                     //TODO: not sure if message must end with ETB... probably should wait some timeout in case it doesn't
                     string messageString = reader.ReadToChar(Constants.ETB);
 
-                    Logger.Debug($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
+                    logger.Debug($"\nMessage from {client.Client.RemoteEndPoint}\n{messageString}\n");
                     string[] messagesXml = messageString.Split(Constants.ETB);
                     foreach (var xml in messagesXml)
                     {
@@ -63,7 +63,7 @@ namespace ComputationalCluster.Server
             }
             catch (IOException)
             {
-                Logger.Error("Connection lost");
+                logger.Error("Connection lost");
             }
             finally
             {
