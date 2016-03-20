@@ -75,6 +75,10 @@
       <Project>{25f97de5-f30f-44fb-9f7b-c4594103239c}</Project>
       <Name>ComputationalCluster.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ComputationalCluster.Common.Tests\ComputationalCluster.Common.Tests.csproj">
+      <Project>{87CF9A39-8ACE-47C5-ACFB-68FE89BEB7AF}</Project>
+      <Name>ComputationalCluster.Common.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

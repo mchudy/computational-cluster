@@ -9,7 +9,7 @@ namespace ComputationalCluster.Server.Handlers
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(ErrorMessageHandler));
 
-        public void HandleMessage(ErrorMessage message, ITcpConnection connection)
+        public void HandleMessage(ErrorMessage message, ITcpClient client)
         {
             logger.Error("Received error message");
         }

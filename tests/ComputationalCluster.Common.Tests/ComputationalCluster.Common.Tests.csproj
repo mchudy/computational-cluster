@@ -38,6 +38,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,9 +64,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="MessageSerializerTests.cs" />
+    <Compile Include="MessageStreamReaderTests.cs" />
+    <Compile Include="MessageStreamWriterTests.cs" />
     <Compile Include="MessengerTests.cs" />
+    <Compile Include="Mocks\NetworkStreamMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Mocks\TextMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

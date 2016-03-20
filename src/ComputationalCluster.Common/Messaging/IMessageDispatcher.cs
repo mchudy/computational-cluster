@@ -5,7 +5,7 @@ namespace ComputationalCluster.Common.Messaging
 {
     public interface IMessageDispatcher
     {
-        void Dispatch<T>(T message, ITcpConnection connection)
+        void Dispatch<T>(T message, ITcpClient client)
             where T : Message;
     }
 }

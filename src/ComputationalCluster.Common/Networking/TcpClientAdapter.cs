@@ -1,15 +1,14 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
 namespace ComputationalCluster.Common.Networking
 {
-    public class TcpConnection : ITcpConnection
+    public class TcpClientAdapter : ITcpClient
     {
         private readonly TcpClient client;
 
-        public TcpConnection(TcpClient client)
+        public TcpClientAdapter(TcpClient client)
         {
             this.client = client;
         }
@@ -21,14 +20,13 @@ namespace ComputationalCluster.Common.Networking
             client.Connect(address, port);
         }
 
-        public Stream GetStream()
+        public INetworkStream GetStream()
         {
-            return client.GetStream();
+            return new NetworkStreamAdapter(client);
         }
 
         public void Dispose()
         {
-            //client.GetStream().Close();
             client.Close();
             ((IDisposable)client).Dispose();
         }

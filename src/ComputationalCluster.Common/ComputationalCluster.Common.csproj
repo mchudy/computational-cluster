@@ -49,17 +49,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\BadConfigException.cs" />
     <Compile Include="Infrastructure\CommonModule.cs" />
-    <Compile Include="Networking\ITcpConnection.cs" />
+    <Compile Include="Networking\Factories\IMessageStreamFactory.cs" />
+    <Compile Include="Networking\Factories\MessageStreamFactory.cs" />
+    <Compile Include="Networking\Interfaces\IMessageStreamWriter.cs" />
+    <Compile Include="Networking\Interfaces\IMessageStreamReader.cs" />
+    <Compile Include="Networking\Interfaces\INetworkStream.cs" />
+    <Compile Include="Networking\Interfaces\ITcpClient.cs" />
     <Compile Include="Messaging\AutofacMessageDispatcher.cs" />
-    <Compile Include="Configuration.cs" />
+    <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="IConfiguration.cs" />
+    <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Messaging\IMessageDispatcher.cs" />
     <Compile Include="Messaging\IMessageHandler.cs" />
     <Compile Include="Messaging\IMessenger.cs" />
     <Compile Include="Messaging\Messenger.cs" />
-    <Compile Include="Networking\ITcpConnectionFactory.cs" />
+    <Compile Include="Networking\Factories\ITcpConnectionFactory.cs" />
+    <Compile Include="Networking\Interfaces\ITcpListener.cs" />
+    <Compile Include="Networking\MessageStreamReader.cs" />
+    <Compile Include="Networking\MessageStreamWriter.cs" />
+    <Compile Include="Networking\NetworkStreamAdapter.cs" />
+    <Compile Include="Networking\TcpListenerAdapter.cs" />
+    <Compile Include="Exceptions\CannotReadMessageException.cs" />
     <Compile Include="Serialization\IMessageSerializer.cs" />
     <Compile Include="Serialization\MessageSerializer.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />
@@ -79,13 +91,14 @@
     <Compile Include="Messages\RegisterMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.cs" />
     <Compile Include="Messages\SolutionMessage.cs" />
-    <Compile Include="Networking\TcpConnection.cs" />
-    <Compile Include="Networking\TcpConnectionFactory.cs" />
+    <Compile Include="Networking\TcpClientAdapter.cs" />
+    <Compile Include="Networking\Factories\TcpConnectionFactory.cs" />
     <Compile Include="Utils\Utf8StringWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

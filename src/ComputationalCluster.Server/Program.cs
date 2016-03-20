@@ -10,7 +10,6 @@ namespace ComputationalCluster.Server
         static void Main(string[] args)
         {
             var container = BuildContainer();
-
             var server = container.Resolve<Server>();
             server.Start();
         }
@@ -34,6 +33,9 @@ namespace ComputationalCluster.Server
             builder.RegisterType<Server>().AsSelf();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()
+                   .SingleInstance();
+            builder.RegisterType<StatusChecker>()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
 
             return builder.Build();

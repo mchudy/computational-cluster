@@ -1,88 +1,44 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
-using ComputationalCluster.Common.Serialization;
-using log4net;
+using ComputationalCluster.Common.Networking.Factories;
 using System.Collections.Generic;
-using System.IO;
 
 namespace ComputationalCluster.Common.Messaging
 {
     //TODO: timeouts
     public class Messenger : IMessenger
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(Messenger));
-
-        private readonly IMessageSerializer serializer;
         private readonly IConfiguration configuration;
-        private readonly ITcpConnectionFactory connectionFactory;
+        private readonly ITcpClientFactory clientFactory;
+        private readonly IMessageStreamFactory streamFactory;
 
-        public Messenger(IMessageSerializer serializer, IConfiguration configuration,
-            ITcpConnectionFactory connectionFactory)
+        public Messenger(IConfiguration configuration,
+            ITcpClientFactory clientFactory, IMessageStreamFactory streamFactory)
         {
-            this.serializer = serializer;
             this.configuration = configuration;
-            this.connectionFactory = connectionFactory;
-        }
-
-        public void SendMessageAndClose(Message message)
-        {
-            using (ITcpConnection client = connectionFactory.Create())
-            {
-                using (var networkStream = OpenConnection(client))
-                using (var writer = new StreamWriter(networkStream))
-                {
-                    WriteMessage(message, writer);
-                }
-            }
-            //Console.WriteLine("Closed connection to the server");
+            this.clientFactory = clientFactory;
+            this.streamFactory = streamFactory;
         }
 
         public IList<Message> SendMessage(Message message)
         {
             IList<Message> response;
-            using (ITcpConnection client = connectionFactory.Create())
+            using (ITcpClient client = clientFactory.Create())
             {
-                using (var networkStream = OpenConnection(client))
-                using (var reader = new StreamReader(networkStream))
-                using (var writer = new StreamWriter(networkStream))
+                using (var networkStream = OpenStream(client))
                 {
-                    WriteMessage(message, writer);
-                    response = ReadMessages(reader);
+                    var writer = streamFactory.CreateWriter(networkStream);
+                    writer.WriteMessage(message);
+                    var reader = streamFactory.CreateReader(networkStream);
+                    response = reader.ReadToEnd();
                 }
-            }
-            //Console.WriteLine("Closed connection to the server");
-            return response;
-        }
-
-        private IList<Message> ReadMessages(StreamReader reader)
-        {
-            string responseString = reader.ReadToEnd();
-            string[] messages = responseString.Split(Constants.ETB);
-            var response = new List<Message>();
-            foreach (var messageXml in messages)
-            {
-                if (string.IsNullOrEmpty(messageXml))
-                {
-                    continue;
-                }
-                logger.Debug(messageXml);
-                response.Add(serializer.Deserialize(messageXml));
             }
             return response;
         }
 
-        private void WriteMessage(Message message, StreamWriter writer)
-        {
-            string messageString = serializer.Serialize(message);
-            writer.Write(messageString);
-            writer.Write(Constants.ETB);
-            writer.Flush();
-        }
-
-        private Stream OpenConnection(ITcpConnection client)
+        private INetworkStream OpenStream(ITcpClient client)
         {
             client.Connect(configuration.ServerAddress, configuration.ServerPort);
-            //Console.WriteLine("Connected to the server");
             return client.GetStream();
         }
     }

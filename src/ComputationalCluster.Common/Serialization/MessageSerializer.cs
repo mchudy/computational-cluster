@@ -1,4 +1,5 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Exceptions;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Utils;
 using System;
 using System.IO;
@@ -49,15 +50,20 @@ namespace ComputationalCluster.Common.Serialization
             {
                 throw new ArgumentException();
             }
-            var rootName = GetXmlRoot(xml);
-            var rootType = GetRootType(rootName);
-            var serializer = new XmlSerializer(rootType);
-            Message result;
-            using (var stream = new StringReader(xml))
+            try
             {
-                result = (Message)serializer.Deserialize(stream);
+                var rootName = GetXmlRoot(xml);
+                var rootType = GetRootType(rootName);
+                var serializer = new XmlSerializer(rootType);
+                using (var stream = new StringReader(xml))
+                {
+                    return (Message)serializer.Deserialize(stream);
+                }
             }
-            return result;
+            catch (XmlException)
+            {
+                throw new CannotReadMessageException();
+            }
         }
 
         private static Type GetRootType(string rootName)

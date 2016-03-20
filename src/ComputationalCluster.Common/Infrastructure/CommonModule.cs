@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using ComputationalCluster.Common.Messaging;
-using ComputationalCluster.Common.Networking;
+using ComputationalCluster.Common.Networking.Factories;
 using ComputationalCluster.Common.Serialization;
 
 namespace ComputationalCluster.Common.Infrastructure
@@ -10,15 +10,17 @@ namespace ComputationalCluster.Common.Infrastructure
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<Configuration>()
-                   .As<IConfiguration>()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterType<MessageSerializer>()
-                   .As<IMessageSerializer>();
+                   .AsImplementedInterfaces();
             builder.RegisterType<Messenger>()
-                   .As<IMessenger>();
-            builder.RegisterType<TcpConnectionFactory>()
-                   .As<ITcpConnectionFactory>()
+                   .AsImplementedInterfaces();
+            builder.RegisterType<TcpClientFactory>()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
+            builder.RegisterType<MessageStreamFactory>()
+                   .AsImplementedInterfaces();
         }
     }
 }

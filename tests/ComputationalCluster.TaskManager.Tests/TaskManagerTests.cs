@@ -1,22 +1,21 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using Autofac;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
-using log4net;
 using Moq;
 using System.Collections.Generic;
 using Xunit;
 
-namespace ComputationalCluster.DVRPTaskSolver.Tests
+namespace ComputationalCluster.TaskManager.Tests
 {
     public class TaskManagerTests
     {
         [Fact]
         public void TaskManager_ShouldSendRegisterMessageOnStart()
         {
-            var logger = new Mock<ILog>();
             var messenger = new Mock<IMessenger>();
             messenger.Setup(m => m.SendMessage(It.IsAny<Message>()))
                 .Returns(new List<Message> { new RegisterResponseMessage() });
-            var node = new TaskManager.TaskManager(messenger.Object) { Logger = logger.Object };
+            var node = new TaskManager(messenger.Object, new TaskManagerContext(), new Mock<IComponentContext>().Object);
 
             node.Start();
 

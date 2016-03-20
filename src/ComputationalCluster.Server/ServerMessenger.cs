@@ -1,8 +1,7 @@
-﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Serialization;
 using System.Collections.Generic;
-using System.IO;
 
 namespace ComputationalCluster.Server
 {
@@ -15,29 +14,16 @@ namespace ComputationalCluster.Server
             this.serializer = serializer;
         }
 
-        public void SendMessages(IList<Message> messages, Stream stream)
+        public void SendMessage(Message message, INetworkStream stream)
         {
-            using (var writer = new StreamWriter(stream))
-            {
-                foreach (var message in messages)
-                {
-                    string xml = serializer.Serialize(message);
-                    writer.Write(xml);
-                    writer.Write(Constants.ETB);
-                }
-                writer.Flush();
-            }
+            var writer = new MessageStreamWriter(stream, serializer);
+            writer.WriteMessage(message);
         }
 
-        public void SendMessage(Message message, Stream stream)
+        public void SendMessages(IList<Message> messages, INetworkStream stream)
         {
-            using (var writer = new StreamWriter(stream))
-            {
-                string xml = serializer.Serialize(message);
-                writer.Write(xml);
-                writer.Write(Constants.ETB);
-                writer.Flush();
-            }
+            var writer = new MessageStreamWriter(stream, serializer);
+            writer.WriteMessages(messages);
         }
     }
 }

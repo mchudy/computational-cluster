@@ -1,11 +1,15 @@
 ﻿using Autofac;
 using Autofac.Core;
 using ComputationalCluster.Common;
+using log4net;
 using System;
+
 namespace ComputationalCluster.Client
 {
     class Program
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
@@ -24,7 +28,7 @@ namespace ComputationalCluster.Client
             }
             catch (DependencyResolutionException e)
             {
-                Console.Error.WriteLine(e.InnerException.Message);
+                logger.Error(e.InnerException.Message);
             }
             Console.ReadLine();
         }

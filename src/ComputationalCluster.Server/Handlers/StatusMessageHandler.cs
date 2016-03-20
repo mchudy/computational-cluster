@@ -3,7 +3,6 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
-using System.IO;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -21,25 +20,25 @@ namespace ComputationalCluster.Server.Handlers
             this.messenger = messenger;
         }
 
-        public void HandleMessage(StatusMessage message, ITcpConnection connection)
+        public void HandleMessage(StatusMessage message, ITcpClient client)
         {
-            System.Console.WriteLine("Received status message from component of id: " + message.Id);
+            logger.Debug("Received status message from component of id: " + message.Id);
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
-                HandleNode(node, message, connection.GetStream());
+                HandleNode(node, message, client.GetStream());
                 return;
             }
             var taskManager = context.TaskManagers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (taskManager != null)
             {
-                HandleTaskManager(taskManager, message, connection.GetStream());
+                HandleTaskManager(taskManager, message, client.GetStream());
                 return;
             }
             logger.Error("Status message from not registered component");
         }
 
-        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, Stream stream)
+        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, INetworkStream stream)
         {
             taskManager.ReceivedStatus = true;
             if (message.Threads.Any(t => t.State == StatusThreadState.Idle))
@@ -60,7 +59,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else
             {
-                //TODO: move to messenger?
+                //TODO: should be send whenever new backup has been registered/deregistered
                 messenger.SendMessage(new NoOperationMessage
                 {
                     BackupCommunicationServers = context.BackupServers.Select(
@@ -69,7 +68,7 @@ namespace ComputationalCluster.Server.Handlers
             }
         }
 
-        private void HandleNode(ComputationalNode node, StatusMessage message, Stream stream)
+        private void HandleNode(ComputationalNode node, StatusMessage message, INetworkStream stream)
         {
             node.ReceivedStatus = true;
             var problemToSolve = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Divided);
