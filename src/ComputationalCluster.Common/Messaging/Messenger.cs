@@ -1,6 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
-using ComputationalCluster.Common.Serialization;
+using ComputationalCluster.Common.Networking.Factories;
 using System.Collections.Generic;
 
 namespace ComputationalCluster.Common.Messaging
@@ -8,16 +8,16 @@ namespace ComputationalCluster.Common.Messaging
     //TODO: timeouts
     public class Messenger : IMessenger
     {
-        private readonly IMessageSerializer serializer;
         private readonly IConfiguration configuration;
         private readonly ITcpClientFactory clientFactory;
+        private readonly IMessageStreamFactory streamFactory;
 
-        public Messenger(IMessageSerializer serializer, IConfiguration configuration,
-            ITcpClientFactory clientFactory)
+        public Messenger(IConfiguration configuration,
+            ITcpClientFactory clientFactory, IMessageStreamFactory streamFactory)
         {
-            this.serializer = serializer;
             this.configuration = configuration;
             this.clientFactory = clientFactory;
+            this.streamFactory = streamFactory;
         }
 
         public IList<Message> SendMessage(Message message)
@@ -27,9 +27,9 @@ namespace ComputationalCluster.Common.Messaging
             {
                 using (var networkStream = OpenStream(client))
                 {
-                    var writer = new MessageStreamWriter(networkStream, serializer);
+                    var writer = streamFactory.CreateWriter(networkStream);
                     writer.WriteMessage(message);
-                    var reader = new MessageStreamReader(networkStream, serializer);
+                    var reader = streamFactory.CreateReader(networkStream);
                     response = reader.ReadToEnd();
                 }
             }

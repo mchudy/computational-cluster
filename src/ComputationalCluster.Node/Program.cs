@@ -18,6 +18,9 @@ namespace ComputationalCluster.Node
             builder.RegisterType<ComputationalNode>()
                    .AsSelf()
                    .SingleInstance();
+            builder.RegisterType<NodeContext>()
+                   .AsSelf()
+                   .SingleInstance();
 
             var container = builder.Build();
 

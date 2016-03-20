@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\ErrorMessageHandler.cs" />
+    <Compile Include="IStatusChecker.cs" />
     <Compile Include="ServerMessenger.cs" />
     <Compile Include="IServerMessenger.cs" />
     <Compile Include="Handlers\PartialProblemMessageHandler.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="Configuration\ServerConfiguration.cs" />
     <Compile Include="ServerContext.cs" />
+    <Compile Include="StatusChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

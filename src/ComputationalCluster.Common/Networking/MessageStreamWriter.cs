@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ComputationalCluster.Common.Networking
 {
-    public class MessageStreamWriter
+    public class MessageStreamWriter : IMessageStreamWriter
     {
         private readonly INetworkStream stream;
         private readonly IMessageSerializer serializer;

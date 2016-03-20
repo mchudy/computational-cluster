@@ -51,6 +51,10 @@
   <ItemGroup>
     <Compile Include="Exceptions\BadConfigException.cs" />
     <Compile Include="Infrastructure\CommonModule.cs" />
+    <Compile Include="Networking\Factories\IMessageStreamFactory.cs" />
+    <Compile Include="Networking\Factories\MessageStreamFactory.cs" />
+    <Compile Include="Networking\Interfaces\IMessageStreamWriter.cs" />
+    <Compile Include="Networking\Interfaces\IMessageStreamReader.cs" />
     <Compile Include="Networking\Interfaces\INetworkStream.cs" />
     <Compile Include="Networking\Interfaces\ITcpClient.cs" />
     <Compile Include="Messaging\AutofacMessageDispatcher.cs" />

@@ -1,7 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
-using ComputationalCluster.Common.Serialization;
+using ComputationalCluster.Common.Networking.Factories;
 using Moq;
 using Xunit;
 
@@ -17,13 +17,15 @@ namespace ComputationalCluster.Common.Tests
             configuration.Setup(c => c.ServerAddress).Returns("address");
             configuration.Setup(c => c.ServerPort).Returns(1000);
 
-            var serializerMock = new Mock<IMessageSerializer>();
+            var factoryMock = new Mock<IMessageStreamFactory>();
+            factoryMock.Setup(f => f.CreateReader(memoryStream)).Returns(new Mock<IMessageStreamReader>().Object);
+            factoryMock.Setup(f => f.CreateWriter(memoryStream)).Returns(new Mock<IMessageStreamWriter>().Object);
             var tcpConnectionFactoryMock = new Mock<ITcpClientFactory>();
             var tcpConnectionMock = new Mock<ITcpClient>();
             tcpConnectionMock.Setup(t => t.GetStream()).Returns(memoryStream);
             tcpConnectionFactoryMock.Setup(f => f.Create()).Returns(tcpConnectionMock.Object);
 
-            var messenger = new Messenger(serializerMock.Object, configuration.Object, tcpConnectionFactoryMock.Object);
+            var messenger = new Messenger(configuration.Object, tcpConnectionFactoryMock.Object, factoryMock.Object);
             messenger.SendMessage(new RegisterMessage());
 
             tcpConnectionMock.Verify(t => t.Connect("address", 1000), Times.Once());

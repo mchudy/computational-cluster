@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ComputationalCluster.Common.Networking
 {
-    public class MessageStreamReader
+    public class MessageStreamReader : IMessageStreamReader
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(MessageStreamReader));
 

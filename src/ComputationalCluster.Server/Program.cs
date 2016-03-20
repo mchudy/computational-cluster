@@ -2,7 +2,6 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
-using ComputationalCluster.Server.Handlers;
 
 namespace ComputationalCluster.Server
 {
@@ -11,7 +10,6 @@ namespace ComputationalCluster.Server
         static void Main(string[] args)
         {
             var container = BuildContainer();
-
             var server = container.Resolve<Server>();
             server.Start();
         }
@@ -35,6 +33,9 @@ namespace ComputationalCluster.Server
             builder.RegisterType<Server>().AsSelf();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()
+                   .SingleInstance();
+            builder.RegisterType<StatusChecker>()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
 
             return builder.Build();

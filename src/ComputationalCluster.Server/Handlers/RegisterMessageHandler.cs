@@ -4,8 +4,6 @@ using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -15,51 +13,36 @@ namespace ComputationalCluster.Server.Handlers
 
         private readonly IServerMessenger messenger;
         private readonly ServerContext context;
+        private readonly IStatusChecker statusChecker;
 
-        public RegisterMessageHandler(IServerMessenger messenger, ServerContext context)
+        public RegisterMessageHandler(IServerMessenger messenger, ServerContext context, IStatusChecker statusChecker)
         {
             this.messenger = messenger;
             this.context = context;
+            this.statusChecker = statusChecker;
         }
 
         public void HandleMessage(RegisterMessage message, ITcpClient client)
         {
             int id = context.GetNextComponentId();
             logger.Info("Received register message");
-            if (message.Type == RegisterType.ComputationalNode)
+            switch (message.Type)
             {
-                logger.Info($"New node registered - id {id}");
-                var node = new ComputationalNode
-                {
-                    Id = id,
-                    SolvableProblems = message.SolvableProblems,
-                    ThreadsCount = message.ParallelThreads
-                };
-                context.Nodes.Add(node);
-                Task.Run(() => CheckNodeTimeout(node));
+                case RegisterType.ComputationalNode:
+                    HandleNode(message, id);
+                    break;
+                case RegisterType.TaskManager:
+                    HandleTaskManager(message, id);
+                    break;
+                case RegisterType.CommunicationServer:
+                    HandleBackupServer(client, id);
+                    break;
             }
-            else if (message.Type == RegisterType.TaskManager)
-            {
-                logger.Info($"New task manager registered - id {id}");
-                var taskManager = new TaskManager
-                {
-                    Id = id,
-                    SolvableProblems = message.SolvableProblems,
-                    ThreadsCount = message.ParallelThreads
-                };
-                context.TaskManagers.Add(taskManager);
-                Task.Run(() => CheckTimeManagerTimeout(taskManager));
-            }
-            else if (message.Type == RegisterType.CommunicationServer)
-            {
-                logger.Info($"New backup server registered - id {id}");
-                context.BackupServers.Add(new BackupServer
-                {
-                    Id = id,
-                    Address = client.EndPoint.Address.ToString(),
-                    Port = (ushort)client.EndPoint.Port
-                });
-            }
+            SendResponse(client, id);
+        }
+
+        private void SendResponse(ITcpClient client, int id)
+        {
             var responseMessage = new RegisterResponseMessage
             {
                 Id = (ulong)id,
@@ -69,38 +52,41 @@ namespace ComputationalCluster.Server.Handlers
             messenger.SendMessage(responseMessage, client.GetStream());
         }
 
-
-        //TODO: class for handling timeouts
-        private void CheckNodeTimeout(ComputationalNode node)
+        private void HandleBackupServer(ITcpClient client, int id)
         {
-            while (true)
+            logger.Info($"New backup server registered - id {id}");
+            context.BackupServers.Add(new BackupServer
             {
-                Thread.Sleep((int)(context.Configuration.Timeout * 1000));
-                //TODO: ensure atomicity
-                if (!node.ReceivedStatus)
-                {
-                    //TODO: proper deregistration handling
-                    context.Nodes.Remove(node);
-                    logger.Error($"FAILURE - node with id {node.Id}");
-                    break;
-                }
-                node.ReceivedStatus = false;
-            }
+                Id = id,
+                Address = client.EndPoint.Address.ToString(),
+                Port = (ushort)client.EndPoint.Port
+            });
         }
 
-        private void CheckTimeManagerTimeout(TaskManager manager)
+        private void HandleTaskManager(RegisterMessage message, int id)
         {
-            while (true)
+            logger.Info($"New task manager registered - id {id}");
+            var taskManager = new TaskManager
             {
-                Thread.Sleep((int)(context.Configuration.Timeout * 1000));
-                if (!manager.ReceivedStatus)
-                {
-                    context.TaskManagers.Remove(manager);
-                    logger.Error($"FAILURE - task manager with id {manager.Id}");
-                    break;
-                }
-                manager.ReceivedStatus = false;
-            }
+                Id = id,
+                SolvableProblems = message.SolvableProblems,
+                ThreadsCount = message.ParallelThreads
+            };
+            context.TaskManagers.Add(taskManager);
+            statusChecker.Add(taskManager);
+        }
+
+        private void HandleNode(RegisterMessage message, int id)
+        {
+            logger.Info($"New node registered - id {id}");
+            var node = new ComputationalNode
+            {
+                Id = id,
+                SolvableProblems = message.SolvableProblems,
+                ThreadsCount = message.ParallelThreads
+            };
+            context.Nodes.Add(node);
+            statusChecker.Add(node);
         }
     }
 }

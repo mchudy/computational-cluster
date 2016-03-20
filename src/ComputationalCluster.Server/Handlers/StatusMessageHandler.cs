@@ -3,7 +3,6 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
-using System.IO;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -23,7 +22,7 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(StatusMessage message, ITcpClient client)
         {
-            System.Console.WriteLine("Received status message from component of id: " + message.Id);
+            logger.Debug("Received status message from component of id: " + message.Id);
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
@@ -60,7 +59,7 @@ namespace ComputationalCluster.Server.Handlers
             }
             else
             {
-                //TODO: move to messenger?
+                //TODO: should be send whenever new backup has been registered/deregistered
                 messenger.SendMessage(new NoOperationMessage
                 {
                     BackupCommunicationServers = context.BackupServers.Select(

@@ -14,6 +14,9 @@ namespace ComputationalCluster.TaskManager
             builder.RegisterType<TaskManager>()
                 .AsSelf()
                 .SingleInstance();
+            builder.RegisterType<TaskManagerContext>().AsSelf().SingleInstance();
+            builder.RegisterAssemblyTypes(typeof(Program).Assembly)
+                   .AsClosedTypesOf(typeof(IResponseHandler<>));
 
             var container = builder.Build();
 

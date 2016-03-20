@@ -17,13 +17,14 @@ namespace ComputationalCluster.Node
         private readonly IMessenger messenger;
         private const int parallelThreads = 2;
         private uint timeout;
-        private NodeContext context = new NodeContext();
+        private readonly NodeContext context;
         private ulong id;
         private readonly StatusThread[] threads = new StatusThread[parallelThreads];
 
-        public ComputationalNode(IMessenger messenger)
+        public ComputationalNode(IMessenger messenger, NodeContext context)
         {
             this.messenger = messenger;
+            this.context = context;
         }
 
         public void Start()
