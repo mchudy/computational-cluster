@@ -70,7 +70,7 @@ namespace ComputationalCluster.TaskManager
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message);
             }
         }
 

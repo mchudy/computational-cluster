@@ -44,16 +44,14 @@ namespace ComputationalCluster.Client
                 {
                     var response = responseMessage;
 
-                    logger.Info($"SolveRequestResponse with id {solutionId}");
-
                     solutionId = response.Id;
-                    Console.WriteLine($"SolveRequestResponse with id {solutionId}");
+                    logger.Info($"SolveRequestResponse with id {solutionId}");
                 }
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message);
             }
 
             WaitForSolution();
@@ -72,20 +70,20 @@ namespace ComputationalCluster.Client
             try
             {
                 IList<Message> responses = messenger.SendMessage(message);
-                Console.WriteLine("Checking for solution...");
+                logger.Debug("Checking for solution...");
                 var responseMessage = responses[0] as SolutionMessage;
                 if (responseMessage != null)
                 {
                     var response = responseMessage;
                     if (response.ProblemType == "Ongoing")
                     {
-                        Console.WriteLine("Computations still ongoing");
+                        logger.Debug("Computations still ongoing");
 
                         WaitForSolution();
                     }
                     else
                     {
-                        Console.WriteLine("Final solution recieved");
+                        logger.Info("Final solution received");
                         finalSolutionData = response.CommonData;
                     }
                 }
@@ -93,7 +91,7 @@ namespace ComputationalCluster.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message);
             }
         }
     }

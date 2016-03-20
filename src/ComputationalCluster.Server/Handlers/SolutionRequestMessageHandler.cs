@@ -2,13 +2,15 @@
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
+using log4net;
 using System.Linq;
-using System.IO;
 
 namespace ComputationalCluster.Server.Handlers
 {
     public class SolutionRequestMessageHandler : IMessageHandler<SolutionRequestMessage>
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(SolutionRequestMessageHandler));
+
         private readonly IServerMessenger messenger;
         private readonly ServerContext context;
 
@@ -21,12 +23,12 @@ namespace ComputationalCluster.Server.Handlers
         public void HandleMessage(SolutionRequestMessage message, ITcpClient client)
         {
             int id = (int)message.Id;
-            System.Console.WriteLine("Recieved SolutionRequestMessage of id: " + id);
+            logger.Debug("Recieved SolutionRequestMessage of id: " + id);
             var problem = context.Problems.First(p => p.Id == id);
 
             SolutionMessage response = new SolutionMessage();
 
-            if(problem.Status != ProblemStatus.Final)
+            if (problem.Status != ProblemStatus.Final)
             {
                 response.ProblemType = "Ongoing";
             }
@@ -37,7 +39,7 @@ namespace ComputationalCluster.Server.Handlers
             }
 
             SendResponse(client.GetStream(), response);
-            
+
             //TODO: add some problems queue for task managers and nodes
         }
 

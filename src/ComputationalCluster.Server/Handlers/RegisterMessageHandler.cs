@@ -3,7 +3,6 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace ComputationalCluster.Server.Handlers
             logger.Info("Received register message");
             if (message.Type == RegisterType.ComputationalNode)
             {
-                Console.WriteLine($"New node registered - id {id}");
+                logger.Info($"New node registered - id {id}");
                 var node = new ComputationalNode
                 {
                     Id = id,
