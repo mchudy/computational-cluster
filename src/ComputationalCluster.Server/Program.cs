@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
+using ComputationalCluster.Server.Handlers;
 
 namespace ComputationalCluster.Server
 {

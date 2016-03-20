@@ -18,11 +18,11 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public void HandleMessage(SolutionRequestMessage message, ITcpConnection connection)
+        public void HandleMessage(SolutionRequestMessage message, ITcpClient client)
         {
             int id = (int)message.Id;
             System.Console.WriteLine("Recieved SolutionRequestMessage of id: " + id);
-            var problem = context.Problems.Where(p => p.Id == id).First();
+            var problem = context.Problems.First(p => p.Id == id);
 
             SolutionMessage response = new SolutionMessage();
 
@@ -36,12 +36,12 @@ namespace ComputationalCluster.Server.Handlers
                 response.ProblemType = "Final";
             }
 
-            SendResponse(connection.GetStream(), response);
+            SendResponse(client.GetStream(), response);
             
             //TODO: add some problems queue for task managers and nodes
         }
 
-        private void SendResponse(Stream stream, SolutionMessage response)
+        private void SendResponse(INetworkStream stream, SolutionMessage response)
         {
             messenger.SendMessage(response, stream);
         }

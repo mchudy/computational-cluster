@@ -16,8 +16,8 @@ namespace ComputationalCluster.Common.Infrastructure
                    .As<IMessageSerializer>();
             builder.RegisterType<Messenger>()
                    .As<IMessenger>();
-            builder.RegisterType<TcpConnectionFactory>()
-                   .As<ITcpConnectionFactory>()
+            builder.RegisterType<TcpClientFactory>()
+                   .As<ITcpClientFactory>()
                    .SingleInstance();
         }
     }

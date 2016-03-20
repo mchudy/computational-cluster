@@ -1,4 +1,5 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Exceptions;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Serialization;
 using System.IO;
 using Xunit;
@@ -37,6 +38,14 @@ namespace ComputationalCluster.Common.Tests
             Assert.Equal(2, message.SolvableProblems.Length);
             Assert.Equal("TSP", message.SolvableProblems[0]);
             Assert.Equal("DVRP", message.SolvableProblems[1]);
+        }
+
+        [Fact]
+        public void Deserialize_GivenMalformedXml_ShouldThrow()
+        {
+            string message = "aaa";
+            var serializer = new MessageSerializer();
+            Assert.Throws<CannotReadMessageException>(() => serializer.Deserialize(message));
         }
 
         private static RegisterMessage DeserializeSampleRegisterMessage()

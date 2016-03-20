@@ -21,25 +21,25 @@ namespace ComputationalCluster.Server.Handlers
             this.messenger = messenger;
         }
 
-        public void HandleMessage(StatusMessage message, ITcpConnection connection)
+        public void HandleMessage(StatusMessage message, ITcpClient client)
         {
             System.Console.WriteLine("Received status message from component of id: " + message.Id);
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
-                HandleNode(node, message, connection.GetStream());
+                HandleNode(node, message, client.GetStream());
                 return;
             }
             var taskManager = context.TaskManagers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (taskManager != null)
             {
-                HandleTaskManager(taskManager, message, connection.GetStream());
+                HandleTaskManager(taskManager, message, client.GetStream());
                 return;
             }
             logger.Error("Status message from not registered component");
         }
 
-        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, Stream stream)
+        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, INetworkStream stream)
         {
             taskManager.ReceivedStatus = true;
             if (message.Threads.Any(t => t.State == StatusThreadState.Idle))
@@ -69,7 +69,7 @@ namespace ComputationalCluster.Server.Handlers
             }
         }
 
-        private void HandleNode(ComputationalNode node, StatusMessage message, Stream stream)
+        private void HandleNode(ComputationalNode node, StatusMessage message, INetworkStream stream)
         {
             node.ReceivedStatus = true;
             var problemToSolve = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Divided);

@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageSerializerTests.cs" />
+    <Compile Include="MessageStreamWriterTests.cs" />
     <Compile Include="MessengerTests.cs" />
+    <Compile Include="NetworkStreamMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

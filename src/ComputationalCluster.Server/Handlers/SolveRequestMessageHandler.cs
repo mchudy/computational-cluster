@@ -18,7 +18,7 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public void HandleMessage(SolveRequestMessage message, ITcpConnection connection)
+        public void HandleMessage(SolveRequestMessage message, ITcpClient client)
         {
             int id = context.GetNextProblemId();
             var problem = new ProblemInstance
@@ -30,12 +30,12 @@ namespace ComputationalCluster.Server.Handlers
                 Status = ProblemStatus.New
             };
             context.Problems.Add(problem);
-            SendResponse(connection.GetStream(), id);
+            SendResponse(client.GetStream(), id);
             Logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
             //TODO: add some problems queue for task managers and nodes
         }
 
-        private void SendResponse(Stream stream, int id)
+        private void SendResponse(INetworkStream stream, int id)
         {
             var response = new SolveRequestResponseMessage
             {

@@ -6,6 +6,6 @@ namespace ComputationalCluster.Common.Messaging
     public interface IMessageHandler<in T>
         where T : Message
     {
-        void HandleMessage(T message, ITcpConnection connection);
+        void HandleMessage(T message, ITcpClient client);
     }
 }

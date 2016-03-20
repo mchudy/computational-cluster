@@ -14,7 +14,7 @@ namespace ComputationalCluster.Server.Handlers
             this.context = context;
         }
 
-        public void HandleMessage(PartialProblemsMessage message, ITcpConnection connection)
+        public void HandleMessage(PartialProblemsMessage message, ITcpClient client)
         {
             var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
             if (problem != null)

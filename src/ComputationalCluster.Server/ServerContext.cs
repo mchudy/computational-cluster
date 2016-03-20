@@ -1,4 +1,5 @@
 ﻿using ComputationalCluster.Common.Objects;
+using ComputationalCluster.Server.Configuration;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,6 +10,15 @@ namespace ComputationalCluster.Server
     {
         private int currentProblemId;
         private int currentComponentId;
+
+        public ServerContext(IServerConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        //TODO: dictionary for fast access?
+
+        public IServerConfiguration Configuration { get; }
 
         public IList<TaskManager> TaskManagers { get; } = new List<TaskManager>();
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();

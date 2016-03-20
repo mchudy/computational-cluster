@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Net;
 
 namespace ComputationalCluster.Common
@@ -29,14 +28,6 @@ namespace ComputationalCluster.Common
         private bool IsValidPort(int port)
         {
             return port >= IPEndPoint.MinPort && port <= IPEndPoint.MaxPort;
-        }
-    }
-
-    public class BadConfigException : Exception
-    {
-        public BadConfigException(string message)
-            : base(message)
-        {
         }
     }
 }

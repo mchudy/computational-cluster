@@ -16,12 +16,12 @@ namespace ComputationalCluster.Common.Messaging
             this.context = context;
         }
 
-        public void Dispatch<T>(T message, ITcpConnection connection) where T : Message
+        public void Dispatch<T>(T message, ITcpClient client) where T : Message
         {
             var type = typeof(IMessageHandler<>).MakeGenericType(message.GetType());
             var handler = context.Resolve(type);
             type.InvokeMember(methodName, BindingFlags.InvokeMethod, null, handler,
-                new object[] { message, connection });
+                new object[] { message, client });
         }
     }
 }

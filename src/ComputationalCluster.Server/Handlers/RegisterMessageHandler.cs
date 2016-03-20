@@ -2,7 +2,6 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
-using ComputationalCluster.Server.Configuration;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -15,19 +14,16 @@ namespace ComputationalCluster.Server.Handlers
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(RegisterMessageHandler));
 
-        private readonly IServerConfiguration configuration;
         private readonly IServerMessenger messenger;
         private readonly ServerContext context;
 
-        public RegisterMessageHandler(IServerConfiguration configuration, IServerMessenger messenger,
-            ServerContext context)
+        public RegisterMessageHandler(IServerMessenger messenger, ServerContext context)
         {
-            this.configuration = configuration;
             this.messenger = messenger;
             this.context = context;
         }
 
-        public void HandleMessage(RegisterMessage message, ITcpConnection connection)
+        public void HandleMessage(RegisterMessage message, ITcpClient client)
         {
             int id = context.GetNextComponentId();
             logger.Info("Received register message");
@@ -61,17 +57,17 @@ namespace ComputationalCluster.Server.Handlers
                 context.BackupServers.Add(new BackupServer
                 {
                     Id = id,
-                    Address = connection.EndPoint.Address.ToString(),
-                    Port = (ushort)connection.EndPoint.Port
+                    Address = client.EndPoint.Address.ToString(),
+                    Port = (ushort)client.EndPoint.Port
                 });
             }
             var responseMessage = new RegisterResponseMessage
             {
                 Id = (ulong)id,
-                Timeout = configuration.Timeout,
+                Timeout = context.Configuration.Timeout,
                 BackupCommunicationServers = new List<BackupCommunicationServer>()
             };
-            messenger.SendMessage(responseMessage, connection.GetStream());
+            messenger.SendMessage(responseMessage, client.GetStream());
         }
 
 
@@ -80,7 +76,7 @@ namespace ComputationalCluster.Server.Handlers
         {
             while (true)
             {
-                Thread.Sleep((int)(configuration.Timeout * 1000));
+                Thread.Sleep((int)(context.Configuration.Timeout * 1000));
                 //TODO: ensure atomicity
                 if (!node.ReceivedStatus)
                 {
@@ -97,7 +93,7 @@ namespace ComputationalCluster.Server.Handlers
         {
             while (true)
             {
-                Thread.Sleep((int)(configuration.Timeout * 1000));
+                Thread.Sleep((int)(context.Configuration.Timeout * 1000));
                 if (!manager.ReceivedStatus)
                 {
                     context.TaskManagers.Remove(manager);
