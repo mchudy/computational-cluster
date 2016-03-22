@@ -67,7 +67,7 @@ namespace ComputationalCluster.Server
     {
         public int Id { get; set; }
         public byte[] Data { get; set; }
-        public ulong SolvingTimeout { get; set; }
+        public ulong? SolvingTimeout { get; set; }
         public string ProblemType { get; set; }
         public ProblemStatus Status { get; set; }
         public PartialProblem[] PartialProblems { get; set; }

@@ -10,17 +10,15 @@ namespace ComputationalCluster.Common.Messages
     {
         public string ProblemType { get; set; }
 
-        public ulong SolvingTimeout { get; set; }
+        public ulong? SolvingTimeout { get; set; }
 
-        [XmlIgnore()]
-        public bool SolvingTimeoutSpecified { get; set; }
+        public bool ShouldSerializeSolvingTimeout() => SolvingTimeout != null;
 
         [XmlElement(DataType = "base64Binary")]
         public byte[] Data { get; set; }
 
-        public ulong Id { get; set; }
+        public ulong? Id { get; set; }
 
-        [XmlIgnore()]
-        public bool IdSpecified { get; set; }
+        public bool ShouldSerializeId() => Id != null;
     }
 }
