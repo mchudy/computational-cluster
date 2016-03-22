@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RegisterMessageHandlerTests.cs" />
     <Compile Include="ServerMessengerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -78,6 +79,10 @@
     <ProjectReference Include="..\..\src\ComputationalCluster.Server\ComputationalCluster.Server.csproj">
       <Project>{a8292f6d-cf8a-4a2f-a4c2-54bb0d822284}</Project>
       <Name>ComputationalCluster.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ComputationalCluster.Common.Tests\ComputationalCluster.Common.Tests.csproj">
+      <Project>{87CF9A39-8ACE-47C5-ACFB-68FE89BEB7AF}</Project>
+      <Name>ComputationalCluster.Common.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

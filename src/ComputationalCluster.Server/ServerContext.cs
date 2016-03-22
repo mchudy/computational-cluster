@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace ComputationalCluster.Server
 {
-    public class ServerContext
+    public class ServerContext : IServerContext
     {
         private int currentProblemId;
         private int currentComponentId;

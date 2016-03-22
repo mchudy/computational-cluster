@@ -24,7 +24,7 @@ namespace ComputationalCluster.Server
                    .As<IServerMessenger>()
                    .InstancePerLifetimeScope();
             builder.RegisterType<ServerContext>()
-                   .AsSelf()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
                    .AsClosedTypesOf(typeof(IMessageHandler<>));

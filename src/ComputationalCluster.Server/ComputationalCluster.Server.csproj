@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\ErrorMessageHandler.cs" />
+    <Compile Include="IServerContext.cs" />
     <Compile Include="IStatusChecker.cs" />
     <Compile Include="ServerMessenger.cs" />
     <Compile Include="IServerMessenger.cs" />

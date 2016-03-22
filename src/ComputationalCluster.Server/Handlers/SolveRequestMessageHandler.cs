@@ -2,7 +2,6 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using log4net;
-using System.IO;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -10,9 +9,9 @@ namespace ComputationalCluster.Server.Handlers
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(SolveRequestMessageHandler));
         private readonly IServerMessenger messenger;
-        private readonly ServerContext context;
+        private readonly IServerContext context;
 
-        public SolveRequestMessageHandler(IServerMessenger messenger, ServerContext context)
+        public SolveRequestMessageHandler(IServerMessenger messenger, IServerContext context)
         {
             this.messenger = messenger;
             this.context = context;

@@ -12,10 +12,10 @@ namespace ComputationalCluster.Server.Handlers
         private static readonly ILog logger = LogManager.GetLogger(typeof(RegisterMessageHandler));
 
         private readonly IServerMessenger messenger;
-        private readonly ServerContext context;
+        private readonly IServerContext context;
         private readonly IStatusChecker statusChecker;
 
-        public RegisterMessageHandler(IServerMessenger messenger, ServerContext context, IStatusChecker statusChecker)
+        public RegisterMessageHandler(IServerMessenger messenger, IServerContext context, IStatusChecker statusChecker)
         {
             this.messenger = messenger;
             this.context = context;

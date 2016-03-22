@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 
 namespace ComputationalCluster.Server
 {
+    //TODO: use DateTime somehow?
     public class StatusChecker : IStatusChecker
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(StatusChecker));
 
-        private readonly ServerContext context;
+        private readonly IServerContext context;
 
-        public StatusChecker(ServerContext context)
+        public StatusChecker(IServerContext context)
         {
             this.context = context;
         }

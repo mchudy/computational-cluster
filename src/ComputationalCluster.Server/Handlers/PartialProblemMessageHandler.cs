@@ -7,9 +7,9 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class PartialProblemMessageHandler : IMessageHandler<PartialProblemsMessage>
     {
-        private readonly ServerContext context;
+        private readonly IServerContext context;
 
-        public PartialProblemMessageHandler(ServerContext context)
+        public PartialProblemMessageHandler(IServerContext context)
         {
             this.context = context;
         }

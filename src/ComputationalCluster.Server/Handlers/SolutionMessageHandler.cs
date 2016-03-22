@@ -7,9 +7,9 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class SolutionMessageHandler : IMessageHandler<SolutionMessage>
     {
-        private readonly ServerContext context;
+        private readonly IServerContext context;
 
-        public SolutionMessageHandler(ServerContext context)
+        public SolutionMessageHandler(IServerContext context)
         {
             this.context = context;
         }
