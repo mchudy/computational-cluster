@@ -32,9 +32,7 @@ namespace ComputationalCluster.Client
             {
                 ProblemType = "DVRP",
                 SolvingTimeout = 99999,
-                SolvingTimeoutSpecified = true,
                 Id = 123,
-                IdSpecified = false,
                 Data = new byte[] { 1, 2, 3 }
             };
             try
