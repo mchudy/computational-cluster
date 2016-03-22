@@ -71,6 +71,8 @@ namespace ComputationalCluster.Server
         public string ProblemType { get; set; }
         public ProblemStatus Status { get; set; }
         public PartialProblem[] PartialProblems { get; set; }
+        public byte[][] Solutions { get; set; }
+        public byte[] FinalSolution { get; set; }
     }
 
     public enum ProblemStatus

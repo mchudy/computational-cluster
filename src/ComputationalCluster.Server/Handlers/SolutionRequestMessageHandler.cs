@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
+using ComputationalCluster.Common.Objects;
 using log4net;
 using System.Linq;
 
@@ -30,24 +31,30 @@ namespace ComputationalCluster.Server.Handlers
 
             if (problem.Status != ProblemStatus.Final)
             {
-                response.ProblemType = "Ongoing";
+                response.ProblemType = problem.ProblemType;
+                response.Solutions = new[]
+                {
+                    new Solution
+                    {
+                        Type = SolutionType.Ongoing
+                    }
+                };
             }
             else
             {
-                response.CommonData = problem.Data;
-                response.ProblemType = "Final";
+                //response.CommonData = problem.Data;
+                response.ProblemType = problem.ProblemType;
+                response.Solutions = new[]
+                {
+                    new Solution
+                    {
+                        Type = SolutionType.Final,
+                        Data = problem.FinalSolution,
+                    }
+                };
+                //TODO: add some problems queue for task managers and nodes
             }
-
-            SendResponse(client.GetStream(), response);
-
-            //TODO: add some problems queue for task managers and nodes
+            messenger.SendMessage(response, client.GetStream());
         }
-
-        private void SendResponse(INetworkStream stream, SolutionMessage response)
-        {
-            messenger.SendMessage(response, stream);
-        }
-
-
     }
 }

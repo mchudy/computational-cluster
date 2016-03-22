@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ComputationalCluster.Server
 {
-    //TODO: use DateTime somehow?
+    //TODO: use DateTime somehow, one thread only?
     public class StatusChecker : IStatusChecker
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(StatusChecker));

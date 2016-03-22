@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Common.Objects;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading;
 
 namespace ComputationalCluster.Client
 {
-    class Client
+    public class Client
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Client));
 
@@ -53,10 +54,7 @@ namespace ComputationalCluster.Client
             {
                 logger.Error(e.Message);
             }
-
             WaitForSolution();
-
-
         }
 
         private void WaitForSolution()
@@ -75,19 +73,22 @@ namespace ComputationalCluster.Client
                 if (responseMessage != null)
                 {
                     var response = responseMessage;
-                    if (response.ProblemType == "Ongoing")
+                    if (response.Solutions == null || response.Solutions.Length == 0)
                     {
-                        logger.Debug("Computations still ongoing");
-
+                        logger.Warn("Got empty solution list");
                         WaitForSolution();
                     }
-                    else
+                    else if (response.Solutions[0].Type == SolutionType.Ongoing)
+                    {
+                        logger.Debug("Computations still ongoing");
+                        WaitForSolution();
+                    }
+                    else if (response.Solutions[0].Type == SolutionType.Final)
                     {
                         logger.Info("Final solution received");
-                        finalSolutionData = response.CommonData;
+                        //finalSolutionData = response.Solutions[0].Data;
                     }
                 }
-
             }
             catch (Exception e)
             {

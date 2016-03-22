@@ -21,6 +21,7 @@ namespace ComputationalCluster.Server.Handlers
             {
                 problem.Status = ProblemStatus.Divided;
                 problem.PartialProblems = message.PartialProblems;
+                problem.Solutions = new byte[problem.PartialProblems.Length][];
             }
         }
     }

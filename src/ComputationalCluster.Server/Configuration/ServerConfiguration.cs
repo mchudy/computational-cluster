@@ -7,7 +7,7 @@ namespace ComputationalCluster.Server.Configuration
     {
         public ServerConfiguration()
         {
-            LoadSetings();
+            LoadSettings();
         }
 
         public int ListeningPort { get; set; }
@@ -20,7 +20,7 @@ namespace ComputationalCluster.Server.Configuration
 
         public uint Timeout { get; set; }
 
-        private void LoadSetings()
+        private void LoadSettings()
         {
             //TODO: validation
             var settings = ConfigurationManager.AppSettings;

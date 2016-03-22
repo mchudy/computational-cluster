@@ -43,19 +43,8 @@ namespace ComputationalCluster.Server.Handlers
             taskManager.ReceivedStatus = true;
             if (message.Threads.Any(t => t.State == StatusThreadState.Idle))
             {
-                var problemToDivide = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.New &&
-                                                            taskManager.SolvableProblems.Contains(p.ProblemType));
-                if (problemToDivide != null)
-                {
-                    problemToDivide.Status = ProblemStatus.Dividing;
-                    messenger.SendMessage(new DivideProblemMessage
-                    {
-                        Id = (ulong)problemToDivide.Id,
-                        ComputationalNodes = 10,
-                        NodeID = (ulong)taskManager.Id,
-                        ProblemType = problemToDivide.ProblemType
-                    }, stream);
-                }
+                if (TryDivideProblem(taskManager, stream)) return;
+                TryMergeProblem(taskManager, stream);
             }
             else
             {
@@ -66,6 +55,52 @@ namespace ComputationalCluster.Server.Handlers
                         s => new BackupCommunicationServer(s.Address, s.Port)).ToList()
                 }, stream);
             }
+        }
+
+        private void TryMergeProblem(TaskManager taskManager, INetworkStream stream)
+        {
+            var problemToMerge = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Partial &&
+                                                                      taskManager.SolvableProblems.Contains(p.ProblemType));
+            if (problemToMerge != null)
+            {
+                logger.Info($"Sending problem {problemToMerge.Id} for task manager to merge");
+                problemToMerge.Status = ProblemStatus.Merging;
+                var solutions = new Solution[problemToMerge.Solutions.Length];
+                for (int i = 0; i < problemToMerge.Solutions.Length; i++)
+                {
+                    solutions[i] = new Solution
+                    {
+                        Type = SolutionType.Partial,
+                        TaskId = (ulong)i,
+                    };
+                }
+                messenger.SendMessage(new SolutionMessage
+                {
+                    Id = (ulong)problemToMerge.Id,
+                    ProblemType = problemToMerge.ProblemType,
+                    Solutions = solutions
+                }, stream);
+            }
+        }
+
+        private bool TryDivideProblem(TaskManager taskManager, INetworkStream stream)
+        {
+            var problemToDivide = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.New &&
+                                                                       taskManager.SolvableProblems.Contains(p.ProblemType));
+            if (problemToDivide != null)
+            {
+                logger.Info($"Sending problem {problemToDivide.Id} for task manager to divide");
+                problemToDivide.Status = ProblemStatus.Dividing;
+                messenger.SendMessage(new DivideProblemMessage
+                {
+                    Id = (ulong)problemToDivide.Id,
+                    ComputationalNodes = 10,
+                    NodeID = (ulong)taskManager.Id,
+                    ProblemType = problemToDivide.ProblemType
+                }, stream);
+                return true;
+            }
+            return false;
         }
 
         private void HandleNode(ComputationalNode node, StatusMessage message, INetworkStream stream)

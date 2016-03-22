@@ -37,7 +37,7 @@ namespace ComputationalCluster.TaskManager
                     {
                         new PartialProblem
                         {
-                            TaskId = 1,
+                            TaskId = 0,
                             NodeID = (ulong) context.Id
                         },
                         new PartialProblem
@@ -47,6 +47,7 @@ namespace ComputationalCluster.TaskManager
                         }
                     }
                 });
+                logger.Info($"Sending partial problems for problem {message.Id}");
                 context.ReleaseThread(idleThread);
             }
             else

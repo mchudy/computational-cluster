@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ComputationalCluster.Common.Objects
+﻿namespace ComputationalCluster.Common.Objects
 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34283")]
     [System.SerializableAttribute()]
@@ -14,9 +8,6 @@ namespace ComputationalCluster.Common.Objects
     public class Solution
     {
         public ulong TaskId { get; set; }
-
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TaskIdSpecified { get; set; }
 
         public bool TimeoutOccured { get; set; }
 

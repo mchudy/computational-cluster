@@ -41,6 +41,7 @@ namespace ComputationalCluster.TaskManager.Handlers
                         }
                     }
                 });
+                logger.Info($"Sending final solution for problem {message.Id}");
                 context.ReleaseThread(idleThread);
             }
             else

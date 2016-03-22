@@ -95,6 +95,7 @@ namespace ComputationalCluster.Node
             foreach (var solution in context.CurrentSolutions)
             {
                 solution.Type = SolutionType.Partial;
+                solution.Data = new byte[5];
             }
             messenger.SendMessage(new SolutionMessage
             {
