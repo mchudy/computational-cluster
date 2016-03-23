@@ -56,7 +56,7 @@ namespace ComputationalCluster.Client
                 logger.Info($"Server Port: {options.ServerPort}");
                 return true;
             }
-            return false;
+            return true; //false
         }
     }
 }
