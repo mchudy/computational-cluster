@@ -25,47 +25,48 @@ namespace ComputationalCluster.Server.Handlers
         {
             logger.Debug("Received status message from component of id: " + message.Id);
 
-            List<Message> messages = new List<Message>();
-            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
-            messenger.SendMessages(messages, client.GetStream());
+            List<Message> response = new List<Message>
+            {
+                new NoOperationMessage() {BackupCommunicationServers = context.BackupServers}
+            };
 
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
-                HandleNode(node, message, client.GetStream());
+                HandleNode(node, message, response);
+                messenger.SendMessages(response, client.GetStream());
                 return;
             }
             var taskManager = context.TaskManagers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (taskManager != null)
             {
-                HandleTaskManager(taskManager, message, client.GetStream());
+                HandleTaskManager(taskManager, message, response);
+                messenger.SendMessages(response, client.GetStream());
                 return;
             }
             logger.Error("Status message from not registered component");
-
-
         }
 
-        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, INetworkStream stream)
+        private void HandleTaskManager(TaskManager taskManager, StatusMessage message, IList<Message> response)
         {
             taskManager.ReceivedStatus = true;
             if (AnyIdleThread(message))
             {
-                if (TryDivideProblem(taskManager, stream)) return;
-                TryMergeProblem(taskManager, stream);
+                if (TryDivideProblem(taskManager, response)) return;
+                TryMergeProblem(taskManager, response);
             }
             else
             {
                 //TODO: should be send whenever new backup has been registered/deregistered
-                messenger.SendMessage(new NoOperationMessage
+                response.Add(new NoOperationMessage
                 {
                     BackupCommunicationServers = context.BackupServers.Select(
                         s => new BackupCommunicationServer(s.Address, s.Port)).ToList()
-                }, stream);
+                });
             }
         }
 
-        private void TryMergeProblem(TaskManager taskManager, INetworkStream stream)
+        private void TryMergeProblem(TaskManager taskManager, IList<Message> response)
         {
             var problemToMerge = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Partial &&
                                                                       taskManager.SolvableProblems.Contains(p.ProblemType));
@@ -82,16 +83,16 @@ namespace ComputationalCluster.Server.Handlers
                         TaskId = (ulong)i,
                     };
                 }
-                messenger.SendMessage(new SolutionMessage
+                response.Add(new SolutionMessage
                 {
                     Id = (ulong)problemToMerge.Id,
                     ProblemType = problemToMerge.ProblemType,
                     Solutions = solutions
-                }, stream);
+                });
             }
         }
 
-        private bool TryDivideProblem(TaskManager taskManager, INetworkStream stream)
+        private bool TryDivideProblem(TaskManager taskManager, IList<Message> response)
         {
             var problemToDivide = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.New &&
                                                                        taskManager.SolvableProblems.Contains(p.ProblemType));
@@ -99,19 +100,19 @@ namespace ComputationalCluster.Server.Handlers
             {
                 logger.Info($"Sending problem {problemToDivide.Id} for task manager to divide");
                 problemToDivide.Status = ProblemStatus.Dividing;
-                messenger.SendMessage(new DivideProblemMessage
+                response.Add(new DivideProblemMessage
                 {
                     Id = (ulong)problemToDivide.Id,
                     ComputationalNodes = 10 /*TODO*/,
                     NodeID = (ulong)taskManager.Id,
                     ProblemType = problemToDivide.ProblemType
-                }, stream);
+                });
                 return true;
             }
             return false;
         }
 
-        private void HandleNode(ComputationalNode node, StatusMessage message, INetworkStream stream)
+        private void HandleNode(ComputationalNode node, StatusMessage message, IList<Message> messages)
         {
             if (!AnyIdleThread(message)) return;
             node.ReceivedStatus = true;
@@ -120,11 +121,11 @@ namespace ComputationalCluster.Server.Handlers
             {
                 var partial = problemToSolve.PartialProblems.FirstOrDefault(pp => pp.State == PartialProblemState.New);
                 if (partial == null) return;
-                messenger.SendMessage(new PartialProblemsMessage
+                messages.Add(new PartialProblemsMessage
                 {
                     Id = (ulong)problemToSolve.Id,
                     PartialProblems = new[] { partial.Problem }
-                }, stream);
+                });
                 partial.State = PartialProblemState.ComputationOngoing;
                 partial.NodeId = node.Id;
             }

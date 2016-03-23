@@ -14,7 +14,7 @@ namespace ComputationalCluster.Node.Tests
             var messenger = new Mock<IMessenger>();
             messenger.Setup(m => m.SendMessage(It.IsAny<Message>()))
                 .Returns(new List<Message> { new RegisterResponseMessage() });
-            var node = new ComputationalNode(messenger.Object, new NodeContext());
+            var node = new ComputationalNode(messenger.Object);
 
             node.Start();
 

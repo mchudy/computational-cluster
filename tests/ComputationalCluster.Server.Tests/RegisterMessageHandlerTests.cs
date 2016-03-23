@@ -4,6 +4,7 @@ using ComputationalCluster.Server.Configuration;
 using ComputationalCluster.Server.Handlers;
 using Moq;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ComputationalCluster.Server.Tests
@@ -31,7 +32,9 @@ namespace ComputationalCluster.Server.Tests
 
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<RegisterResponseMessage>(rm => rm.Id == 5), It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                It.Is<IList<Message>>(msgs => msgs.Cast<RegisterResponseMessage>().First().Id == 5),
+                It.IsAny<INetworkStream>()));
         }
 
         [Fact]
@@ -60,7 +63,9 @@ namespace ComputationalCluster.Server.Tests
             config.SetupGet(c => c.Timeout).Returns(10);
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<RegisterResponseMessage>(rm => rm.Timeout == 10), It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                It.Is<IList<Message>>(msgs => msgs.Cast<RegisterResponseMessage>().First().Timeout == 10),
+                It.IsAny<INetworkStream>()));
         }
 
         private static RegisterMessage GetNodeMessage()

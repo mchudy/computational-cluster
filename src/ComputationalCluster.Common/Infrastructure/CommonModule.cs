@@ -2,6 +2,8 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking.Factories;
 using ComputationalCluster.Common.Serialization;
+using System.Reflection;
+using Module = Autofac.Module;
 
 namespace ComputationalCluster.Common.Infrastructure
 {
@@ -20,6 +22,8 @@ namespace ComputationalCluster.Common.Infrastructure
                    .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterType<MessageStreamFactory>()
+                   .AsImplementedInterfaces();
+            builder.RegisterType<AutofacResponseDispatcher>()
                    .AsImplementedInterfaces();
         }
     }

@@ -53,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputationalNode.cs" />
+    <Compile Include="Handlers\NoOperationMessageHandler.cs" />
+    <Compile Include="Handlers\PartialProblemsMessageHandler.cs" />
+    <Compile Include="Handlers\RegisterResponseMessageHandler.cs" />
     <Compile Include="NodeContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +70,7 @@
       <Name>ComputationalCluster.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

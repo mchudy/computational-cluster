@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Networking.Factories;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ComputationalCluster.Common.Messaging
 {
@@ -11,13 +12,15 @@ namespace ComputationalCluster.Common.Messaging
         private readonly IConfiguration configuration;
         private readonly ITcpClientFactory clientFactory;
         private readonly IMessageStreamFactory streamFactory;
+        private readonly IResponseDispatcher dispatcher;
 
-        public Messenger(IConfiguration configuration,
-            ITcpClientFactory clientFactory, IMessageStreamFactory streamFactory)
+        public Messenger(IConfiguration configuration, ITcpClientFactory clientFactory,
+            IMessageStreamFactory streamFactory, IResponseDispatcher dispatcher)
         {
             this.configuration = configuration;
             this.clientFactory = clientFactory;
             this.streamFactory = streamFactory;
+            this.dispatcher = dispatcher;
         }
 
         public IList<Message> SendMessage(Message message)
@@ -33,6 +36,13 @@ namespace ComputationalCluster.Common.Messaging
                     response = reader.ReadToEnd();
                 }
             }
+            Task.Run(() =>
+            {
+                foreach (var msg in response)
+                {
+                    dispatcher.Dispatch(msg);
+                }
+            });
             return response;
         }
 

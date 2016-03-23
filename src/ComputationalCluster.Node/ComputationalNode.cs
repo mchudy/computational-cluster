@@ -1,12 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
-using ComputationalCluster.Common.Objects;
 using log4net;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ComputationalCluster.Node
 {
@@ -15,126 +10,32 @@ namespace ComputationalCluster.Node
         private static readonly ILog logger = LogManager.GetLogger(typeof(ComputationalNode));
 
         private readonly IMessenger messenger;
-        private const int parallelThreads = 2;
-        private uint timeout;
-        private readonly NodeContext context;
-        private ulong id;
-        private readonly StatusThread[] threads = new StatusThread[parallelThreads];
 
-        public ComputationalNode(IMessenger messenger, NodeContext context)
+        public ComputationalNode(IMessenger messenger)
         {
             this.messenger = messenger;
-            this.context = context;
         }
 
         public void Start()
         {
-            InitializeThreads();
+            Register();
+        }
 
+        private void Register()
+        {
             var message = new RegisterMessage()
             {
                 Type = RegisterType.ComputationalNode,
                 SolvableProblems = new[] { "DVRP" },
-                ParallelThreads = parallelThreads
+                ParallelThreads = NodeContext.ParallelThreads
             };
             try
             {
-                IList<Message> responses = messenger.SendMessage(message);
-                var responseMessage = responses[0] as RegisterResponseMessage;
-                if (responseMessage != null)
-                {
-                    var response = responseMessage;
-                    timeout = response.Timeout;
-                    id = response.Id;
-                    logger.Info($"Registered with id {id}");
-                }
-                Task.Run(() => SendStatus());
+                messenger.SendMessage(message);
             }
             catch (Exception e)
             {
                 logger.Error(e.Message);
-            }
-        }
-
-        private void SendStatus()
-        {
-            while (true)
-            {
-                var statusMessage = GetStatus();
-                var response = messenger.SendMessage(statusMessage);
-                logger.Debug("Sending status");
-                Task.Run(() => HandleResponse(response));
-                Thread.Sleep((int)(timeout * 1000 / 2));
-            }
-        }
-
-        private void HandleResponse(IList<Message> response)
-        {
-            if (response.Count == 0)
-                return;
-
-            Message message = response[0];
-
-            if (message is PartialProblemsMessage)
-            {
-                var partialProblemsMessage = (PartialProblemsMessage)message;
-                context.SolvingTimeout = partialProblemsMessage.SolvingTimeout;
-                context.CurrentProblemType = partialProblemsMessage.ProblemType;
-                context.CurrentPartialProblems = partialProblemsMessage.PartialProblems;
-                CreateNewSolutions();
-                //TODO
-                Task.Run(() => ComputeSolutions(partialProblemsMessage.Id));
-            }
-
-        }
-
-        private void ComputeSolutions(ulong id)
-        {
-            Thread.Sleep(2000);
-            logger.Info("Sending solutions");
-            foreach (var solution in context.CurrentSolutions)
-            {
-                solution.Type = SolutionType.Partial;
-                solution.Data = new byte[5];
-            }
-            messenger.SendMessage(new SolutionMessage
-            {
-                Id = id,
-                Solutions = context.CurrentSolutions.ToArray()
-            });
-        }
-
-        private void CreateNewSolutions()
-        {
-            context.CurrentSolutions = new List<Solution>();
-            foreach (var partialproblem in context.CurrentPartialProblems)
-            {
-                context.CurrentSolutions.Add(new Solution
-                {
-                    TaskId = partialproblem.TaskId,
-                    Type = SolutionType.Ongoing
-                });
-            }
-        }
-
-        private StatusMessage GetStatus()
-        {
-            var statusMessage = new StatusMessage
-            {
-                Id = id,
-                Threads = threads
-            };
-            return statusMessage;
-        }
-
-        private void InitializeThreads()
-        {
-            for (int i = 0; i < parallelThreads; i++)
-            {
-                threads[i] = new StatusThread
-                {
-                    State = StatusThreadState.Idle
-                };
             }
         }
     }

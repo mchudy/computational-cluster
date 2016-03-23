@@ -58,7 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="ClientContext.cs" />
     <Compile Include="ClientOptions.cs" />
+    <Compile Include="Handlers\NoOperationMessageHandler.cs" />
+    <Compile Include="Handlers\SolutionsMessageHandler.cs" />
+    <Compile Include="Handlers\SolveRequestResponseMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

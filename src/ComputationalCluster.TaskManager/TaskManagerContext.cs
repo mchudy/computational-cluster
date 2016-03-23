@@ -1,4 +1,5 @@
-﻿using ComputationalCluster.Common.Objects;
+﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Objects;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,11 @@ namespace ComputationalCluster.TaskManager
 
         public TaskManagerContext()
         {
+            InitializeThreads();
+        }
+
+        private void InitializeThreads()
+        {
             for (int i = 0; i < ParallelThreads; i++)
             {
                 Threads[i] = new StatusThread
@@ -22,7 +28,7 @@ namespace ComputationalCluster.TaskManager
 
         public const int ParallelThreads = 3;
         public int Id { get; set; }
-
+        public int Timeout { get; set; }
         public StatusThread[] Threads { get; } = new StatusThread[ParallelThreads];
         public IList<BackupCommunicationServer> BackupServers { get; set; } = new List<BackupCommunicationServer>();
 
@@ -48,6 +54,16 @@ namespace ComputationalCluster.TaskManager
                 idleThread.State = StatusThreadState.Idle;
                 idleThread.ProblemType = null;
             }
+        }
+
+        public StatusMessage GetStatus()
+        {
+            var statusMessage = new StatusMessage
+            {
+                Id = (ulong)Id,
+                Threads = Threads
+            };
+            return statusMessage;
         }
     }
 }

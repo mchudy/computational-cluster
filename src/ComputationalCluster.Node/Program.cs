@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using Autofac.Core;
 using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
+using System.Reflection;
 
 namespace ComputationalCluster.Node
 {
@@ -21,6 +23,9 @@ namespace ComputationalCluster.Node
             builder.RegisterType<NodeContext>()
                    .AsSelf()
                    .SingleInstance();
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                   .AsClosedTypesOf(typeof(IResponseHandler<>))
+                   .InstancePerDependency();
 
             var container = builder.Build();
 

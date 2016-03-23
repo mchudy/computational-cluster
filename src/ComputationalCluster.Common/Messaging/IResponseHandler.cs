@@ -1,6 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 
-namespace ComputationalCluster.TaskManager
+namespace ComputationalCluster.Common.Messaging
 {
     public interface IResponseHandler<in T> where T : Message
     {

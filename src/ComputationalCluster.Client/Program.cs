@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core;
 using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
 using System.Configuration;
@@ -21,7 +22,11 @@ namespace ComputationalCluster.Client
             builder.RegisterType<Client>()
                 .AsSelf()
                 .SingleInstance();
-         
+            builder.RegisterType<ClientContext>().AsSelf().SingleInstance();
+            builder.RegisterAssemblyTypes(typeof(Program).Assembly)
+                   .AsClosedTypesOf(typeof(IResponseHandler<>))
+                   .InstancePerDependency();
+
             var container = builder.Build();
 
             try
@@ -38,6 +43,7 @@ namespace ComputationalCluster.Client
 
         private static bool LoadCommandLineSettings(string[] args)
         {
+            return true;
             ClientOptions options = new ClientOptions();
 
             if (CommandLine.Parser.Default.ParseArguments(args, options))
