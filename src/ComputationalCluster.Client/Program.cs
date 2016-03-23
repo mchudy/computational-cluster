@@ -13,7 +13,7 @@ namespace ComputationalCluster.Client
 
         static void Main(string[] args)
         {
-            if (!LoadCommandLineSettings(args)) return;
+            CommonParameterParser.LoadCommandLineParameters();
 
             var builder = new ContainerBuilder();
 
@@ -34,29 +34,6 @@ namespace ComputationalCluster.Client
                 logger.Error(e.InnerException.Message);
             }
             Console.ReadLine();
-        }
-
-        private static bool LoadCommandLineSettings(string[] args)
-        {
-            ClientOptions options = new ClientOptions();
-
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
-            {
-                System.Configuration.Configuration config =
-                   ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
-                config.AppSettings.Settings["ServerAddress"].Value = options.ServerAddress.ToString();
-                config.AppSettings.Settings["ServerPort"].Value = options.ServerPort.ToString();
-
-                config.Save(ConfigurationSaveMode.Modified);
-
-                ConfigurationManager.RefreshSection("appSettings");
-
-                logger.Info($"Server Address: {options.ServerAddress}");
-                logger.Info($"Server Port: {options.ServerPort}");
-                return true;
-            }
-            return true; //false
         }
     }
 }

@@ -10,7 +10,7 @@ namespace ComputationalCluster.Server.Configuration
 {
     public class ServerOptions
     {
-        [Option("port", Required = true,
+        [Option("port", Required = false,
             HelpText = "Listening port number for Communication Server")]
         public int ListeningPort { get; set; }
 
@@ -22,7 +22,7 @@ namespace ComputationalCluster.Server.Configuration
             HelpText = "Listening port of Master Server ")]
         public int MasterServerPort { get; set; }
 
-        [Option("time", Required = true,
+        [Option("time", Required = false,
             HelpText = "Timeout")]
         public uint Timeout { get; set; }
 
