@@ -20,6 +20,8 @@ namespace ComputationalCluster.TaskManager
 
             var container = builder.Build();
 
+            CommonParameterParser.LoadCommandLineParameters();
+
             try
             {
                 var taskManager = container.Resolve<TaskManager>();
