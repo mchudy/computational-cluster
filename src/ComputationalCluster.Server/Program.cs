@@ -14,17 +14,35 @@ namespace ComputationalCluster.Server
 
         static void Main(string[] args)
         {
-            if (!LoadCommandLineParameters(args)) return;
+            LoadCommandLineParameters();
             var container = BuildContainer();
             var server = container.Resolve<Server>();
             server.Start();
         }
 
-        private static bool LoadCommandLineParameters(string[] args)
+        private static void LoadCommandLineParameters()
         {
             var options = new ServerOptions();
+            logger.Info($"Set Parameters: ");
+            var parameters = Console.ReadLine();
+            while (!ParseParameters(parameters, ref options))
+            {
+                logger.Info($"Set Parameters: ");
+                Console.ReadLine();
+            }
+        }
 
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
+        private static bool ParseParameters(string parameters, ref ServerOptions options)
+        {
+            //Options will be taken form App.Settings
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                logger.Info($"Default parameters will be taken");
+                return true;
+            }
+
+            bool parse = CommandLine.Parser.Default.ParseArguments(parameters.Split(' '), options);
+            if (parse)
             {
                 System.Configuration.Configuration config =
                     ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -34,8 +52,8 @@ namespace ComputationalCluster.Server
                 if (options.Backup)
                 {
                     config.AppSettings.Settings["Mode"].Value = ServerMode.Backup.ToString();
-                    config.AppSettings.Settings.Add("MasterServerAddress",options.MasterServerAddress.ToString());
-                    config.AppSettings.Settings.Add("MasterServerPort",options.MasterServerPort.ToString());
+                    config.AppSettings.Settings.Add("MasterServerAddress", options.MasterServerAddress.ToString());
+                    config.AppSettings.Settings.Add("MasterServerPort", options.MasterServerPort.ToString());
                     logger.Info($"Backup {options.Backup}");
                     logger.Info($"MAddres: {options.MasterServerAddress}");
                     logger.Info($"MPort: {options.MasterServerPort}");
@@ -51,11 +69,9 @@ namespace ComputationalCluster.Server
 
                 logger.Info($"Port: {options.ListeningPort}");
                 logger.Info($"Timeout: {options.Timeout}");
-             
-
                 return true;
             }
-            return true; //false
+            return false;
         }
 
         private static IContainer BuildContainer()
