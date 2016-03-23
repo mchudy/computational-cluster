@@ -49,5 +49,10 @@ namespace ComputationalCluster.Server
                 }
             }
         }
+
+        public void SendToBackup(Message message)
+        {
+            SendToBackup(new List<Message> { message });
+        }
     }
 }

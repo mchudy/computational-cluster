@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using ComputationalCluster.Common.Messages;
+using log4net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace ComputationalCluster.Server
         private static readonly ILog logger = LogManager.GetLogger(typeof(StatusChecker));
 
         private readonly IServerContext context;
+        private readonly IServerMessenger messenger;
 
-        public StatusChecker(IServerContext context)
+        public StatusChecker(IServerContext context, IServerMessenger messenger)
         {
             this.context = context;
+            this.messenger = messenger;
         }
 
         public void Add(ComputationalNode node)
@@ -37,7 +40,6 @@ namespace ComputationalCluster.Server
             while (true)
             {
                 Thread.Sleep((int)(context.Configuration.Timeout * 1000));
-                //TODO: ensure atomicity
                 if (!node.ReceivedStatus)
                 {
                     logger.Error($"FAILURE - node with id {node.Id}");
@@ -52,8 +54,15 @@ namespace ComputationalCluster.Server
                             }
                         }
                     }
-                    //TODO: proper deregistration handling
                     context.Nodes.Remove(node);
+                    var deregisterMessage = new RegisterMessage
+                    {
+                        Deregister = true,
+                        DeregisterSpecified = true,
+                        Id = (ulong)node.Id
+                    };
+                    //messenger.SendToBackup(deregisterMessage);
+                    context.BackupMessages.Enqueue(deregisterMessage);
                     break;
                 }
                 node.ReceivedStatus = false;

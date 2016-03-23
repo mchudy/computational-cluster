@@ -20,6 +20,7 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(SolveRequestMessage message, ITcpClient client)
         {
+            context.BackupMessages.Enqueue(message);
             int id = context.GetNextProblemId();
             var problem = new ProblemInstance
             {

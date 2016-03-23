@@ -8,5 +8,7 @@ namespace ComputationalCluster.Server
     {
         void SendMessage(Message message, INetworkStream stream);
         void SendMessages(IList<Message> messages, INetworkStream stream);
+        void SendToBackup(IList<Message> messages);
+        void SendToBackup(Message message);
     }
 }

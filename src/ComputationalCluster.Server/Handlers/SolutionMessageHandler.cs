@@ -23,6 +23,10 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(SolutionMessage message, ITcpClient client)
         {
+            if (context.IsPrimary)
+            {
+                context.BackupMessages.Enqueue(message);
+            }
             var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
             if (problem != null)
             {
@@ -57,7 +61,7 @@ namespace ComputationalCluster.Server.Handlers
         }
         private void SendResponse(ITcpClient client)
         {
-
+            if (!context.IsPrimary) return;
             List<Message> messages = new List<Message>();
 
             messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });

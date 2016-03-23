@@ -57,8 +57,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackupHandlers\DivideRequestMessageHandler.cs" />
     <Compile Include="BackupHandlers\NoOperationMessageHandler.cs" />
+    <Compile Include="BackupHandlers\PartialProblemMessageHandler.cs" />
+    <Compile Include="BackupHandlers\RegisterMessageHandler.cs" />
     <Compile Include="BackupHandlers\RegisterResponseMessageHandler.cs" />
+    <Compile Include="BackupHandlers\SolutionMessageHandler.cs" />
+    <Compile Include="BackupHandlers\SolveRequestMessageHandler.cs" />
     <Compile Include="State\ComputationalNode.cs" />
     <Compile Include="State\ClientComponent.cs" />
     <Compile Include="Configuration\ServerOptions.cs" />

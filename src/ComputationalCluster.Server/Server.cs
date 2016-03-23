@@ -32,13 +32,13 @@ namespace ComputationalCluster.Server
 
         public void Start()
         {
+            listener.Start();
+            logger.Info($"Started listening on {listener.LocalEndpoint}");
             if (!context.IsPrimary)
             {
                 logger.Info("Starting in backup mode...");
                 Register();
             }
-            listener.Start();
-            logger.Info($"Started listening on {listener.LocalEndpoint}");
             while (true)
             {
                 AcceptClient(listener);

@@ -1,5 +1,7 @@
-﻿using ComputationalCluster.Common.Objects;
+﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -24,6 +26,7 @@ namespace ComputationalCluster.Server
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
         public List<BackupCommunicationServer> BackupServers { get; set; } = new List<BackupCommunicationServer>();
+        public ConcurrentQueue<Message> BackupMessages { get; } = new ConcurrentQueue<Message>();
 
         // only for Backup Mode
         public int Id { get; set; }

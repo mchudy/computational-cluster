@@ -34,9 +34,7 @@ namespace ComputationalCluster.Server.Handlers
             int id = (int)message.Id;
             logger.Debug("Recieved SolutionRequestMessage of id: " + id);
             var problem = context.Problems.First(p => p.Id == id);
-
             SolutionMessage response = new SolutionMessage();
-
             if (problem.Status != ProblemStatus.Final)
             {
                 response.ProblemType = problem.ProblemType;
@@ -50,7 +48,6 @@ namespace ComputationalCluster.Server.Handlers
             }
             else
             {
-                //response.CommonData = problem.Data;
                 response.ProblemType = problem.ProblemType;
                 response.Solutions = new[]
                 {
@@ -60,7 +57,6 @@ namespace ComputationalCluster.Server.Handlers
                         Data = problem.FinalSolution,
                     }
                 };
-                //TODO: add some problems queue for task managers and nodes
             }
             messenger.SendMessages(new List<Message> { response,
                 new NoOperationMessage { BackupCommunicationServers = context.BackupServers }},

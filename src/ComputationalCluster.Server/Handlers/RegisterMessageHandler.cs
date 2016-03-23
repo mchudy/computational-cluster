@@ -24,7 +24,17 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(RegisterMessage message, ITcpClient client)
         {
-            int id = context.GetNextComponentId();
+            int id;
+            if (context.IsPrimary)
+            {
+                id = context.GetNextComponentId();
+                message.Id = (ulong)id;
+            }
+            else
+            {
+                id = (int)message.Id;
+            }
+            context.BackupMessages.Enqueue(message);
             logger.Info("Received register message");
             switch (message.Type.Type)
             {
@@ -52,12 +62,12 @@ namespace ComputationalCluster.Server.Handlers
                 Timeout = context.Configuration.Timeout
             };
 
-            List<Message> messages = new List<Message>();
-            messages.Add(responseMessage);
-            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
-
+            List<Message> messages = new List<Message>
+            {
+                responseMessage,
+                new NoOperationMessage {BackupCommunicationServers = context.BackupServers}
+            };
             messenger.SendMessages(messages, client.GetStream());
-
         }
 
         private void HandleBackupServer(ITcpClient client, int id, int port)
@@ -68,7 +78,7 @@ namespace ComputationalCluster.Server.Handlers
                 Address = client.EndPoint.Address.ToString(),
                 Port = (ushort)port
             });
-            //TODO: synchronize state
+            //TODO: synchronize state with backup
         }
 
         private void HandleTaskManager(RegisterMessage message, int id)

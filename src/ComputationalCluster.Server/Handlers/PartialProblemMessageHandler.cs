@@ -16,6 +16,7 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(PartialProblemsMessage message, ITcpClient client)
         {
+            context.BackupMessages.Enqueue(message);
             var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
             if (problem != null)
             {

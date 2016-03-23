@@ -1,5 +1,7 @@
-﻿using ComputationalCluster.Common.Objects;
+﻿using ComputationalCluster.Common.Messages;
+using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ComputationalCluster.Server
@@ -15,5 +17,7 @@ namespace ComputationalCluster.Server
         int Id { get; set; }
         int GetNextComponentId();
         int GetNextProblemId();
+        ConcurrentQueue<Message> BackupMessages { get; }
+
     }
 }
