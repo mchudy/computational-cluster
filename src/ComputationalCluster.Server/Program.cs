@@ -36,6 +36,9 @@ namespace ComputationalCluster.Server
                     config.AppSettings.Settings["Mode"].Value = ServerMode.Backup.ToString();
                     config.AppSettings.Settings.Add("MasterServerAddress",options.MasterServerAddress.ToString());
                     config.AppSettings.Settings.Add("MasterServerPort",options.MasterServerPort.ToString());
+                    logger.Info($"Backup {options.Backup}");
+                    logger.Info($"MAddres: {options.MasterServerAddress}");
+                    logger.Info($"MPort: {options.MasterServerPort}");
                 }
                 else
                 {
@@ -48,9 +51,7 @@ namespace ComputationalCluster.Server
 
                 logger.Info($"Port: {options.ListeningPort}");
                 logger.Info($"Timeout: {options.Timeout}");
-                logger.Info($"Backup {options.Backup}");
-                logger.Info($"MAddres: {options.MasterServerAddress}");
-                logger.Info($"MPort: {options.MasterServerPort}");
+             
 
                 return true;
             }

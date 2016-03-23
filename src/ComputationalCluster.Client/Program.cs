@@ -13,15 +13,15 @@ namespace ComputationalCluster.Client
 
         static void Main(string[] args)
         {
+            if (!LoadCommandLineSettings(args)) return;
+
             var builder = new ContainerBuilder();
 
             builder.RegisterAssemblyModules(typeof(Constants).Assembly);
             builder.RegisterType<Client>()
                 .AsSelf()
                 .SingleInstance();
-
-            LoadCommandLineSettings(args);
-
+         
             var container = builder.Build();
 
             try
@@ -36,9 +36,10 @@ namespace ComputationalCluster.Client
             Console.ReadLine();
         }
 
-        private static void LoadCommandLineSettings(string[] args)
+        private static bool LoadCommandLineSettings(string[] args)
         {
             ClientOptions options = new ClientOptions();
+
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
                 System.Configuration.Configuration config =
@@ -53,7 +54,9 @@ namespace ComputationalCluster.Client
 
                 logger.Info($"Server Address: {options.ServerAddress}");
                 logger.Info($"Server Port: {options.ServerPort}");
+                return true;
             }
+            return false;
         }
     }
 }
