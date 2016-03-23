@@ -18,7 +18,7 @@ namespace ComputationalCluster.Node
 
         public string CurrentProblemType { get; set; }
         public int CurrentId { get; set; }
-        public ulong SolvingTimeout { get; set; }
+        public ulong? SolvingTimeout { get; set; }
         public IList<PartialProblem> CurrentPartialProblems { get; set; }
         public IList<Solution> CurrentSolutions { get; set; }
         public uint Timeout { get; set; }

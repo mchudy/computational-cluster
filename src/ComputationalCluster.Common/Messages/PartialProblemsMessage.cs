@@ -15,7 +15,7 @@ namespace ComputationalCluster.Common.Messages
 
         [XmlElement(DataType = "base64Binary")]
         public byte[] CommonData { get; set; }
-        public ulong SolvingTimeout { get; set; }
+        public ulong? SolvingTimeout { get; set; }
 
         [XmlIgnore()]
         public bool SolvingTimeoutSpecified { get; set; }

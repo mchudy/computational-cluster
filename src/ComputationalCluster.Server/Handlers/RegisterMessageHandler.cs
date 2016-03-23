@@ -63,7 +63,6 @@ namespace ComputationalCluster.Server.Handlers
             logger.Info($"New backup server registered - id {id}");
             context.BackupServers.Add(new BackupCommunicationServer
             {
-                Id = id,
                 Address = client.EndPoint.Address.ToString(),
                 Port = (ushort)client.EndPoint.Port
             });

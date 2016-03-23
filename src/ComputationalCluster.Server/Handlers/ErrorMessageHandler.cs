@@ -5,11 +5,11 @@ using log4net;
 
 namespace ComputationalCluster.Server.Handlers
 {
-    public class ErrorMessageHandler : IMessageHandler<ErrorMessage>
+    public class ErrorMessageHandler : IMessageHandler<ErrMessage>
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(ErrorMessageHandler));
 
-        public void HandleMessage(ErrorMessage message, ITcpClient client)
+        public void HandleMessage(ErrMessage message, ITcpClient client)
         {
             logger.Error("Received error message");
         }

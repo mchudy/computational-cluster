@@ -7,7 +7,7 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
     public class Solution
     {
-        public ulong TaskId { get; set; }
+        public ulong? TaskId { get; set; }
 
         public bool TimeoutOccured { get; set; }
 

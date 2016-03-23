@@ -17,7 +17,7 @@ namespace ComputationalCluster.Common.Messages
         [XmlElement(DataType = "base64Binary")]
         public byte[] CommonData { get; set; }
 
-        [XmlArrayItem("Solution", IsNullable = false)]
+        [XmlArrayItem("Solution")]
         public Solution[] Solutions { get; set; }
     }
 }
