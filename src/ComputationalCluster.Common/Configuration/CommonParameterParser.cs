@@ -18,6 +18,8 @@ namespace ComputationalCluster.Common
                 logger.Info($"Set Parameters: ");
                 Console.ReadLine();
             }
+            logger.Info($"Server Address: {options.ServerAddress}");
+            logger.Info($"Server Port: {options.ServerPort}");
         }
 
         public static bool ParseParameters(string parameters, ref CommonOptions options)
@@ -34,15 +36,14 @@ namespace ComputationalCluster.Common
                 System.Configuration.Configuration config =
                     ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-                if (options.ServerAddress != null)
+                if (options.ServerAddress != null && config.AppSettings.Settings["ServerAddress"] != null)
                 {
                     config.AppSettings.Settings["ServerAddress"].Value = options.ServerAddress.ToString();
-                    logger.Info($"Server Address: {options.ServerAddress}");
                 }
-                if (options.ServerPort.ToString() != ConfigurationManager.AppSettings["ServerPort"])
+                if (ConfigurationManager.AppSettings["ServerPort"] != null 
+                        && options.ServerPort.ToString() != ConfigurationManager.AppSettings["ServerPort"] )
                 {
                     config.AppSettings.Settings["ServerPort"].Value = options.ServerPort.ToString();
-                    logger.Info($"Server Port: {options.ServerPort}");
                 }
 
                 config.Save(ConfigurationSaveMode.Modified);
