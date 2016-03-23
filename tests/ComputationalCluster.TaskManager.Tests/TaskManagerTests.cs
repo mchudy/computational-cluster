@@ -18,7 +18,7 @@ namespace ComputationalCluster.TaskManager.Tests
 
             node.Start();
 
-            messenger.Verify(m => m.SendMessage(It.Is<RegisterMessage>(msg => msg.Type == RegisterType.TaskManager)),
+            messenger.Verify(m => m.SendMessage(It.Is<RegisterMessage>(msg => msg.Type.Type == ClientComponentType.TaskManager)),
                 Times.Once());
         }
     }

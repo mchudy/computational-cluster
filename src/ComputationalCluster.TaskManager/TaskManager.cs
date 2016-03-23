@@ -29,7 +29,7 @@ namespace ComputationalCluster.TaskManager
             {
                 SolvableProblems = new[] { "DVRP" },
                 ParallelThreads = TaskManagerContext.ParallelThreads,
-                Type = RegisterType.TaskManager
+                Type = new ComponentType { Type = ClientComponentType.TaskManager }
             };
             try
             {

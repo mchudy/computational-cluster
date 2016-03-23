@@ -25,7 +25,7 @@ namespace ComputationalCluster.Node
         {
             var message = new RegisterMessage()
             {
-                Type = RegisterType.ComputationalNode,
+                Type = new ComponentType { Type = ClientComponentType.ComputationalNode },
                 SolvableProblems = new[] { "DVRP" },
                 ParallelThreads = NodeContext.ParallelThreads
             };

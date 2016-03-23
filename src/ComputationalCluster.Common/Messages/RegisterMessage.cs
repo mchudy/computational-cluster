@@ -9,7 +9,7 @@ namespace ComputationalCluster.Common.Messages
     [XmlRoot(Namespace = "http://www.mini.pw.edu.pl/ucc/", IsNullable = false, ElementName = "Register")]
     public class RegisterMessage : Message
     {
-        public RegisterType Type { get; set; }
+        public ComponentType Type { get; set; }
 
         [XmlArrayItem("ProblemName", IsNullable = false)]
         public string[] SolvableProblems { get; set; }
@@ -28,9 +28,21 @@ namespace ComputationalCluster.Common.Messages
 
     }
 
+    [Serializable]
+    [System.ComponentModel.DesignerCategory("code")]
+    [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
+    public class ComponentType
+    {
+
+        [XmlAttribute(AttributeName = "port")]
+        public ushort port { get; set; }
+        [XmlText()]
+        public ClientComponentType Type { get; set; }
+    }
+
     [Serializable()]
     [XmlType(AnonymousType = true, Namespace = "http://www.mini.pw.edu.pl/ucc/")]
-    public enum RegisterType
+    public enum ClientComponentType
     {
         TaskManager,
         ComputationalNode,

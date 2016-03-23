@@ -18,7 +18,7 @@ namespace ComputationalCluster.Node.Tests
 
             node.Start();
 
-            messenger.Verify(m => m.SendMessage(It.Is<RegisterMessage>(msg => msg.Type == RegisterType.ComputationalNode)),
+            messenger.Verify(m => m.SendMessage(It.Is<RegisterMessage>(msg => msg.Type.Type == ClientComponentType.ComputationalNode)),
                 Times.Once());
         }
     }

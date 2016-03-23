@@ -72,7 +72,7 @@ namespace ComputationalCluster.Server.Tests
         {
             var message = new RegisterMessage
             {
-                Type = RegisterType.ComputationalNode,
+                Type = new ComponentType { Type = ClientComponentType.ComputationalNode },
                 ParallelThreads = 4,
                 SolvableProblems = new[] { "DVRP" }
             };

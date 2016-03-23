@@ -1,6 +1,5 @@
 ﻿using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -21,11 +20,11 @@ namespace ComputationalCluster.Server
         public IServerConfiguration Configuration { get; }
 
         public IList<TaskManager> TaskManagers { get; } = new List<TaskManager>();
+        public bool IsPrimary => Configuration.Mode == ServerMode.Primary;
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
         public List<BackupCommunicationServer> BackupServers { get; } = new List<BackupCommunicationServer>();
 
-        public ConcurrentQueue<ProblemInstance> ProblemQueue { get; } = new ConcurrentQueue<ProblemInstance>();
 
         public int GetNextComponentId()
         {
@@ -37,6 +36,6 @@ namespace ComputationalCluster.Server
             return Interlocked.Increment(ref currentProblemId);
         }
 
-        
+
     }
 }

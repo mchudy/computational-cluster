@@ -27,7 +27,7 @@ namespace ComputationalCluster.Common.Tests
             Assert.Equal(12u, message.Id);
             Assert.Equal(8, message.ParallelThreads);
             Assert.Equal(false, message.Deregister);
-            Assert.Equal(RegisterType.TaskManager, message.Type);
+            Assert.Equal(ClientComponentType.TaskManager, message.Type.Type);
         }
 
         [Fact]

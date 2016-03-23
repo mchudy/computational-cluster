@@ -26,15 +26,15 @@ namespace ComputationalCluster.Server.Handlers
         {
             int id = context.GetNextComponentId();
             logger.Info("Received register message");
-            switch (message.Type)
+            switch (message.Type.Type)
             {
-                case RegisterType.ComputationalNode:
+                case ClientComponentType.ComputationalNode:
                     HandleNode(message, id);
                     break;
-                case RegisterType.TaskManager:
+                case ClientComponentType.TaskManager:
                     HandleTaskManager(message, id);
                     break;
-                case RegisterType.CommunicationServer:
+                case ClientComponentType.CommunicationServer:
                     HandleBackupServer(client, id);
                     break;
             }

@@ -20,6 +20,7 @@ namespace ComputationalCluster.Server.Configuration
 
         public uint Timeout { get; set; }
 
+
         private void LoadSettings()
         {
             //TODO: validation
