@@ -11,7 +11,7 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(ErrMessage message, ITcpClient client)
         {
-            logger.Error("Received error message");
+            logger.Error($"Received error message {message.ErrorType}");
         }
     }
 }

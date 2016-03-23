@@ -23,6 +23,13 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(StatusMessage message, ITcpClient client)
         {
+            if (!context.IsPrimary)
+            {
+                logger.Error("Message not allowed in backup mode");
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                return;
+            }
+
             logger.Debug("Received status message from component of id: " + message.Id);
 
             List<Message> response = new List<Message>();

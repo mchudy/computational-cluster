@@ -38,8 +38,10 @@ namespace ComputationalCluster.Server.Handlers
                     HandleBackupServer(client, id, message.Type.port);
                     break;
             }
-            SendResponse(client, id);
-
+            if (context.IsPrimary)
+            {
+                SendResponse(client, id);
+            }
         }
 
         private void SendResponse(ITcpClient client, int id)
@@ -66,6 +68,7 @@ namespace ComputationalCluster.Server.Handlers
                 Address = client.EndPoint.Address.ToString(),
                 Port = (ushort)port
             });
+            //TODO: synchronize state
         }
 
         private void HandleTaskManager(RegisterMessage message, int id)

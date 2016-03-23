@@ -18,12 +18,18 @@ namespace ComputationalCluster.Server
 
         public void Add(ComputationalNode node)
         {
-            Task.Run(() => CheckNodeTimeout(node));
+            if (context.IsPrimary)
+            {
+                Task.Run(() => CheckNodeTimeout(node));
+            }
         }
 
         public void Add(TaskManager manager)
         {
-            Task.Run(() => CheckTaskManagerTimeout(manager));
+            if (context.IsPrimary)
+            {
+                Task.Run(() => CheckTaskManagerTimeout(manager));
+            }
         }
 
         private void CheckNodeTimeout(ComputationalNode node)

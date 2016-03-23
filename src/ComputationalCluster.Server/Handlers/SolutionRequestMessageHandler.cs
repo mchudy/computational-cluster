@@ -24,6 +24,13 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(SolutionRequestMessage message, ITcpClient client)
         {
+            if (!context.IsPrimary)
+            {
+                logger.Error("Message not allowed in backup mode");
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                return;
+            }
+
             int id = (int)message.Id;
             logger.Debug("Recieved SolutionRequestMessage of id: " + id);
             var problem = context.Problems.First(p => p.Id == id);

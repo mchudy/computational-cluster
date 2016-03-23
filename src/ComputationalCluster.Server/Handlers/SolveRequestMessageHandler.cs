@@ -8,7 +8,7 @@ namespace ComputationalCluster.Server.Handlers
 {
     public class SolveRequestMessageHandler : IMessageHandler<SolveRequestMessage>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SolveRequestMessageHandler));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(SolveRequestMessageHandler));
         private readonly IServerMessenger messenger;
         private readonly IServerContext context;
 
@@ -31,19 +31,22 @@ namespace ComputationalCluster.Server.Handlers
             };
             context.Problems.Add(problem);
             SendResponse(client.GetStream(), id);
-            Logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
+            logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
             //TODO: add some problems queue for task managers and nodes
         }
 
         private void SendResponse(INetworkStream stream, int id)
         {
+            if (!context.IsPrimary) return;
             var response = new SolveRequestResponseMessage
             {
                 Id = (ulong)id
             };
-            List<Message> messages = new List<Message>();
-            messages.Add(response);
-            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+            List<Message> messages = new List<Message>
+            {
+                response,
+                new NoOperationMessage() {BackupCommunicationServers = context.BackupServers}
+            };
             messenger.SendMessages(messages, stream);
         }
     }
