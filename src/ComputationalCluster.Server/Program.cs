@@ -2,9 +2,9 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
+using log4net;
 using System;
 using System.Configuration;
-using log4net;
 
 namespace ComputationalCluster.Server
 {
@@ -82,15 +82,18 @@ namespace ComputationalCluster.Server
                    .As<IMessageSerializer>();
             builder.RegisterType<ServerMessenger>()
                    .As<IServerMessenger>()
-                   .InstancePerLifetimeScope();
+                   .InstancePerDependency();
             builder.RegisterType<ServerContext>()
                    .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
-                   .AsClosedTypesOf(typeof(IMessageHandler<>));
+                   .AsClosedTypesOf(typeof(IMessageHandler<>))
+                   .InstancePerDependency();
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
-            builder.RegisterType<Server>().AsSelf();
+            builder.RegisterType<Server>()
+                   .AsSelf()
+                   .SingleInstance();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()
                    .SingleInstance();

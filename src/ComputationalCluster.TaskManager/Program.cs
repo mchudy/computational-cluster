@@ -1,11 +1,12 @@
 ﻿using Autofac;
 using Autofac.Core;
 using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messaging;
 using System;
 
 namespace ComputationalCluster.TaskManager
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
@@ -16,7 +17,8 @@ namespace ComputationalCluster.TaskManager
                 .SingleInstance();
             builder.RegisterType<TaskManagerContext>().AsSelf().SingleInstance();
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
-                   .AsClosedTypesOf(typeof(IResponseHandler<>));
+                   .AsClosedTypesOf(typeof(IResponseHandler<>))
+                   .InstancePerDependency();
 
             var container = builder.Build();
 

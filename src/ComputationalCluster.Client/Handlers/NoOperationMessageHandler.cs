@@ -1,22 +1,19 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
-using log4net;
 
-namespace ComputationalCluster.TaskManager.Handlers
+namespace ComputationalCluster.Client.Handlers
 {
     public class NoOperationMessageHandler : IResponseHandler<NoOperationMessage>
     {
-        private readonly TaskManagerContext context;
-        private static readonly ILog logger = LogManager.GetLogger(typeof(NoOperationMessageHandler));
+        private readonly ClientContext context;
 
-        public NoOperationMessageHandler(TaskManagerContext context)
+        public NoOperationMessageHandler(ClientContext context)
         {
             this.context = context;
         }
 
         public void HandleResponse(NoOperationMessage message)
         {
-            logger.Debug("Received NoOperation");
             context.BackupServers = message.BackupCommunicationServers;
         }
     }

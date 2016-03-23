@@ -26,10 +26,13 @@ namespace ComputationalCluster.Common.Networking
 
         public void WriteMessages(IList<Message> messages)
         {
+            string xml = "";
             foreach (var message in messages)
             {
-                WriteMessage(message);
+                xml += serializer.Serialize(message) + Constants.ETB;
             }
+            byte[] bytes = Encoding.UTF8.GetBytes(xml);
+            stream.Write(bytes, 0, bytes.Length);
         }
     }
 }

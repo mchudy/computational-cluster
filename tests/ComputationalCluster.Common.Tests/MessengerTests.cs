@@ -25,7 +25,8 @@ namespace ComputationalCluster.Common.Tests
             tcpConnectionMock.Setup(t => t.GetStream()).Returns(memoryStream);
             tcpConnectionFactoryMock.Setup(f => f.Create()).Returns(tcpConnectionMock.Object);
 
-            var messenger = new Messenger(configuration.Object, tcpConnectionFactoryMock.Object, factoryMock.Object);
+            var messenger = new Messenger(configuration.Object, tcpConnectionFactoryMock.Object, factoryMock.Object,
+                new Mock<IResponseDispatcher>().Object);
             messenger.SendMessage(new RegisterMessage());
 
             tcpConnectionMock.Verify(t => t.Connect("address", 1000), Times.Once());

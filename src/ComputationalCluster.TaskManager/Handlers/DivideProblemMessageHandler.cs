@@ -24,6 +24,7 @@ namespace ComputationalCluster.TaskManager
             var idleThread = context.TakeThread();
             if (idleThread != null)
             {
+                logger.Info($"Dividing problem {message.Id}");
                 idleThread.ProblemInstanceId = message.Id;
                 idleThread.ProblemType = message.ProblemType;
                 //TODO:

@@ -4,6 +4,7 @@ using log4net;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace ComputationalCluster.Common.Networking
 {
@@ -62,6 +63,7 @@ namespace ComputationalCluster.Common.Networking
                         break;
                     }
                     writer.Write(buffer, 0, bytesRead);
+                    Thread.Sleep(50);
                 } while (stream.DataAvailable);
                 return Encoding.UTF8.GetString(writer.ToArray());
             }
@@ -80,6 +82,7 @@ namespace ComputationalCluster.Common.Networking
                         break;
                     }
                     writer.Write(readBuffer, 0, bytesRead);
+                    Thread.Sleep(50);
                 } while (stream.DataAvailable);
                 return Encoding.UTF8.GetString(writer.ToArray());
             }

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using Moq;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace ComputationalCluster.TaskManager.Tests
             var messenger = new Mock<IMessenger>();
             messenger.Setup(m => m.SendMessage(It.IsAny<Message>()))
                 .Returns(new List<Message> { new RegisterResponseMessage() });
-            var node = new TaskManager(messenger.Object, new TaskManagerContext(), new Mock<IComponentContext>().Object);
+            var node = new TaskManager(messenger.Object, new TaskManagerContext());
 
             node.Start();
 
