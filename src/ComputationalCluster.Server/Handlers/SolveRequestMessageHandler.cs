@@ -44,7 +44,6 @@ namespace ComputationalCluster.Server.Handlers
             List<Message> messages = new List<Message>();
             messages.Add(response);
             messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
-
             messenger.SendMessages(messages, stream);
         }
     }

@@ -57,6 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackupHandlers\NoOperationMessageHandler.cs" />
+    <Compile Include="BackupHandlers\RegisterResponseMessageHandler.cs" />
     <Compile Include="State\ComputationalNode.cs" />
     <Compile Include="State\ClientComponent.cs" />
     <Compile Include="Configuration\ServerOptions.cs" />

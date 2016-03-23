@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
+using System.Collections.Generic;
 
 namespace ComputationalCluster.Server
 {

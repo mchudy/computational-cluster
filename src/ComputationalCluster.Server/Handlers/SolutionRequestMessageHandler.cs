@@ -4,6 +4,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -54,7 +55,9 @@ namespace ComputationalCluster.Server.Handlers
                 };
                 //TODO: add some problems queue for task managers and nodes
             }
-            messenger.SendMessage(response, client.GetStream());
+            messenger.SendMessages(new List<Message> { response,
+                new NoOperationMessage { BackupCommunicationServers = context.BackupServers }},
+                client.GetStream());
         }
     }
 }

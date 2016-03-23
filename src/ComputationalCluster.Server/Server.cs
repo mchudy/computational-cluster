@@ -34,7 +34,8 @@ namespace ComputationalCluster.Server
         {
             if (!context.IsPrimary)
             {
-                // Register();
+                logger.Info("Starting in backup mode...");
+                Register();
             }
             listener.Start();
             logger.Info($"Started listening on {listener.LocalEndpoint}");
@@ -48,7 +49,11 @@ namespace ComputationalCluster.Server
         {
             messenger.SendMessage(new RegisterMessage
             {
-                Type = new ComponentType { Type = ClientComponentType.CommunicationServer }
+                Type = new ComponentType
+                {
+                    Type = ClientComponentType.CommunicationServer,
+                    port = (ushort)context.Configuration.ListeningPort
+                }
             });
         }
 

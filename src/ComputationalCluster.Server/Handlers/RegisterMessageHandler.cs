@@ -35,7 +35,7 @@ namespace ComputationalCluster.Server.Handlers
                     HandleTaskManager(message, id);
                     break;
                 case ClientComponentType.CommunicationServer:
-                    HandleBackupServer(client, id);
+                    HandleBackupServer(client, id, message.Type.port);
                     break;
             }
             SendResponse(client, id);
@@ -58,13 +58,13 @@ namespace ComputationalCluster.Server.Handlers
 
         }
 
-        private void HandleBackupServer(ITcpClient client, int id)
+        private void HandleBackupServer(ITcpClient client, int id, int port)
         {
             logger.Info($"New backup server registered - id {id}");
             context.BackupServers.Add(new BackupCommunicationServer
             {
                 Address = client.EndPoint.Address.ToString(),
-                Port = (ushort)client.EndPoint.Port
+                Port = (ushort)port
             });
         }
 

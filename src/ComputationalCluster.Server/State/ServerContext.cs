@@ -23,8 +23,10 @@ namespace ComputationalCluster.Server
         public bool IsPrimary => Configuration.Mode == ServerMode.Primary;
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
-        public List<BackupCommunicationServer> BackupServers { get; } = new List<BackupCommunicationServer>();
+        public List<BackupCommunicationServer> BackupServers { get; set; } = new List<BackupCommunicationServer>();
 
+        // only for Backup Mode
+        public int Id { get; set; }
 
         public int GetNextComponentId()
         {

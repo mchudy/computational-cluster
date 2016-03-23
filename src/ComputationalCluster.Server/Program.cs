@@ -82,6 +82,9 @@ namespace ComputationalCluster.Server
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
                    .AsClosedTypesOf(typeof(IMessageHandler<>))
                    .InstancePerDependency();
+            builder.RegisterAssemblyTypes(typeof(Program).Assembly)
+                   .AsClosedTypesOf(typeof(IResponseHandler<>))
+                   .InstancePerDependency();
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
             builder.RegisterType<Server>()
