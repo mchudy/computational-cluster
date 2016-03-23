@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -12,10 +13,12 @@ namespace ComputationalCluster.Server.Handlers
         private static readonly ILog logger = LogManager.GetLogger(typeof(SolutionMessageHandler));
 
         private readonly IServerContext context;
+        private readonly IServerMessenger messenger;
 
-        public SolutionMessageHandler(IServerContext context)
+        public SolutionMessageHandler(IServerContext context, IServerMessenger messenger)
         {
             this.context = context;
+            this.messenger = messenger;
         }
 
         public void HandleMessage(SolutionMessage message, ITcpClient client)
@@ -50,6 +53,18 @@ namespace ComputationalCluster.Server.Handlers
                     problem.Status = ProblemStatus.Partial;
                 }
             }
+            SendResponse(client);
+
+        }
+        private void SendResponse(ITcpClient client)
+        {
+
+            List<Message> messages = new List<Message>();
+
+            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+
+            messenger.SendMessages(messages, client.GetStream());
+
         }
     }
 }

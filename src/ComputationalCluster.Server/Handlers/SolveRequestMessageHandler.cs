@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using log4net;
+using System.Collections.Generic;
 
 namespace ComputationalCluster.Server.Handlers
 {
@@ -40,7 +41,11 @@ namespace ComputationalCluster.Server.Handlers
             {
                 Id = (ulong)id
             };
-            messenger.SendMessage(response, stream);
+            List<Message> messages = new List<Message>();
+            messages.Add(response);
+            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+
+            messenger.SendMessages(messages, stream);
         }
     }
 }
