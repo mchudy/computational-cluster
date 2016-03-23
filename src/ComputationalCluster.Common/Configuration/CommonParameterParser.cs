@@ -1,10 +1,6 @@
 ﻿using log4net;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputationalCluster.Common
 {
@@ -28,6 +24,7 @@ namespace ComputationalCluster.Common
             }
 
             bool parse = CommandLine.Parser.Default.ParseArguments(parameters, options);
+
             if (parse)
             {
                 System.Configuration.Configuration config =
@@ -42,7 +39,7 @@ namespace ComputationalCluster.Common
                 {
                     config.AppSettings.Settings["ServerPort"].Value = options.ServerPort.ToString();
                 }
-                  
+
                 config.Save(ConfigurationSaveMode.Modified);
 
                 ConfigurationManager.RefreshSection("appSettings");
