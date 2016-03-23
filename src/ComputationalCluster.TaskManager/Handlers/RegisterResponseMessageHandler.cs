@@ -34,10 +34,10 @@ namespace ComputationalCluster.TaskManager.Handlers
             {
                 try
                 {
+                    Thread.Sleep(context.Timeout * 1000 / 2);
                     logger.Debug("Sending status");
                     var statusMessage = context.GetStatus();
                     messenger.SendMessage(statusMessage);
-                    Thread.Sleep(context.Timeout * 1000 / 2);
                 }
                 catch (SocketException)
                 {

@@ -2,9 +2,8 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
-using System;
-using System.Configuration;
 using log4net;
+using System.Configuration;
 
 namespace ComputationalCluster.Server
 {
@@ -34,8 +33,8 @@ namespace ComputationalCluster.Server
                 if (options.Backup)
                 {
                     config.AppSettings.Settings["Mode"].Value = ServerMode.Backup.ToString();
-                    config.AppSettings.Settings.Add("MasterServerAddress",options.MasterServerAddress.ToString());
-                    config.AppSettings.Settings.Add("MasterServerPort",options.MasterServerPort.ToString());
+                    config.AppSettings.Settings.Add("MasterServerAddress", options.MasterServerAddress.ToString());
+                    config.AppSettings.Settings.Add("MasterServerPort", options.MasterServerPort.ToString());
                     logger.Info($"Backup {options.Backup}");
                     logger.Info($"MAddres: {options.MasterServerAddress}");
                     logger.Info($"MPort: {options.MasterServerPort}");
@@ -51,7 +50,7 @@ namespace ComputationalCluster.Server
 
                 logger.Info($"Port: {options.ListeningPort}");
                 logger.Info($"Timeout: {options.Timeout}");
-             
+
 
                 return true;
             }
@@ -66,15 +65,18 @@ namespace ComputationalCluster.Server
                    .As<IMessageSerializer>();
             builder.RegisterType<ServerMessenger>()
                    .As<IServerMessenger>()
-                   .InstancePerLifetimeScope();
+                   .InstancePerDependency();
             builder.RegisterType<ServerContext>()
                    .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterAssemblyTypes(typeof(Program).Assembly)
-                   .AsClosedTypesOf(typeof(IMessageHandler<>));
+                   .AsClosedTypesOf(typeof(IMessageHandler<>))
+                   .InstancePerDependency();
             builder.RegisterType<AutofacMessageDispatcher>()
                    .AsImplementedInterfaces();
-            builder.RegisterType<Server>().AsSelf();
+            builder.RegisterType<Server>()
+                   .AsSelf()
+                   .SingleInstance();
             builder.RegisterType<ServerConfiguration>()
                    .As<IServerConfiguration>()
                    .SingleInstance();

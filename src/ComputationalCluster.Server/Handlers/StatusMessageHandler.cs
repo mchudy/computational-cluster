@@ -25,15 +25,13 @@ namespace ComputationalCluster.Server.Handlers
         {
             logger.Debug("Received status message from component of id: " + message.Id);
 
-            List<Message> response = new List<Message>
-            {
-                new NoOperationMessage() {BackupCommunicationServers = context.BackupServers}
-            };
+            List<Message> response = new List<Message>();
 
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
                 HandleNode(node, message, response);
+                response.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
                 messenger.SendMessages(response, client.GetStream());
                 return;
             }
@@ -41,6 +39,7 @@ namespace ComputationalCluster.Server.Handlers
             if (taskManager != null)
             {
                 HandleTaskManager(taskManager, message, response);
+                response.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
                 messenger.SendMessages(response, client.GetStream());
                 return;
             }

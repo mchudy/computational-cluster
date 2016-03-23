@@ -11,6 +11,8 @@ namespace ComputationalCluster.Common.Networking
         public TcpClientAdapter(TcpClient client)
         {
             this.client = client;
+            client.ReceiveTimeout = 5000;
+            client.SendTimeout = 5000;
         }
 
         public IPEndPoint EndPoint => client.Client.RemoteEndPoint as IPEndPoint;

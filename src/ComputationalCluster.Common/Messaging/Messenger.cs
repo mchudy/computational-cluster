@@ -34,15 +34,12 @@ namespace ComputationalCluster.Common.Messaging
                     writer.WriteMessage(message);
                     var reader = streamFactory.CreateReader(networkStream);
                     response = reader.ReadToEnd();
+                    foreach (var msg in response)
+                    {
+                        Task.Run(() => dispatcher.Dispatch(msg));
+                    }
                 }
             }
-            Task.Run(() =>
-            {
-                foreach (var msg in response)
-                {
-                    dispatcher.Dispatch(msg);
-                }
-            });
             return response;
         }
 

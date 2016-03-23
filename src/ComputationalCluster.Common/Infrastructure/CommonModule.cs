@@ -2,7 +2,6 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking.Factories;
 using ComputationalCluster.Common.Serialization;
-using System.Reflection;
 using Module = Autofac.Module;
 
 namespace ComputationalCluster.Common.Infrastructure
@@ -17,7 +16,8 @@ namespace ComputationalCluster.Common.Infrastructure
             builder.RegisterType<MessageSerializer>()
                    .AsImplementedInterfaces();
             builder.RegisterType<Messenger>()
-                   .AsImplementedInterfaces();
+                   .AsImplementedInterfaces()
+                   .InstancePerDependency();
             builder.RegisterType<TcpClientFactory>()
                    .AsImplementedInterfaces()
                    .SingleInstance();
