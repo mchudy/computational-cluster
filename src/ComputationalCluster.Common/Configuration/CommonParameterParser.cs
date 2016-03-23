@@ -12,30 +12,22 @@ namespace ComputationalCluster.Common
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CommonParameterParser));
 
-        public static void LoadCommandLineParameters()
+        public static void LoadCommandLineParameters(string[] args)
         {
             var options = new CommonOptions();
-            logger.Info($"Set Parameters: ");
-            var parameters = Console.ReadLine();
-            while (!ParseParameters(parameters, ref options))
-            {
-                logger.Info($"Set Parameters: ");
-                Console.ReadLine();
-            }
-            logger.Info($"Server Address: {options.ServerAddress}");
-            logger.Info($"Server Port: {options.ServerPort}");
+            ParseParameters(args, ref options);
         }
 
-        public static bool ParseParameters(string parameters, ref CommonOptions options)
+        public static bool ParseParameters(string[] parameters, ref CommonOptions options)
         {
             //Options will be taken form App.Settings
-            if (string.IsNullOrWhiteSpace(parameters))
+            if (parameters.Length == 0)
             {
                 logger.Info($"Setting default parameters");
                 return true;
             }
 
-            bool parse = CommandLine.Parser.Default.ParseArguments(parameters.Split(' '), options);
+            bool parse = CommandLine.Parser.Default.ParseArguments(parameters, options);
             if (parse)
             {
                 System.Configuration.Configuration config =

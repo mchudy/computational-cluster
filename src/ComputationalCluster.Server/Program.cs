@@ -14,34 +14,29 @@ namespace ComputationalCluster.Server
 
         static void Main(string[] args)
         {
-            LoadCommandLineParameters();
+            LoadCommandLineParameters(args);
             var container = BuildContainer();
             var server = container.Resolve<Server>();
             server.Start();
         }
 
-        private static void LoadCommandLineParameters()
+        private static void LoadCommandLineParameters(string[] args)
         {
             var options = new ServerOptions();
-            logger.Info($"Set Parameters: ");
-            var parameters = Console.ReadLine();
-            while (!ParseParameters(parameters, ref options))
-            {
-                logger.Info($"Set Parameters: ");
-                Console.ReadLine();
-            }
+            ParseParameters(args, ref options);
+         
         }
 
-        private static bool ParseParameters(string parameters, ref ServerOptions options)
+        private static bool ParseParameters(string[] parameters, ref ServerOptions options)
         {
             //Options will be taken form App.Settings
-            if (string.IsNullOrWhiteSpace(parameters))
+            if (parameters.Length == 0)
             {
-                logger.Info($"Default parameters will be taken");
+                logger.Info($"Setting default parameters");
                 return true;
             }
 
-            bool parse = CommandLine.Parser.Default.ParseArguments(parameters.Split(' '), options);
+            bool parse = CommandLine.Parser.Default.ParseArguments(parameters, options);
             if (parse)
             {
                 System.Configuration.Configuration config =

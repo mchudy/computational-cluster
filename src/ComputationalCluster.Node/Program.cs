@@ -29,7 +29,7 @@ namespace ComputationalCluster.Node
 
             var container = builder.Build();
 
-            CommonParameterParser.LoadCommandLineParameters();
+            CommonParameterParser.LoadCommandLineParameters(args);
             try
             {
                 var node = container.Resolve<ComputationalNode>();

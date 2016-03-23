@@ -18,7 +18,7 @@ namespace ComputationalCluster.Common.Tests
         public void CorrectInputTest_ShouldBeCorrect()
         {
             CommonOptions options = new CommonOptions();
-            CommonParameterParser.ParseParameters(correctParameters, ref options);
+            CommonParameterParser.ParseParameters(correctParameters.Split(' '), ref options);
             Assert.Equal(correctPort, options.ServerPort);
             Assert.Equal(correctAddress, options.ServerAddress);
         }
@@ -27,7 +27,7 @@ namespace ComputationalCluster.Common.Tests
         public void EmptyInputTest_ShouldBeCorrect()
         {
             CommonOptions options = new CommonOptions();
-            CommonParameterParser.ParseParameters("", ref options);
+            CommonParameterParser.ParseParameters(new string[] { "" }, ref options);
             Assert.Equal(0, options.ServerPort);
             Assert.Equal(null, options.ServerAddress);
         }
