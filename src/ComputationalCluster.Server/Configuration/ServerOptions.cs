@@ -1,10 +1,5 @@
 ﻿using CommandLine;
 using CommandLine.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputationalCluster.Server.Configuration
 {
@@ -22,7 +17,7 @@ namespace ComputationalCluster.Server.Configuration
             HelpText = "Listening port of Master Server ")]
         public int MasterServerPort { get; set; }
 
-        [Option("time", Required = false,
+        [Option('t', "time", Required = false,
             HelpText = "Timeout")]
         public uint Timeout { get; set; }
 

@@ -22,7 +22,7 @@ namespace ComputationalCluster.TaskManager
 
             var container = builder.Build();
 
-            CommonParameterParser.LoadCommandLineParameters();
+            CommonParameterParser.LoadCommandLineParameters(args);
 
             try
             {

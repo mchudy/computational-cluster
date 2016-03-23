@@ -14,7 +14,7 @@ namespace ComputationalCluster.Client
 
         static void Main(string[] args)
         {
-            CommonParameterParser.LoadCommandLineParameters();
+            CommonParameterParser.LoadCommandLineParameters(args);
 
             var builder = new ContainerBuilder();
 
