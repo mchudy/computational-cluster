@@ -21,5 +21,7 @@ namespace ComputationalCluster.Common.Objects
 
         [System.Xml.Serialization.XmlAttribute()]
         public ushort Port { get; set; }
+
+        public int Id { get; set; }
     }
 }

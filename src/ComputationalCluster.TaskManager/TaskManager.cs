@@ -53,6 +53,11 @@ namespace ComputationalCluster.TaskManager
                     context.Id = (int)response.Id;
                     logger.Info($"Registered with id {context.Id}");
                 }
+                if (responses.Count > 1)
+                {
+                    var noOp = responses[1] as NoOperationMessage;
+                    logger.Info($"Received NoOperationMessage");
+                }
                 Task.Run(() => SendStatus());
             }
             catch (Exception e)

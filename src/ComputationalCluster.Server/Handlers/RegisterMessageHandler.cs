@@ -39,6 +39,7 @@ namespace ComputationalCluster.Server.Handlers
                     break;
             }
             SendResponse(client, id);
+
         }
 
         private void SendResponse(ITcpClient client, int id)
@@ -46,16 +47,21 @@ namespace ComputationalCluster.Server.Handlers
             var responseMessage = new RegisterResponseMessage
             {
                 Id = (ulong)id,
-                Timeout = context.Configuration.Timeout,
-                BackupCommunicationServers = new List<BackupCommunicationServer>()
+                Timeout = context.Configuration.Timeout
             };
-            messenger.SendMessage(responseMessage, client.GetStream());
+
+            List<Message> messages = new List<Message>();
+            messages.Add(responseMessage);
+            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+
+            messenger.SendMessages(messages, client.GetStream());
+
         }
 
         private void HandleBackupServer(ITcpClient client, int id)
         {
             logger.Info($"New backup server registered - id {id}");
-            context.BackupServers.Add(new BackupServer
+            context.BackupServers.Add(new BackupCommunicationServer
             {
                 Id = id,
                 Address = client.EndPoint.Address.ToString(),

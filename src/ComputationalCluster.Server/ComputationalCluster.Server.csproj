@@ -57,7 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="State\BackupServer.cs" />
     <Compile Include="State\ComputationalNode.cs" />
     <Compile Include="State\ClientComponent.cs" />
     <Compile Include="Configuration\ServerOptions.cs" />

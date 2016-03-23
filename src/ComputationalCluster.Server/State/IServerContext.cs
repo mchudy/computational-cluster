@@ -1,4 +1,5 @@
-﻿using ComputationalCluster.Server.Configuration;
+﻿using ComputationalCluster.Common.Objects;
+using ComputationalCluster.Server.Configuration;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ namespace ComputationalCluster.Server
 {
     public interface IServerContext
     {
-        IList<BackupServer> BackupServers { get; }
+        List<BackupCommunicationServer> BackupServers { get; }
         IServerConfiguration Configuration { get; }
         IList<ComputationalNode> Nodes { get; }
         ConcurrentQueue<ProblemInstance> ProblemQueue { get; }

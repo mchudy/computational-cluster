@@ -55,7 +55,7 @@ namespace ComputationalCluster.Server
 
                 return true;
             }
-            return false;
+            return true; //false
         }
 
         private static IContainer BuildContainer()

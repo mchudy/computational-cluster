@@ -16,6 +16,7 @@ namespace ComputationalCluster.TaskManager.Handlers
         public void HandleResponse(NoOperationMessage message)
         {
             logger.Debug("Received NoOperation");
+            System.Console.WriteLine("halo");
             context.BackupServers = message.BackupCommunicationServers;
         }
     }

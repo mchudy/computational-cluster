@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ComputationalCluster.Server.Handlers
@@ -23,6 +24,11 @@ namespace ComputationalCluster.Server.Handlers
         public void HandleMessage(StatusMessage message, ITcpClient client)
         {
             logger.Debug("Received status message from component of id: " + message.Id);
+
+            List<Message> messages = new List<Message>();
+            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+            messenger.SendMessages(messages, client.GetStream());
+
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
             {
@@ -36,6 +42,8 @@ namespace ComputationalCluster.Server.Handlers
                 return;
             }
             logger.Error("Status message from not registered component");
+
+
         }
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, INetworkStream stream)
