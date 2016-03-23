@@ -3,7 +3,6 @@ using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Server.Configuration;
 using log4net;
-using System;
 using System.Configuration;
 
 namespace ComputationalCluster.Server
@@ -24,7 +23,7 @@ namespace ComputationalCluster.Server
         {
             var options = new ServerOptions();
             ParseParameters(args, ref options);
-         
+
         }
 
         private static bool ParseParameters(string[] parameters, ref ServerOptions options)
@@ -35,7 +34,7 @@ namespace ComputationalCluster.Server
                 logger.Info($"Setting default parameters");
                 return true;
             }
-
+            CommonParameterParser.AcceptSingleDashes(parameters);
             bool parse = CommandLine.Parser.Default.ParseArguments(parameters, options);
             if (parse)
             {
