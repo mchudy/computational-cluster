@@ -36,7 +36,6 @@ namespace ComputationalCluster.Server.Handlers
                     {
                         case SolutionType.Partial:
                             logger.Info($"Received {solution.TaskId} partial solution for problem {problem.Id}");
-                            //TODO: better use dictionary, TaskIds are not specified to be contiguous
                             var partial = problem.PartialProblems.FirstOrDefault(p => p.Problem.TaskId == solution.TaskId);
                             partial.Solution = solution.Data;
                             partial.State = PartialProblemState.Computed;

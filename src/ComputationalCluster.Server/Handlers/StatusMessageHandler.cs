@@ -113,20 +113,25 @@ namespace ComputationalCluster.Server.Handlers
 
         private void HandleNode(ComputationalNode node, StatusMessage message, IList<Message> messages)
         {
-            if (!AnyIdleThread(message)) return;
             node.ReceivedStatus = true;
+            var idleThreads = message.Threads.Count(t => t.State == StatusThreadState.Idle);
+            if (idleThreads == 0) return;
             var problemToSolve = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Divided);
             if (problemToSolve != null)
             {
-                var partial = problemToSolve.PartialProblems.FirstOrDefault(pp => pp.State == PartialProblemState.New);
-                if (partial == null) return;
+                var partials = problemToSolve.PartialProblems.Where(pp => pp.State == PartialProblemState.New)
+                    .Take(idleThreads).ToList();
+                if (!partials.Any()) return;
+                foreach (var partial in partials)
+                {
+                    partial.State = PartialProblemState.ComputationOngoing;
+                    partial.NodeId = node.Id;
+                }
                 messages.Add(new PartialProblemsMessage
                 {
                     Id = (ulong)problemToSolve.Id,
-                    PartialProblems = new[] { partial.Problem }
+                    PartialProblems = partials.Select(p => p.Problem).ToArray()
                 });
-                partial.State = PartialProblemState.ComputationOngoing;
-                partial.NodeId = node.Id;
             }
         }
 

@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,38 +28,40 @@ namespace ComputationalCluster.Node.Handlers
             context.SolvingTimeout = message.SolvingTimeout;
             context.CurrentProblemType = message.ProblemType;
             context.CurrentPartialProblems = message.PartialProblems;
-            CreateNewSolutions();
-            //TODO
-            Task.Run(() => ComputeSolutions(message.Id));
+            foreach (var partialProblem in message.PartialProblems)
+            {
+                logger.Info($"Solving partial {partialProblem.TaskId} for problem {message.Id}");
+                var thread = context.TakeThread();
+                if (thread == null)
+                {
+                    logger.Error("No idle thread available");
+                }
+                Task.Run(() => ComputeSolutions(message.Id, thread, partialProblem));
+            }
         }
 
-        private void ComputeSolutions(ulong id)
+        private void ComputeSolutions(ulong id, StatusThread thread, PartialProblem partialProblem)
         {
-            Thread.Sleep(2000);
-            logger.Info("Sending solutions");
-            foreach (var solution in context.CurrentSolutions)
-            {
-                solution.Type = SolutionType.Partial;
-                solution.Data = new byte[5];
-            }
+            Thread.Sleep(new Random().Next(7) * 500);
+            logger.Info($"Sending solution for partial {partialProblem.TaskId} from problem {id}");
             messenger.SendMessage(new SolutionMessage
             {
                 Id = id,
-                Solutions = context.CurrentSolutions.ToArray()
+                Solutions = CreateSolution(partialProblem).ToArray()
             });
+            logger.Info($"Sending solution for partial {partialProblem.TaskId} from problem {id}");
+            context.ReleaseThread(thread);
         }
 
-        private void CreateNewSolutions()
+        private IList<Solution> CreateSolution(PartialProblem partialProblem)
         {
-            context.CurrentSolutions = new List<Solution>();
-            foreach (var partialproblem in context.CurrentPartialProblems)
+            var solution = new List<Solution>();
+            solution.Add(new Solution
             {
-                context.CurrentSolutions.Add(new Solution
-                {
-                    TaskId = partialproblem.TaskId,
-                    Type = SolutionType.Ongoing
-                });
-            }
+                TaskId = partialProblem.TaskId,
+                Type = SolutionType.Partial
+            });
+            return solution;
         }
     }
 }
