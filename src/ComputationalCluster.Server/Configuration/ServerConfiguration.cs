@@ -14,9 +14,9 @@ namespace ComputationalCluster.Server.Configuration
 
         public ServerMode Mode { get; set; }
 
-        public string MasterServerAddress { get; set; }
+        public string ServerAddress { get; set; }
 
-        public int MasterServerPort { get; set; }
+        public int ServerPort { get; set; }
 
         public uint Timeout { get; set; }
 
@@ -28,8 +28,8 @@ namespace ComputationalCluster.Server.Configuration
             Mode = (ServerMode)Enum.Parse(typeof(ServerMode), settings[nameof(Mode)]);
             if (Mode == ServerMode.Backup)
             {
-                MasterServerAddress = settings[nameof(MasterServerAddress)];
-                MasterServerPort = int.Parse(settings[nameof(MasterServerPort)]);
+                ServerAddress = settings["MasterServerAddress"];
+                ServerPort = int.Parse(settings["MasterServerPort"]);
             }
             Timeout = uint.Parse(settings[nameof(Timeout)]);
         }

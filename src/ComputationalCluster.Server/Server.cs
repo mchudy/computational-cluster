@@ -15,13 +15,15 @@ namespace ComputationalCluster.Server
 
         private readonly IMessageDispatcher messageDispatcher;
         private readonly IMessageSerializer serializer;
+        private readonly IMessenger messenger;
         private readonly ITcpListener listener;
 
         public Server(IMessageDispatcher messageDispatcher, IMessageSerializer serializer,
-            IServerConfiguration configuration)
+            IServerConfiguration configuration, IMessenger messenger)
         {
             this.messageDispatcher = messageDispatcher;
             this.serializer = serializer;
+            this.messenger = messenger;
             var tcpListener = new TcpListener(IPAddress.Any, configuration.ListeningPort);
             listener = new TcpListenerAdapter(tcpListener);
         }

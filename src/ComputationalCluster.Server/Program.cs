@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messaging;
-using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
 using log4net;
 using System;
@@ -78,8 +78,7 @@ namespace ComputationalCluster.Server
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<MessageSerializer>()
-                   .As<IMessageSerializer>();
+            builder.RegisterAssemblyModules(typeof(Constants).Assembly);
             builder.RegisterType<ServerMessenger>()
                    .As<IServerMessenger>()
                    .InstancePerDependency();
@@ -95,7 +94,7 @@ namespace ComputationalCluster.Server
                    .AsSelf()
                    .SingleInstance();
             builder.RegisterType<ServerConfiguration>()
-                   .As<IServerConfiguration>()
+                   .AsImplementedInterfaces()
                    .SingleInstance();
             builder.RegisterType<StatusChecker>()
                    .AsImplementedInterfaces()
