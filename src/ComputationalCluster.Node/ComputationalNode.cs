@@ -90,7 +90,7 @@ namespace ComputationalCluster.Node
 
         private void ComputeSolutions(ulong id)
         {
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             logger.Info("Sending solutions");
             foreach (var solution in context.CurrentSolutions)
             {
@@ -121,7 +121,8 @@ namespace ComputationalCluster.Node
         {
             var statusMessage = new StatusMessage
             {
-                Id = id
+                Id = id,
+                Threads = threads
             };
             return statusMessage;
         }

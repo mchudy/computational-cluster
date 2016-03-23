@@ -41,7 +41,7 @@ namespace ComputationalCluster.Server.Handlers
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, INetworkStream stream)
         {
             taskManager.ReceivedStatus = true;
-            if (message.Threads.Any(t => t.State == StatusThreadState.Idle))
+            if (AnyIdleThread(message))
             {
                 if (TryDivideProblem(taskManager, stream)) return;
                 TryMergeProblem(taskManager, stream);
@@ -65,8 +65,8 @@ namespace ComputationalCluster.Server.Handlers
             {
                 logger.Info($"Sending problem {problemToMerge.Id} for task manager to merge");
                 problemToMerge.Status = ProblemStatus.Merging;
-                var solutions = new Solution[problemToMerge.Solutions.Length];
-                for (int i = 0; i < problemToMerge.Solutions.Length; i++)
+                var solutions = new Solution[problemToMerge.PartialProblems.Length];
+                for (int i = 0; i < problemToMerge.PartialProblems.Length; i++)
                 {
                     solutions[i] = new Solution
                     {
@@ -94,7 +94,7 @@ namespace ComputationalCluster.Server.Handlers
                 messenger.SendMessage(new DivideProblemMessage
                 {
                     Id = (ulong)problemToDivide.Id,
-                    ComputationalNodes = 10,
+                    ComputationalNodes = 10 /*TODO*/,
                     NodeID = (ulong)taskManager.Id,
                     ProblemType = problemToDivide.ProblemType
                 }, stream);
@@ -105,17 +105,25 @@ namespace ComputationalCluster.Server.Handlers
 
         private void HandleNode(ComputationalNode node, StatusMessage message, INetworkStream stream)
         {
+            if (!AnyIdleThread(message)) return;
             node.ReceivedStatus = true;
             var problemToSolve = context.Problems.FirstOrDefault(p => p.Status == ProblemStatus.Divided);
             if (problemToSolve != null)
             {
+                var partial = problemToSolve.PartialProblems.FirstOrDefault(pp => pp.State == PartialProblemState.New);
+                if (partial == null) return;
                 messenger.SendMessage(new PartialProblemsMessage
                 {
                     Id = (ulong)problemToSolve.Id,
-                    PartialProblems = problemToSolve.PartialProblems
+                    PartialProblems = new[] { partial.Problem }
                 }, stream);
-                problemToSolve.Status = ProblemStatus.ComputationOngoing;
+                partial.State = PartialProblemState.ComputationOngoing;
             }
+        }
+
+        private static bool AnyIdleThread(StatusMessage message)
+        {
+            return message.Threads.Any(t => t.State == StatusThreadState.Idle);
         }
     }
 }

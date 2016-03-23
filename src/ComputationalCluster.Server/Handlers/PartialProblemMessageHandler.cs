@@ -20,8 +20,11 @@ namespace ComputationalCluster.Server.Handlers
             if (problem != null)
             {
                 problem.Status = ProblemStatus.Divided;
-                problem.PartialProblems = message.PartialProblems;
-                problem.Solutions = new byte[problem.PartialProblems.Length][];
+                problem.PartialProblems = message.PartialProblems.Select(p => new PartialProblemInstance
+                {
+                    Problem = p,
+                    State = PartialProblemState.New
+                }).ToArray();
             }
         }
     }

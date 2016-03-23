@@ -20,7 +20,7 @@ namespace ComputationalCluster.TaskManager
             }
         }
 
-        public const int ParallelThreads = 10;
+        public const int ParallelThreads = 3;
         public int Id { get; set; }
 
         public StatusThread[] Threads { get; } = new StatusThread[ParallelThreads];

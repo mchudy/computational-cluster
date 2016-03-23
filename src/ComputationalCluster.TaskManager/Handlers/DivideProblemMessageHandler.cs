@@ -24,28 +24,24 @@ namespace ComputationalCluster.TaskManager
             var idleThread = context.TakeThread();
             if (idleThread != null)
             {
-                idleThread.State = StatusThreadState.Busy;
                 idleThread.ProblemInstanceId = message.Id;
                 idleThread.ProblemType = message.ProblemType;
                 //TODO:
                 Thread.Sleep(5000);
+                var partialProblems = new PartialProblem[message.ComputationalNodes];
+                for (int i = 0; i < partialProblems.Length; i++)
+                {
+                    partialProblems[i] = new PartialProblem
+                    {
+                        TaskId = (ulong)i,
+                        NodeID = (ulong)context.Id
+                    };
+                }
                 messenger.SendMessage(new PartialProblemsMessage
                 {
                     Id = message.Id,
                     ProblemType = message.ProblemType,
-                    PartialProblems = new[]
-                    {
-                        new PartialProblem
-                        {
-                            TaskId = 0,
-                            NodeID = (ulong) context.Id
-                        },
-                        new PartialProblem
-                        {
-                            TaskId = 1,
-                            NodeID = (ulong) context.Id
-                        }
-                    }
+                    PartialProblems = partialProblems
                 });
                 logger.Info($"Sending partial problems for problem {message.Id}");
                 context.ReleaseThread(idleThread);

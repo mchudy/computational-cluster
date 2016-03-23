@@ -34,7 +34,9 @@ namespace ComputationalCluster.Server.Handlers
                         case SolutionType.Partial:
                             logger.Info($"Received {solution.TaskId} partial solution for problem {problem.Id}");
                             //TODO: better use dictionary, TaskIds are not specified to be contiguous
-                            problem.Solutions[solution.TaskId] = solution.Data;
+                            var partial = problem.PartialProblems.FirstOrDefault(p => p.Problem.TaskId == solution.TaskId);
+                            partial.Solution = solution.Data;
+                            partial.State = PartialProblemState.Computed;
                             break;
                         case SolutionType.Final:
                             logger.Info($"Received final solution for problem {problem.Id}");
@@ -43,7 +45,7 @@ namespace ComputationalCluster.Server.Handlers
                             break;
                     }
                 }
-                if (problem.Solutions.All(b => b != null) && problem.Status == ProblemStatus.ComputationOngoing)
+                if (problem.PartialProblems.All(pp => pp.State == PartialProblemState.Computed) && problem.Status == ProblemStatus.Divided)
                 {
                     problem.Status = ProblemStatus.Partial;
                 }

@@ -32,7 +32,7 @@ namespace ComputationalCluster.Server.Tests
         [Fact]
         public void WhenFinalSolutionHasNotYetBeenComputed_ShouldReturnOngoingType()
         {
-            problem.Status = ProblemStatus.ComputationOngoing;
+            problem.Status = ProblemStatus.Divided;
             var handler = new SolutionRequestMessageHandler(messenger.Object, context.Object);
 
             handler.HandleMessage(message, tcpClient.Object);
