@@ -118,6 +118,7 @@ namespace ComputationalCluster.Server.Handlers
                     PartialProblems = new[] { partial.Problem }
                 }, stream);
                 partial.State = PartialProblemState.ComputationOngoing;
+                partial.NodeId = node.Id;
             }
         }
 

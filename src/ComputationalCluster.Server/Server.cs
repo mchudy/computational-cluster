@@ -39,7 +39,7 @@ namespace ComputationalCluster.Server
         private void AcceptClient(ITcpListener server)
         {
             ITcpClient client = server.AcceptTcpClient();
-            logger.Info($"New connection {client.EndPoint}");
+            logger.Debug($"New connection {client.EndPoint}");
             try
             {
                 using (var stream = client.GetStream())

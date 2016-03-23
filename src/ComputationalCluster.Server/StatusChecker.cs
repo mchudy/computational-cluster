@@ -34,9 +34,20 @@ namespace ComputationalCluster.Server
                 //TODO: ensure atomicity
                 if (!node.ReceivedStatus)
                 {
+                    logger.Error($"FAILURE - node with id {node.Id}");
+                    foreach (var problem in context.Problems)
+                    {
+                        foreach (var partial in problem.PartialProblems)
+                        {
+                            if (partial.NodeId == node.Id)
+                            {
+                                partial.State = PartialProblemState.New;
+                                logger.Info($"Resetting status of partial {partial.Problem.TaskId} from problem {problem.Id} to new");
+                            }
+                        }
+                    }
                     //TODO: proper deregistration handling
                     context.Nodes.Remove(node);
-                    logger.Error($"FAILURE - node with id {node.Id}");
                     break;
                 }
                 node.ReceivedStatus = false;
