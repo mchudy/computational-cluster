@@ -3,6 +3,7 @@ using Autofac.Core;
 using ComputationalCluster.Common;
 using log4net;
 using System;
+using System.Configuration;
 
 namespace ComputationalCluster.Client
 {
@@ -19,6 +20,8 @@ namespace ComputationalCluster.Client
                 .AsSelf()
                 .SingleInstance();
 
+            LoadCommandLineSettings(args);
+
             var container = builder.Build();
 
             try
@@ -31,6 +34,26 @@ namespace ComputationalCluster.Client
                 logger.Error(e.InnerException.Message);
             }
             Console.ReadLine();
+        }
+
+        private static void LoadCommandLineSettings(string[] args)
+        {
+            ClientOptions options = new ClientOptions();
+            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                System.Configuration.Configuration config =
+                   ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                config.AppSettings.Settings["ServerAddress"].Value = options.ServerAddress.ToString();
+                config.AppSettings.Settings["ServerPort"].Value = options.ServerPort.ToString();
+
+                config.Save(ConfigurationSaveMode.Modified);
+
+                ConfigurationManager.RefreshSection("appSettings");
+
+                logger.Info($"Server Address: {options.ServerAddress}");
+                logger.Info($"Server Port: {options.ServerPort}");
+            }
         }
     }
 }

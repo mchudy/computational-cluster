@@ -3,31 +3,58 @@ using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Serialization;
 using ComputationalCluster.Server.Configuration;
 using System;
+using System.Configuration;
+using log4net;
 
 namespace ComputationalCluster.Server
 {
     class Program
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
+            if (!LoadCommandLineParameters(args)) return;
             var container = BuildContainer();
             var server = container.Resolve<Server>();
+            server.Start();
+        }
 
-            //server.Start();
-
+        private static bool LoadCommandLineParameters(string[] args)
+        {
             var options = new ServerOptions();
+
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-                Console.WriteLine("Port: {0}", options.ListeningPort);
-                Console.WriteLine("Timeout: {0}", options.Timeout);
-                Console.WriteLine("Backup {0}", options.Backup);
-                Console.WriteLine("MAddres: {0}", options.MasterServerAddress);
-                Console.WriteLine("MPort: {0}", options.MasterServerPort);
+                System.Configuration.Configuration config =
+                    ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                config.AppSettings.Settings["ListeningPort"].Value = options.ListeningPort.ToString();
+                config.AppSettings.Settings["Timeout"].Value = options.Timeout.ToString();
+                if (options.Backup)
+                {
+                    config.AppSettings.Settings["Mode"].Value = ServerMode.Backup.ToString();
+                    config.AppSettings.Settings.Add("MasterServerAddress",options.MasterServerAddress.ToString());
+                    config.AppSettings.Settings.Add("MasterServerPort",options.MasterServerPort.ToString());
+                }
+                else
+                {
+                    config.AppSettings.Settings["Mode"].Value = ServerMode.Primary.ToString();
+                }
+
+                config.Save(ConfigurationSaveMode.Modified);
+
+                ConfigurationManager.RefreshSection("appSettings");
+
+                logger.Info($"Port: {options.ListeningPort}");
+                logger.Info($"Timeout: {options.Timeout}");
+                logger.Info($"Backup {options.Backup}");
+                logger.Info($"MAddres: {options.MasterServerAddress}");
+                logger.Info($"MPort: {options.MasterServerPort}");
+
+                return true;
             }
-            else
-            {
-                Console.WriteLine(options.GetUsage());
-            }
+            return false;
         }
 
         private static IContainer BuildContainer()
