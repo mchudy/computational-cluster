@@ -1,6 +1,7 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Networking.Factories;
+using log4net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace ComputationalCluster.Common.Messaging
 {
     public class Messenger : IMessenger
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Messenger));
+
         private readonly IConfiguration configuration;
         private readonly ITcpClientFactory clientFactory;
         private readonly IMessageStreamFactory streamFactory;
@@ -24,11 +27,12 @@ namespace ComputationalCluster.Common.Messaging
 
         public void SendMessage(Message message)
         {
-            using (ITcpClient client = clientFactory.Create())
+            bool gotPrimaryServerError = true;
+            while (gotPrimaryServerError)
             {
-                using (var networkStream = OpenStream(client))
+                using (ITcpClient client = clientFactory.Create())
                 {
-                    while (true)
+                    using (var networkStream = OpenStream(client))
                     {
                         var writer = streamFactory.CreateWriter(networkStream);
                         writer.WriteMessage(message);
@@ -39,17 +43,23 @@ namespace ComputationalCluster.Common.Messaging
                             var err = (ErrMessage)response[0];
                             if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)
                             {
+                                logger.Error("Got NotAPrimaryServer error. Trying again...");
                                 Thread.Sleep(100);
-                                continue;
+                            }
+                            else
+                            {
+                                gotPrimaryServerError = false;
                             }
                         }
-                        foreach (var msg in response)
+                        else
                         {
-                            Task.Run(() => dispatcher.Dispatch(msg));
+                            gotPrimaryServerError = false;
+                            foreach (var msg in response)
+                            {
+                                Task.Run(() => dispatcher.Dispatch(msg));
+                            }
                         }
-                        break;
                     }
-
                 }
             }
         }

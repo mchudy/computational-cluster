@@ -153,6 +153,7 @@ namespace ComputationalCluster.Server.Handlers
                 {
                     partial.State = PartialProblemState.ComputationOngoing;
                     partial.NodeId = node.Id;
+                    partial.Problem.NodeID = (ulong)node.Id;
                 }
                 messages.Add(new PartialProblemsMessage
                 {

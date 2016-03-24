@@ -60,6 +60,7 @@ namespace ComputationalCluster.Node.Handlers
                 logger.Error("No backup servers");
                 return false;
             }
+            logger.Info("Switching to backup");
             var backupserver = context.BackupServers[0];
             configuration.ServerAddress = backupserver.Address;
             configuration.ServerPort = backupserver.Port;

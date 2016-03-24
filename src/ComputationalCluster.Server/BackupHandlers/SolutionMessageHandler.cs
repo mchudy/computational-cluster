@@ -19,6 +19,7 @@ namespace ComputationalCluster.Server.BackupHandlers
 
         public void HandleResponse(SolutionMessage message)
         {
+            logger.Info("Received partial problems");
             context.BackupMessages.Enqueue(message);
             var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
             if (problem != null)
@@ -49,6 +50,8 @@ namespace ComputationalCluster.Server.BackupHandlers
                     problem.Status = ProblemStatus.Partial;
                 }
             }
+
+            logger.Fatal(context.Problems[0].Status.ToString());
         }
     }
 }

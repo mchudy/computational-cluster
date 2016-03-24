@@ -44,13 +44,13 @@ namespace ComputationalCluster.Node.Handlers
         {
             Thread.Sleep(new Random().Next(7) * 500);
             logger.Info($"Sending solution for partial {partialProblem.TaskId} from problem {id}");
+            context.ReleaseThread(thread);
             messenger.SendMessage(new SolutionMessage
             {
                 Id = id,
                 Solutions = CreateSolution(partialProblem).ToArray()
             });
             logger.Info($"Sending solution for partial {partialProblem.TaskId} from problem {id}");
-            context.ReleaseThread(thread);
         }
 
         private IList<Solution> CreateSolution(PartialProblem partialProblem)
