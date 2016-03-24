@@ -29,7 +29,7 @@ namespace ComputationalCluster.Server.BackupHandlers
 
         private void HandleTaskManager(RegisterMessage message)
         {
-            if (message.DeregisterSpecified && message.Deregister)
+            if (message.Deregister)
             {
                 DeregisterTaskManager(message);
             }
@@ -61,7 +61,7 @@ namespace ComputationalCluster.Server.BackupHandlers
 
         private void HandleNode(RegisterMessage message)
         {
-            if (message.DeregisterSpecified && message.Deregister)
+            if (message.Deregister)
             {
                 DeregisterNode(message);
             }

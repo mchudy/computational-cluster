@@ -13,11 +13,13 @@ namespace ComputationalCluster.Server.BackupHandlers
         private static readonly ILog logger = LogManager.GetLogger(typeof(RegisterResponseMessageHandler));
         private readonly IServerContext context;
         private readonly IMessenger messenger;
+        private readonly IStatusChecker checker;
 
-        public RegisterResponseMessageHandler(IServerContext context, IMessenger messenger)
+        public RegisterResponseMessageHandler(IServerContext context, IMessenger messenger, IStatusChecker checker)
         {
             this.context = context;
             this.messenger = messenger;
+            this.checker = checker;
         }
 
         public void HandleResponse(RegisterResponseMessage message)
@@ -52,8 +54,18 @@ namespace ComputationalCluster.Server.BackupHandlers
         {
             logger.Error("Primary server failure");
             logger.Info("Switching to primary mode");
-            context.Configuration.Mode = ServerMode.Primary;
             context.BackupServers.RemoveAt(0);
+            context.Configuration.Mode = ServerMode.Primary;
+            foreach (var node in context.Nodes)
+            {
+                node.ReceivedStatus = true;
+                checker.Add(node);
+            }
+            foreach (var taskManager in context.TaskManagers)
+            {
+                taskManager.ReceivedStatus = true;
+                checker.Add(taskManager);
+            }
         }
     }
 }

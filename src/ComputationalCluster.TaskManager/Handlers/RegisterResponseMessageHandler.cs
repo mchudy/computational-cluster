@@ -1,12 +1,10 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using log4net;
-using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Configuration;
-using ComputationalCluster.Common;
 
 namespace ComputationalCluster.TaskManager.Handlers
 {
@@ -47,41 +45,23 @@ namespace ComputationalCluster.TaskManager.Handlers
                 catch (SocketException)
                 {
                     logger.Error("Server failure");
-                    //TODO: try register to backup
-                    RegisterToBackup();
-                    break;
+                    if (!RegisterToBackup())
+                        break;
                 }
             }
         }
 
-        private void RegisterToBackup()
+        private bool RegisterToBackup()
         {
             if (context.BackupServers.Count == 0)
             {
                 logger.Error("No backup servers");
-                return;
+                return false;
             }
             var backupserver = context.BackupServers[0];
-
-
-            var message = new RegisterMessage()
-            {
-                SolvableProblems = new[] { "DVRP" },
-                ParallelThreads = TaskManagerContext.ParallelThreads,
-                Type = new ComponentType { Type = ClientComponentType.TaskManager }
-            };
-
             configuration.ServerAddress = backupserver.Address;
             configuration.ServerPort = backupserver.Port;
-
-            try
-            {
-                messenger.SendMessage(message);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            return true;
         }
     }
 }

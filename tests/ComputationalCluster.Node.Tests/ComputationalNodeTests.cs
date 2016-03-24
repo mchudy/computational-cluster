@@ -1,7 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using Moq;
-using System.Collections.Generic;
 using Xunit;
 
 namespace ComputationalCluster.Node.Tests
@@ -12,8 +11,6 @@ namespace ComputationalCluster.Node.Tests
         public void Node_ShouldSendRegisterMessageOnStart()
         {
             var messenger = new Mock<IMessenger>();
-            messenger.Setup(m => m.SendMessage(It.IsAny<Message>()))
-                .Returns(new List<Message> { new RegisterResponseMessage() });
             var node = new ComputationalNode(messenger.Object);
 
             node.Start();

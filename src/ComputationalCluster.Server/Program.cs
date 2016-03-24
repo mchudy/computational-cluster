@@ -38,28 +38,24 @@ namespace ComputationalCluster.Server
             bool parse = CommandLine.Parser.Default.ParseArguments(parameters, options);
             if (parse)
             {
-                System.Configuration.Configuration config =
-                    ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-                config.AppSettings.Settings["ListeningPort"].Value = options.ListeningPort.ToString();
-                config.AppSettings.Settings["Timeout"].Value = options.Timeout.ToString();
+                ConfigurationManager.AppSettings["ListeningPort"] = options.ListeningPort.ToString();
+                ConfigurationManager.AppSettings["Timeout"] = options.Timeout.ToString();
                 if (options.Backup)
                 {
-                    config.AppSettings.Settings["Mode"].Value = ServerMode.Backup.ToString();
-                    config.AppSettings.Settings.Add("MasterServerAddress", options.MasterServerAddress.ToString());
-                    config.AppSettings.Settings.Add("MasterServerPort", options.MasterServerPort.ToString());
+                    ConfigurationManager.AppSettings["Mode"] = ServerMode.Backup.ToString();
+                    ConfigurationManager.AppSettings["MasterServerAddress"] = options.MasterServerAddress;
+                    ConfigurationManager.AppSettings["MasterServerPort"] = options.MasterServerPort.ToString();
                     logger.Info($"Backup {options.Backup}");
                     logger.Info($"MAddres: {options.MasterServerAddress}");
                     logger.Info($"MPort: {options.MasterServerPort}");
                 }
                 else
                 {
-                    config.AppSettings.Settings["Mode"].Value = ServerMode.Primary.ToString();
+                    ConfigurationManager.AppSettings["Mode"] = ServerMode.Primary.ToString();
                 }
 
-                config.Save(ConfigurationSaveMode.Modified);
-
-                ConfigurationManager.RefreshSection("appSettings");
+                ConfigurationManager.RefreshSection("AppSettings");
 
                 logger.Info($"Port: {options.ListeningPort}");
                 logger.Info($"Timeout: {options.Timeout}");

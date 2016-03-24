@@ -27,6 +27,11 @@ namespace ComputationalCluster.Server
             }
         }
 
+        public void Add(BackupServer server)
+        {
+
+        }
+
         public void Add(TaskManager manager)
         {
             if (context.IsPrimary)

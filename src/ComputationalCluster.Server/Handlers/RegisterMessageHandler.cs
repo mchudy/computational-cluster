@@ -28,10 +28,12 @@ namespace ComputationalCluster.Server.Handlers
             {
                 id = context.GetNextComponentId();
                 message.Id = (ulong)id;
+                message.IdSpecified = true;
             }
             else
             {
-                id = (int)message.Id;
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                return;
             }
             context.BackupMessages.Enqueue(message);
             logger.Info("Received register message");

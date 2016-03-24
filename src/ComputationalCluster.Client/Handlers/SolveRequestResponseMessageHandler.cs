@@ -2,7 +2,6 @@
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using log4net;
-using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,36 +46,24 @@ namespace ComputationalCluster.Client.Handlers
                 catch (SocketException e)
                 {
                     logger.Error(e.Message);
-                    RegisterToBackup();
+                    if (!RegisterToBackup())
+                        break;
                 }
             }
         }
 
-        private void RegisterToBackup()
+        private bool RegisterToBackup()
         {
             if (context.BackupServers.Count == 0)
             {
                 logger.Error("No backup servers");
-                return;
+                return false;
             }
             var backupserver = context.BackupServers[0];
 
-            var message = new SolutionRequestMessage()
-            {
-                Id = (ulong)context.CurrentProblemId
-            };
-
             configuration.ServerAddress = backupserver.Address;
             configuration.ServerPort = backupserver.Port;
-
-            try
-            {
-                messenger.SendMessage(message);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-            }
+            return true;
         }
     }
 }

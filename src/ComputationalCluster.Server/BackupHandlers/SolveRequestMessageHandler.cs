@@ -15,10 +15,9 @@ namespace ComputationalCluster.Server.BackupHandlers
         public void HandleResponse(SolveRequestMessage message)
         {
             context.BackupMessages.Enqueue(message);
-            int id = context.GetNextProblemId();
             var problem = new ProblemInstance
             {
-                Id = id,
+                Id = (int)message.Id,
                 Data = message.Data,
                 ProblemType = message.ProblemType,
                 SolvingTimeout = message.SolvingTimeout,

@@ -1,5 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using System.Linq;
 
 namespace ComputationalCluster.Server.BackupHandlers
 {
@@ -14,11 +15,11 @@ namespace ComputationalCluster.Server.BackupHandlers
 
         public void HandleResponse(DivideProblemMessage message)
         {
-            //var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
-            //if (problem != null)
-            //{
-            //    problem.Status = ProblemStatus.Dividing;
-            //}
+            var problem = context.Problems.FirstOrDefault(p => p.Id == (int)message.Id);
+            if (problem != null)
+            {
+                problem.Status = ProblemStatus.Dividing;
+            }
         }
     }
 }

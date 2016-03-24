@@ -1,12 +1,11 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Networking.Factories;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ComputationalCluster.Common.Messaging
 {
-    //TODO: timeouts
     public class Messenger : IMessenger
     {
         private readonly IConfiguration configuration;
@@ -23,24 +22,36 @@ namespace ComputationalCluster.Common.Messaging
             this.dispatcher = dispatcher;
         }
 
-        public IList<Message> SendMessage(Message message)
+        public void SendMessage(Message message)
         {
-            IList<Message> response;
             using (ITcpClient client = clientFactory.Create())
             {
                 using (var networkStream = OpenStream(client))
                 {
-                    var writer = streamFactory.CreateWriter(networkStream);
-                    writer.WriteMessage(message);
-                    var reader = streamFactory.CreateReader(networkStream);
-                    response = reader.ReadToEnd();
-                    foreach (var msg in response)
+                    while (true)
                     {
-                        Task.Run(() => dispatcher.Dispatch(msg));
+                        var writer = streamFactory.CreateWriter(networkStream);
+                        writer.WriteMessage(message);
+                        var reader = streamFactory.CreateReader(networkStream);
+                        var response = reader.ReadToEnd();
+                        if (response.Count > 0 && response[0] is ErrMessage)
+                        {
+                            var err = (ErrMessage)response[0];
+                            if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)
+                            {
+                                Thread.Sleep(100);
+                                continue;
+                            }
+                        }
+                        foreach (var msg in response)
+                        {
+                            Task.Run(() => dispatcher.Dispatch(msg));
+                        }
+                        break;
                     }
+
                 }
             }
-            return response;
         }
 
         private INetworkStream OpenStream(ITcpClient client)
