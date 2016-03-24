@@ -8,7 +8,6 @@ namespace ComputationalCluster.Server.BackupHandlers
         public void HandleResponse(PartialProblemsMessage message)
         {
 
-
         }
     }
 }

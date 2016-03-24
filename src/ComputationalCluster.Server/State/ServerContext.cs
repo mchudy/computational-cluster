@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace ComputationalCluster.Server
@@ -25,7 +26,7 @@ namespace ComputationalCluster.Server
         public bool IsPrimary => Configuration.Mode == ServerMode.Primary;
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
-        public List<BackupCommunicationServer> BackupServers { get; set; } = new List<BackupCommunicationServer>();
+        public List<BackupServer> BackupServers { get; set; } = new List<BackupServer>();
         public ConcurrentQueue<Message> BackupMessages { get; } = new ConcurrentQueue<Message>();
 
         // only for Backup Mode
@@ -41,6 +42,23 @@ namespace ComputationalCluster.Server
             return Interlocked.Increment(ref currentProblemId);
         }
 
-
+        public NoOperationMessage GetNoOperationMessage()
+        {
+            return new NoOperationMessage
+            {
+                BackupCommunicationServers = BackupServers.Select(b => new BackupCommunicationServer
+                {
+                    Address = b.Address,
+                    Port = b.Port
+                }).ToList()
+            };
+        }
     }
+
+
+    public class BackupServer : BackupCommunicationServer
+    {
+        public int Id { get; set; }
+    }
+
 }

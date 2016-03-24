@@ -1,7 +1,6 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Networking;
-using ComputationalCluster.Common.Objects;
 using log4net;
 using System.Collections.Generic;
 
@@ -65,7 +64,7 @@ namespace ComputationalCluster.Server.Handlers
             List<Message> messages = new List<Message>
             {
                 responseMessage,
-                new NoOperationMessage {BackupCommunicationServers = context.BackupServers}
+                context.GetNoOperationMessage()
             };
             messenger.SendMessages(messages, client.GetStream());
         }
@@ -73,12 +72,12 @@ namespace ComputationalCluster.Server.Handlers
         private void HandleBackupServer(ITcpClient client, int id, int port)
         {
             logger.Info($"New backup server registered - id {id}");
-            context.BackupServers.Add(new BackupCommunicationServer
+            context.BackupServers.Add(new BackupServer()
             {
                 Address = client.EndPoint.Address.ToString(),
-                Port = (ushort)port
+                Port = (ushort)port,
+                Id = id
             });
-            //TODO: synchronize state with backup
         }
 
         private void HandleTaskManager(RegisterMessage message, int id)

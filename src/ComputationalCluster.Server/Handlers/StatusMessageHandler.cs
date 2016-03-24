@@ -38,7 +38,7 @@ namespace ComputationalCluster.Server.Handlers
             if (node != null)
             {
                 HandleNode(node, message, response);
-                response.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+                response.Add(context.GetNoOperationMessage());
                 messenger.SendMessages(response, client.GetStream());
                 return;
             }
@@ -46,11 +46,29 @@ namespace ComputationalCluster.Server.Handlers
             if (taskManager != null)
             {
                 HandleTaskManager(taskManager, message, response);
-                response.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+                response.Add(context.GetNoOperationMessage());
+                messenger.SendMessages(response, client.GetStream());
+                return;
+            }
+            var backupServer = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
+            if (backupServer != null)
+            {
+                HandleBackupServer(response);
+                response.Add(context.GetNoOperationMessage());
                 messenger.SendMessages(response, client.GetStream());
                 return;
             }
             logger.Error("Status message from not registered component");
+            messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.UnknownSender }, client.GetStream());
+        }
+
+        private void HandleBackupServer(List<Message> response)
+        {
+            Message backupMessage;
+            while (context.BackupMessages.TryDequeue(out backupMessage))
+            {
+                response.Add(backupMessage);
+            }
         }
 
         private void HandleTaskManager(TaskManager taskManager, StatusMessage message, IList<Message> response)
@@ -106,13 +124,15 @@ namespace ComputationalCluster.Server.Handlers
             {
                 logger.Info($"Sending problem {problemToDivide.Id} for task manager to divide");
                 problemToDivide.Status = ProblemStatus.Dividing;
-                response.Add(new DivideProblemMessage
+                var divideMessage = new DivideProblemMessage
                 {
                     Id = (ulong)problemToDivide.Id,
                     ComputationalNodes = 10 /*TODO*/,
                     NodeID = (ulong)taskManager.Id,
                     ProblemType = problemToDivide.ProblemType
-                });
+                };
+                response.Add(divideMessage);
+                context.BackupMessages.Enqueue(divideMessage);
                 return true;
             }
             return false;

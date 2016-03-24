@@ -59,7 +59,7 @@ namespace ComputationalCluster.Server.Handlers
                 };
             }
             messenger.SendMessages(new List<Message> { response,
-                new NoOperationMessage { BackupCommunicationServers = context.BackupServers }},
+                context.GetNoOperationMessage()},
                 client.GetStream());
         }
     }

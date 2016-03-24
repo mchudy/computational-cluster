@@ -1,5 +1,4 @@
 ﻿using ComputationalCluster.Common.Messages;
-using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ namespace ComputationalCluster.Server
 {
     public interface IServerContext
     {
-        List<BackupCommunicationServer> BackupServers { get; set; }
+        List<BackupServer> BackupServers { get; set; }
         IServerConfiguration Configuration { get; }
         IList<ComputationalNode> Nodes { get; }
         IList<ProblemInstance> Problems { get; }
@@ -18,6 +17,7 @@ namespace ComputationalCluster.Server
         int GetNextComponentId();
         int GetNextProblemId();
         ConcurrentQueue<Message> BackupMessages { get; }
+        NoOperationMessage GetNoOperationMessage();
 
     }
 }

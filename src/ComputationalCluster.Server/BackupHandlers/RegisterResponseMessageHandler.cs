@@ -1,7 +1,8 @@
 ﻿using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
+using ComputationalCluster.Server.Configuration;
 using log4net;
-using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,12 +40,20 @@ namespace ComputationalCluster.Server.BackupHandlers
                     logger.Debug("Sending status");
                     Thread.Sleep((int)(context.Configuration.Timeout * 1000 / 2));
                 }
-                catch (Exception e)
+                catch (SocketException)
                 {
-                    logger.Error(e);
+                    SwitchToPrimary();
                     break;
                 }
             }
+        }
+
+        private void SwitchToPrimary()
+        {
+            logger.Error("Primary server failure");
+            logger.Info("Switching to primary mode");
+            context.Configuration.Mode = ServerMode.Primary;
+            context.BackupServers.RemoveAt(0);
         }
     }
 }

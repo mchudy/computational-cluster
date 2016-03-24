@@ -64,7 +64,7 @@ namespace ComputationalCluster.Server.Handlers
             if (!context.IsPrimary) return;
             List<Message> messages = new List<Message>();
 
-            messages.Add(new NoOperationMessage() { BackupCommunicationServers = context.BackupServers });
+            messages.Add(context.GetNoOperationMessage());
 
             messenger.SendMessages(messages, client.GetStream());
 
