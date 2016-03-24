@@ -31,7 +31,7 @@ namespace ComputationalCluster.Server.BackupHandlers
         //TODO: separate class
         private void SendStatus()
         {
-            while (true)
+            while (!context.IsPrimary)
             {
                 try
                 {
