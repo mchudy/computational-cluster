@@ -34,7 +34,6 @@ namespace ComputationalCluster.Server.Handlers
             context.Problems.Add(problem);
             SendResponse(client.GetStream(), id);
             logger.Info("Recieved SolveRequestMessage of type: " + message.ProblemType + " Timeout:" + message.SolvingTimeout);
-            //TODO: add some problems queue for task managers and nodes
         }
 
         private void SendResponse(INetworkStream stream, int id)

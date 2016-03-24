@@ -81,7 +81,6 @@ namespace ComputationalCluster.Server.Handlers
             }
             else
             {
-                //TODO: should be send whenever new backup has been registered/deregistered
                 response.Add(new NoOperationMessage
                 {
                     BackupCommunicationServers = context.BackupServers.Select(
@@ -127,7 +126,7 @@ namespace ComputationalCluster.Server.Handlers
                 var divideMessage = new DivideProblemMessage
                 {
                     Id = (ulong)problemToDivide.Id,
-                    ComputationalNodes = 10 /*TODO*/,
+                    ComputationalNodes = (ulong)context.Nodes.Sum(n => n.ThreadsCount),
                     NodeID = (ulong)taskManager.Id,
                     ProblemType = problemToDivide.ProblemType
                 };
