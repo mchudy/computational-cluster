@@ -67,8 +67,10 @@
     <Compile Include="RegisterMessageHandlerTests.cs" />
     <Compile Include="ServerMessengerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolutionMessageHandlerTests.cs" />
     <Compile Include="SolutionRequestMessageHandlerTests.cs" />
     <Compile Include="SolveRequestMessageHandlerTests.cs" />
+    <Compile Include="PartialProblemMessageHandlerTests.cs" />
     <Compile Include="StatusMessageHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
