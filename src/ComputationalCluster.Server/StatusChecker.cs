@@ -47,7 +47,7 @@ namespace ComputationalCluster.Server
                 Thread.Sleep((int)(context.Configuration.Timeout * 1000));
                 if (!node.ReceivedStatus)
                 {
-                    logger.Error($"FAILURE - node with id {node.Id}");
+                    logger.Warn($"FAILURE - node with id {node.Id}");
                     foreach (var problem in context.Problems)
                     {
                         foreach (var partial in problem.PartialProblems)
@@ -82,7 +82,7 @@ namespace ComputationalCluster.Server
                 if (!manager.ReceivedStatus)
                 {
                     context.TaskManagers.Remove(manager);
-                    logger.Error($"FAILURE - task manager with id {manager.Id}");
+                    logger.Warn($"FAILURE - task manager with id {manager.Id}");
                     break;
                 }
                 manager.ReceivedStatus = false;

@@ -52,7 +52,7 @@ namespace ComputationalCluster.Server.BackupHandlers
 
         private void SwitchToPrimary()
         {
-            logger.Error("Primary server failure");
+            logger.Warn("Primary server failure");
             logger.Info("Switching to primary mode");
             context.BackupServers.RemoveAt(0);
             context.Configuration.Mode = ServerMode.Primary;

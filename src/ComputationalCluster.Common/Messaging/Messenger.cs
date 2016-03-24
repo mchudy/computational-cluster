@@ -43,8 +43,8 @@ namespace ComputationalCluster.Common.Messaging
                             var err = (ErrMessage)response[0];
                             if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)
                             {
-                                logger.Error("Got NotAPrimaryServer error. Trying again...");
-                                Thread.Sleep(100);
+                                logger.Error("Got a NotAPrimaryServer error. Trying again...");
+                                Thread.Sleep(500);
                             }
                             else
                             {

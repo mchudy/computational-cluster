@@ -44,7 +44,7 @@ namespace ComputationalCluster.Node.Handlers
                 }
                 catch (SocketException)
                 {
-                    logger.Error("Server failure");
+                    logger.Warn("Server failure");
                     if (!RegisterToBackup())
                     {
                         break;
@@ -60,7 +60,7 @@ namespace ComputationalCluster.Node.Handlers
                 logger.Error("No backup servers");
                 return false;
             }
-            logger.Info("Switching to backup");
+            logger.Warn("Switching to backup");
             var backupserver = context.BackupServers[0];
             configuration.ServerAddress = backupserver.Address;
             configuration.ServerPort = backupserver.Port;

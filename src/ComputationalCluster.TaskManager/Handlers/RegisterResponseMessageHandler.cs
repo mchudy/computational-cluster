@@ -44,7 +44,7 @@ namespace ComputationalCluster.TaskManager.Handlers
                 }
                 catch (SocketException)
                 {
-                    logger.Error("Server failure");
+                    logger.Warn("Server failure");
                     if (!RegisterToBackup())
                         break;
                 }
@@ -58,6 +58,7 @@ namespace ComputationalCluster.TaskManager.Handlers
                 logger.Error("No backup servers");
                 return false;
             }
+            logger.Warn("Switching to backup server");
             var backupserver = context.BackupServers[0];
             configuration.ServerAddress = backupserver.Address;
             configuration.ServerPort = backupserver.Port;

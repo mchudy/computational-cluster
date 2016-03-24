@@ -50,8 +50,6 @@ namespace ComputationalCluster.Server.BackupHandlers
                     problem.Status = ProblemStatus.Partial;
                 }
             }
-
-            logger.Fatal(context.Problems[0].Status.ToString());
         }
     }
 }
