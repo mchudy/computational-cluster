@@ -42,7 +42,7 @@ namespace ComputationalCluster.Node.Handlers
 
         private void ComputeSolutions(ulong id, StatusThread thread, PartialProblem partialProblem)
         {
-            Thread.Sleep(new Random().Next(7) * 500);
+            Thread.Sleep(new Random().Next(8) * 1000);
             logger.Info($"Sending solution for partial {partialProblem.TaskId} from problem {id}");
             context.ReleaseThread(thread);
             messenger.SendMessage(new SolutionMessage
