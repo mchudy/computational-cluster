@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,11 +64,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ComputationalCluster.Client\ComputationalCluster.Client.csproj">
+      <Project>{a55ece12-9e7c-40d8-bc01-03445db1ab48}</Project>
+      <Name>ComputationalCluster.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ComputationalCluster.Common\ComputationalCluster.Common.csproj">
+      <Project>{25f97de5-f30f-44fb-9f7b-c4594103239c}</Project>
+      <Name>ComputationalCluster.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ComputationalCluster.Common.Tests\ComputationalCluster.Common.Tests.csproj">
+      <Project>{87CF9A39-8ACE-47C5-ACFB-68FE89BEB7AF}</Project>
+      <Name>ComputationalCluster.Common.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
