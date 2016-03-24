@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Server.Configuration;
 using ComputationalCluster.Server.Handlers;
 using Moq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -21,6 +22,8 @@ namespace ComputationalCluster.Server.Tests
         {
             context.SetupGet(c => c.Configuration).Returns(config.Object);
             context.SetupGet(c => c.Nodes).Returns(new List<ComputationalNode>());
+            context.SetupGet(c => c.BackupMessages).Returns(new ConcurrentQueue<Message>());
+            context.SetupGet(c => c.IsPrimary).Returns(true);
         }
 
         [Fact]

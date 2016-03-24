@@ -38,7 +38,7 @@ namespace ComputationalCluster.Common.Messaging
                         writer.WriteMessage(message);
                         var reader = streamFactory.CreateReader(networkStream);
                         var response = reader.ReadToEnd();
-                        if (response.Count > 0 && response[0] is ErrMessage)
+                        if (response.Count > 0 && response?[0] is ErrMessage)
                         {
                             var err = (ErrMessage)response[0];
                             if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)

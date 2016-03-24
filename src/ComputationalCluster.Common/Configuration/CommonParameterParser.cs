@@ -26,22 +26,17 @@ namespace ComputationalCluster.Common
 
             if (parse)
             {
-                System.Configuration.Configuration config =
-                    ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
-                if (options.ServerAddress != null && config.AppSettings.Settings["ServerAddress"] != null)
+                if (options.ServerAddress != null && ConfigurationManager.AppSettings["ServerAddress"] != null)
                 {
-                    config.AppSettings.Settings["ServerAddress"].Value = options.ServerAddress.ToString();
+                    ConfigurationManager.AppSettings["ServerAddress"] = options.ServerAddress;
                 }
                 if (ConfigurationManager.AppSettings["ServerPort"] != null
                         && options.ServerPort.ToString() != ConfigurationManager.AppSettings["ServerPort"])
                 {
-                    config.AppSettings.Settings["ServerPort"].Value = options.ServerPort.ToString();
+                    ConfigurationManager.AppSettings["ServerPort"] = options.ServerPort.ToString();
                 }
 
-                config.Save(ConfigurationSaveMode.Modified);
-
-                ConfigurationManager.RefreshSection("appSettings");
+                ConfigurationManager.RefreshSection("AppSettings");
 
                 return true;
             }

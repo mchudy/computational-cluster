@@ -2,7 +2,9 @@
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Server.Handlers;
 using Moq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ComputationalCluster.Server.Tests
@@ -20,6 +22,8 @@ namespace ComputationalCluster.Server.Tests
             context.SetupGet(c => c.Problems).Returns(new List<ProblemInstance>());
             context.Setup(c => c.GetNextProblemId()).Returns(mockId);
             message = GetMessage();
+            context.SetupGet(c => c.BackupMessages).Returns(new ConcurrentQueue<Message>());
+            context.SetupGet(c => c.IsPrimary).Returns(true);
         }
 
         [Fact]
@@ -28,7 +32,9 @@ namespace ComputationalCluster.Server.Tests
             var handler = new SolveRequestMessageHandler(messenger.Object, context.Object);
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<SolveRequestResponseMessage>(msg => msg.Id == 5), It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                It.Is<IList<Message>>(msgs => msgs.Cast<SolveRequestResponseMessage>().First().Id == 5),
+                It.IsAny<INetworkStream>()));
         }
 
         [Fact]

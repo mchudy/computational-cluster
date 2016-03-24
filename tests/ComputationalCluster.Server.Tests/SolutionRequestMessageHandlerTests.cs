@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Handlers;
 using Moq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -21,6 +22,8 @@ namespace ComputationalCluster.Server.Tests
         public SolutionRequestMessageHandlerTests()
         {
             context.SetupGet(c => c.Problems).Returns(problems);
+            context.SetupGet(c => c.BackupMessages).Returns(new ConcurrentQueue<Message>());
+            context.SetupGet(c => c.IsPrimary).Returns(true);
             problem.Id = 1;
             problems.Add(problem);
             message = new SolutionRequestMessage
@@ -37,8 +40,9 @@ namespace ComputationalCluster.Server.Tests
 
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<SolutionMessage>(msg => VerifyType(msg, SolutionType.Ongoing)),
-                It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                        It.Is<IList<Message>>(msgs => VerifyType(msgs.Cast<SolutionMessage>().First(), SolutionType.Ongoing)),
+                        It.IsAny<INetworkStream>()));
         }
 
         [Fact]
@@ -49,8 +53,9 @@ namespace ComputationalCluster.Server.Tests
 
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<SolutionMessage>(msg => VerifyType(msg, SolutionType.Final)),
-                It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                        It.Is<IList<Message>>(msgs => VerifyType(msgs.Cast<SolutionMessage>().First(), SolutionType.Final)),
+                        It.IsAny<INetworkStream>()));
         }
 
 
@@ -63,8 +68,9 @@ namespace ComputationalCluster.Server.Tests
 
             handler.HandleMessage(message, tcpClient.Object);
 
-            messenger.Verify(m => m.SendMessage(It.Is<SolutionMessage>(msg => msg.Solutions[0].Data.SequenceEqual(problem.FinalSolution)),
-                                                It.IsAny<INetworkStream>()));
+            messenger.Verify(m => m.SendMessages(
+                    It.Is<IList<Message>>(msgs => msgs.Cast<SolutionMessage>().First().Solutions[0].Data.SequenceEqual(problem.FinalSolution)),
+                    It.IsAny<INetworkStream>()));
         }
 
         private bool VerifyType(SolutionMessage msg, SolutionType type)
