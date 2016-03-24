@@ -71,6 +71,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ComputationalCluster.Client\ComputationalCluster.Client.csproj">
+      <Project>{a55ece12-9e7c-40d8-bc01-03445db1ab48}</Project>
+      <Name>ComputationalCluster.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\ComputationalCluster.Common\ComputationalCluster.Common.csproj">
       <Project>{25f97de5-f30f-44fb-9f7b-c4594103239c}</Project>
       <Name>ComputationalCluster.Common</Name>

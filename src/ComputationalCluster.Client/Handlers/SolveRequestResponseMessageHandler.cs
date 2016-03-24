@@ -45,6 +45,7 @@ namespace ComputationalCluster.Client.Handlers
                 }
                 catch (SocketException e)
                 {
+                    
                     logger.Warn("Server failure");
                     if (!RegisterToBackup())
                         break;
