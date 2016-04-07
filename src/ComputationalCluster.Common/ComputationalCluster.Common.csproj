@@ -51,6 +51,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UCCTaskSolver">
+      <HintPath>..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CommonOptions.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="Messages\SolutionMessage.cs" />
     <Compile Include="Networking\TcpClientAdapter.cs" />
     <Compile Include="Networking\Factories\TcpConnectionFactory.cs" />
+    <Compile Include="TaskSolverFactory.cs" />
     <Compile Include="Utils\Utf8StringWriter.cs" />
   </ItemGroup>
   <ItemGroup>
