@@ -59,6 +59,7 @@
     <Compile Include="Configuration\CommonOptions.cs" />
     <Compile Include="Configuration\CommonParameterParser.cs" />
     <Compile Include="Exceptions\BadConfigException.cs" />
+    <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Infrastructure\CommonModule.cs" />
     <Compile Include="Messaging\AutofacResponseDispatcher.cs" />
     <Compile Include="Messaging\IResponseDispatcher.cs" />

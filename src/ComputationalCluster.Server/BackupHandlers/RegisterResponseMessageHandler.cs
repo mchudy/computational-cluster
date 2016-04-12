@@ -30,7 +30,6 @@ namespace ComputationalCluster.Server.BackupHandlers
             Task.Run(() => SendStatus());
         }
 
-        //TODO: separate class
         private void SendStatus()
         {
             while (!context.IsPrimary)
@@ -42,6 +41,7 @@ namespace ComputationalCluster.Server.BackupHandlers
                     logger.Debug("Sending status");
                     Thread.Sleep((int)(context.Configuration.Timeout * 1000 / 2));
                 }
+                //TODO: custom exception
                 catch (SocketException)
                 {
                     SwitchToPrimary();

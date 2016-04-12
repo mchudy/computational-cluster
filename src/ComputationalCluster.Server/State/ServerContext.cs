@@ -1,9 +1,11 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common.Helpers;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.Configuration;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace ComputationalCluster.Server
@@ -16,21 +18,31 @@ namespace ComputationalCluster.Server
         public ServerContext(IServerConfiguration configuration)
         {
             Configuration = configuration;
+            if (!IsPrimary) SetLocalAddress(configuration);
         }
-
-        //TODO: dictionary for fast access?
 
         public IServerConfiguration Configuration { get; }
 
-        public IList<TaskManager> TaskManagers { get; } = new List<TaskManager>();
         public bool IsPrimary => Configuration.Mode == ServerMode.Primary;
+
+        public IList<TaskManager> TaskManagers { get; } = new List<TaskManager>();
         public IList<ComputationalNode> Nodes { get; } = new List<ComputationalNode>();
         public IList<ProblemInstance> Problems { get; } = new List<ProblemInstance>();
         public List<BackupServer> BackupServers { get; set; } = new List<BackupServer>();
+
         public ConcurrentQueue<Message> BackupMessages { get; } = new ConcurrentQueue<Message>();
+
+        /// <summary>
+        /// Informs whether the server address in Configuration property has been 
+        /// initialized to the proper value (i.e. if the server is a 3rd it should
+        /// be equal to the 2nd server address)
+        /// </summary>
+        public bool IsMasterServerSet { get; set; }
 
         // only for Backup Mode
         public int Id { get; set; }
+
+        public string LocalAddress { get; set; }
 
         public int GetNextComponentId()
         {
@@ -53,12 +65,23 @@ namespace ComputationalCluster.Server
                 }).ToList()
             };
         }
-    }
 
+        private void SetLocalAddress(IServerConfiguration configuration)
+        {
+            // special case when servers are running on localhost
+            if (IPAddress.IsLoopback(IPAddress.Parse(configuration.ServerAddress)))
+            {
+                LocalAddress = configuration.ServerAddress;
+            }
+            else
+            {
+                LocalAddress = IPHelper.GetLocalIPAddress().ToString();
+            }
+        }
+    }
 
     public class BackupServer : BackupCommunicationServer
     {
         public int Id { get; set; }
     }
-
 }

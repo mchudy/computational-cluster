@@ -23,16 +23,24 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(StatusMessage message, ITcpClient client)
         {
+            List<Message> response = new List<Message>();
             if (!context.IsPrimary)
             {
                 logger.Error("Message not allowed in backup mode");
-                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                var backup = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
+                if (backup != null)
+                {
+                    HandleBackupServer(response);
+                    messenger.SendMessages(response, client.GetStream());
+                }
+                else
+                {
+                    messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                }
                 return;
             }
 
             logger.Debug("Received status message from component of id: " + message.Id);
-
-            List<Message> response = new List<Message>();
 
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
@@ -53,7 +61,12 @@ namespace ComputationalCluster.Server.Handlers
             var backupServer = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (backupServer != null)
             {
-                HandleBackupServer(response);
+                // sychronization queue should be sent only to the first backup server 
+                // (backup servers should form a queue)
+                if (context.BackupServers[0] == backupServer)
+                {
+                    HandleBackupServer(response);
+                }
                 response.Add(context.GetNoOperationMessage());
                 messenger.SendMessages(response, client.GetStream());
                 return;
