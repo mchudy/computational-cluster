@@ -83,5 +83,6 @@ namespace ComputationalCluster.Server
     public class BackupServer : BackupCommunicationServer
     {
         public int Id { get; set; }
+        public bool ReceivedStatus { get; set; }
     }
 }

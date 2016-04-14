@@ -30,7 +30,7 @@ namespace ComputationalCluster.Server.Handlers
                 var backup = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
                 if (backup != null)
                 {
-                    HandleBackupServer(response);
+                    HandleBackupServer(response, null);
                     messenger.SendMessages(response, client.GetStream());
                 }
                 else
@@ -65,7 +65,7 @@ namespace ComputationalCluster.Server.Handlers
                 // (backup servers should form a queue)
                 if (context.BackupServers[0] == backupServer)
                 {
-                    HandleBackupServer(response);
+                    HandleBackupServer(response, backupServer);
                 }
                 response.Add(context.GetNoOperationMessage());
                 messenger.SendMessages(response, client.GetStream());
@@ -75,8 +75,10 @@ namespace ComputationalCluster.Server.Handlers
             messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.UnknownSender }, client.GetStream());
         }
 
-        private void HandleBackupServer(List<Message> response)
+        private void HandleBackupServer(List<Message> response, BackupServer backup)
         {
+            if(backup != null)
+                backup.ReceivedStatus = true;
             Message backupMessage;
             while (context.BackupMessages.TryDequeue(out backupMessage))
             {
