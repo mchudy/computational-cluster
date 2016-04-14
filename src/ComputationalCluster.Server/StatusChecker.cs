@@ -21,7 +21,7 @@ namespace ComputationalCluster.Server
 
         public void Add(ComputationalNode node)
         {
-            if (context.IsPrimary && context.BackupServers.Count == 0)
+            if (context.IsPrimary)
             {
                 Task.Run(() => CheckNodeTimeout(node));
             }

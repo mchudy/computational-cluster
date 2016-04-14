@@ -54,7 +54,14 @@ namespace ComputationalCluster.Server.BackupHandlers
         {
             logger.Warn("Primary server failure");
             logger.Info("Switching to primary mode");
-            context.BackupServers.RemoveAt(0);
+            if(context.BackupServers.Count == 1)
+            {
+                context.BackupServers.Clear();
+            }
+            else
+            {
+                context.BackupServers.RemoveAt(0);
+            }
             context.Configuration.Mode = ServerMode.Primary;
             foreach (var node in context.Nodes)
             {
