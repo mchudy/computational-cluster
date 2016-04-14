@@ -29,7 +29,7 @@ namespace ComputationalCluster.Server
 
         public void Add(BackupServer server)
         {
-            if (context.IsPrimary)
+            if (context.IsPrimary && context.BackupServers.Count == 0)
             {
                 Task.Run(() => CheckBackupTimeout(server));
             }

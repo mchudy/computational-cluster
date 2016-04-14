@@ -26,15 +26,15 @@ namespace ComputationalCluster.Server.Handlers
             List<Message> response = new List<Message>();
             if (!context.IsPrimary)
             {
-                logger.Error("Message not allowed in backup mode");
                 var backup = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
                 if (backup != null)
                 {
-                    HandleBackupServer(response, null);
+                    HandleBackupServer(response, backup);
                     messenger.SendMessages(response, client.GetStream());
                 }
                 else
                 {
+                    logger.Error("Message not allowed in backup mode");
                     messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
                 }
                 return;
@@ -77,8 +77,7 @@ namespace ComputationalCluster.Server.Handlers
 
         private void HandleBackupServer(List<Message> response, BackupServer backup)
         {
-            if(backup != null)
-                backup.ReceivedStatus = true;
+            backup.ReceivedStatus = true;
             Message backupMessage;
             while (context.BackupMessages.TryDequeue(out backupMessage))
             {
