@@ -9,6 +9,7 @@ namespace ComputationalCluster.DVRPTaskSolver
         public DVRPTaskSolver(byte[] problemData)
             : base(problemData)
         {
+            if (problemData == null) return;
         }
 
         public override byte[][] DivideProblem(int threadCount)
