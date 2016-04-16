@@ -25,6 +25,9 @@ namespace ComputationalCluster.Common.Infrastructure
                    .AsImplementedInterfaces();
             builder.RegisterType<AutofacResponseDispatcher>()
                    .AsImplementedInterfaces();
+            builder.RegisterType<TaskSolverProvider>()
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
         }
     }
 }

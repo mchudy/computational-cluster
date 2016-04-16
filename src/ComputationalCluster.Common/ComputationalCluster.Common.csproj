@@ -61,6 +61,7 @@
     <Compile Include="Exceptions\BadConfigException.cs" />
     <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Infrastructure\CommonModule.cs" />
+    <Compile Include="ITaskSolverProvider.cs" />
     <Compile Include="Messaging\AutofacResponseDispatcher.cs" />
     <Compile Include="Messaging\IResponseDispatcher.cs" />
     <Compile Include="Messaging\IResponseHandler.cs" />
@@ -106,7 +107,7 @@
     <Compile Include="Messages\SolutionMessage.cs" />
     <Compile Include="Networking\TcpClientAdapter.cs" />
     <Compile Include="Networking\Factories\TcpConnectionFactory.cs" />
-    <Compile Include="TaskSolverFactory.cs" />
+    <Compile Include="TaskSolverProvider.cs" />
     <Compile Include="Utils\Utf8StringWriter.cs" />
   </ItemGroup>
   <ItemGroup>
