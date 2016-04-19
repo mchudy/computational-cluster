@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace ComputationalCluster.DVRPTaskSolver.Parsing
 {
-    public class Depot
+    public class Depot : Location
     {
-        public Location Location { get; set; }
         public int StartHour { get; set; }
         public int EndHour { get; set; }
+
+        public Depot(int X, int Y, int StartHour, int EndHour) : base(X,Y)
+        {
+            this.StartHour = StartHour;
+            this.EndHour = EndHour;
+        }
     }
 }

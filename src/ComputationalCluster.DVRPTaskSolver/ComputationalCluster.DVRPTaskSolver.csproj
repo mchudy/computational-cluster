@@ -45,8 +45,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DVRPTaskSolver.cs" />
+    <Compile Include="Parsing\Client.cs" />
+    <Compile Include="Parsing\Depot.cs" />
+    <Compile Include="Parsing\DVRPParser.cs" />
+    <Compile Include="Parsing\DVRPProblemInstance.cs" />
+    <Compile Include="Parsing\IDVRPParser.cs" />
+    <Compile Include="Parsing\Location.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" "$(TargetDir)\TaskSolvers\" /Y /I</PostBuildEvent>

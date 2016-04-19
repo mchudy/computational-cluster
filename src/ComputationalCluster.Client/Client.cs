@@ -34,6 +34,7 @@ namespace ComputationalCluster.Client
             {
                 logger.Error(e.Message);
             }
+           
         }
     }
 }
