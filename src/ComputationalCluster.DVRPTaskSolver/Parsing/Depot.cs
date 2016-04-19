@@ -11,6 +11,11 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
         public int StartHour { get; set; }
         public int EndHour { get; set; }
 
+        public Depot() : base()
+        {
+
+        }
+
         public Depot(int X, int Y, int StartHour, int EndHour) : base(X,Y)
         {
             this.StartHour = StartHour;

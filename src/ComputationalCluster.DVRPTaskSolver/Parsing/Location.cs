@@ -12,6 +12,11 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
         public int X { get; set; }
         public int Y { get; set; }
 
+        public Location()
+        {
+
+        }
+
         public Location(int X, int Y)
         {
             this.X = X;
