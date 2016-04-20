@@ -1,21 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace ComputationalCluster.DVRPTaskSolver.Parsing
 {
     public class DVRPParser : IDVRPParser
     {
-        public DVRPProblemInstance ParseFile(string path)
+        public DVRPProblemInstance ParseFile(byte[] data)
         {
-            if(File.Exists(path))
-            {
-                StreamReader reader = File.OpenText(path);
-                return Parse(reader);
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            string text = Encoding.UTF8.GetString(data);
+            StreamReader reader = new StreamReader(text);
+            return Parse(reader);
         }
 
         private DVRPProblemInstance Parse(StreamReader reader)
@@ -44,7 +39,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
                         numDepots = int.Parse(items[1]);
                         break;
                     case "NUM_CAPACITIES:":
-                        numCapacities = 1;
+                        numCapacities = int.Parse(items[1]);
                         break;
                     case "NUM_VISITS:":
                         numVisits = int.Parse(items[1]);

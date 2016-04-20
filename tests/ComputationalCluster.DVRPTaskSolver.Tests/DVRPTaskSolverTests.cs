@@ -17,8 +17,9 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
         //{
         //    DVRPParser parser = new DVRPParser();
         //    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\io2_11_plain_a_D.vrp";
-        //    var ret = parser.ParseFile(path);
-        //    Assert.Equal(ret.Clients.Length,11);
+        //    byte[] bytes = File.ReadAllBytes(path);
+        //    var ret = parser.ParseFile(bytes);
+        //    Assert.Equal(ret.Clients.Length, 11);
         //    Assert.Equal(ret.Depots.Length, 1);
         //    Assert.Equal(ret.VehicleCapacity, 100);
         //    Assert.Equal(ret.VehiclesCount, 11);
@@ -29,8 +30,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
         //    Assert.Equal(ret.Clients[0].Y, 1);
         //    Assert.Equal(ret.Depots[0].X, 0);
         //    Assert.Equal(ret.Depots[0].Y, 0);
-        //    Assert.Equal(ret.Depots[0].StartHour,0 );
-        //    Assert.Equal(ret.Depots[0].EndHour, 620 );
+        //    Assert.Equal(ret.Depots[0].StartHour, 0);
+        //    Assert.Equal(ret.Depots[0].EndHour, 620);
         //}
     }
 }

@@ -8,6 +8,6 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
 {
     public interface IDVRPParser
     {
-        DVRPProblemInstance ParseFile(string path);   
+        DVRPProblemInstance ParseFile(byte[] data);   
     }
 }
