@@ -42,7 +42,9 @@ namespace ComputationalCluster.Common.Networking
                     continue;
                 }
                 logger.Debug(messageXml);
-                response.Add(serializer.Deserialize(messageXml));
+                logger.Debug("----------------------------------------------------");
+                var message = serializer.Deserialize(messageXml);
+                response.Add(message);
             }
             return response;
         }

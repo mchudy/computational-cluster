@@ -1,8 +1,8 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
-using System.Threading;
 
 namespace ComputationalCluster.TaskManager
 {
@@ -12,11 +12,14 @@ namespace ComputationalCluster.TaskManager
 
         private readonly TaskManagerContext context;
         private readonly IMessenger messenger;
+        private readonly ITaskSolverProvider taskSolverProvider;
 
-        public DivideProblemMessageHandler(TaskManagerContext context, IMessenger messenger)
+        public DivideProblemMessageHandler(TaskManagerContext context, IMessenger messenger,
+            ITaskSolverProvider taskSolverProvider)
         {
             this.context = context;
             this.messenger = messenger;
+            this.taskSolverProvider = taskSolverProvider;
         }
 
         public void HandleResponse(DivideProblemMessage message)
@@ -27,15 +30,19 @@ namespace ComputationalCluster.TaskManager
                 logger.Info($"Dividing problem {message.Id}");
                 idleThread.ProblemInstanceId = message.Id;
                 idleThread.ProblemType = message.ProblemType;
-                //TODO:
-                Thread.Sleep(5000);
+
+                //TODO: run on separate thread
+                var taskSolver = taskSolverProvider.CreateTaskSolverInstance(message.ProblemType, message.Data);
+                var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
+
                 var partialProblems = new PartialProblem[message.ComputationalNodes];
                 for (int i = 0; i < partialProblems.Length; i++)
                 {
                     partialProblems[i] = new PartialProblem
                     {
                         TaskId = (ulong)i,
-                        NodeID = (ulong)context.Id
+                        NodeID = (ulong)context.Id,
+                        Data = partialProblemsData[i]
                     };
                 }
                 messenger.SendMessage(new PartialProblemsMessage
@@ -50,7 +57,7 @@ namespace ComputationalCluster.TaskManager
             else
             {
                 logger.Error("No idle thread available");
-                //TODO: send error message
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.ExceptionOccured });
             }
         }
     }

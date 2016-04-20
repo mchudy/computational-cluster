@@ -1,8 +1,9 @@
-﻿using ComputationalCluster.Common.Messages;
+﻿using ComputationalCluster.Common;
+using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
-using System.Threading;
+using System.Linq;
 
 namespace ComputationalCluster.TaskManager.Handlers
 {
@@ -12,11 +13,14 @@ namespace ComputationalCluster.TaskManager.Handlers
 
         private readonly TaskManagerContext context;
         private readonly IMessenger messenger;
+        private readonly ITaskSolverProvider taskSolverProvider;
 
-        public SolutionMessageHandler(TaskManagerContext context, IMessenger messenger)
+        public SolutionMessageHandler(TaskManagerContext context, IMessenger messenger,
+            ITaskSolverProvider taskSolverProvider)
         {
             this.context = context;
             this.messenger = messenger;
+            this.taskSolverProvider = taskSolverProvider;
         }
 
         public void HandleResponse(SolutionMessage message)
@@ -26,8 +30,14 @@ namespace ComputationalCluster.TaskManager.Handlers
             {
                 idleThread.State = StatusThreadState.Busy;
                 idleThread.TaskId = message.Id;
-                //TODO:
-                Thread.Sleep(5000);
+
+                //TODO: run on separate thread
+                var taskSolver = taskSolverProvider.CreateTaskSolverInstance(message.ProblemType, null);
+                byte[] finalSolution = taskSolver.MergeSolution(
+                    message.Solutions.Select(s => s.Data)
+                        .ToArray()
+                );
+
                 messenger.SendMessage(new SolutionMessage
                 {
                     Id = message.Id,
@@ -37,7 +47,8 @@ namespace ComputationalCluster.TaskManager.Handlers
                         new Solution
                         {
                             TaskId = message.Id,
-                            Type = SolutionType.Final
+                            Type = SolutionType.Final,
+                            Data = finalSolution
                         }
                     }
                 });
@@ -47,7 +58,7 @@ namespace ComputationalCluster.TaskManager.Handlers
             else
             {
                 logger.Error("No idle thread available");
-                //TODO: send error message
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.ExceptionOccured });
             }
         }
     }

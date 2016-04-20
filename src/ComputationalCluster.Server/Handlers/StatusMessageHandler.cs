@@ -142,7 +142,8 @@ namespace ComputationalCluster.Server.Handlers
                     Id = (ulong)problemToDivide.Id,
                     ComputationalNodes = (ulong)context.Nodes.Sum(n => n.ThreadsCount),
                     NodeID = (ulong)taskManager.Id,
-                    ProblemType = problemToDivide.ProblemType
+                    ProblemType = problemToDivide.ProblemType,
+                    Data = problemToDivide.Data
                 };
                 response.Add(divideMessage);
                 context.BackupMessages.Enqueue(divideMessage);
@@ -171,7 +172,8 @@ namespace ComputationalCluster.Server.Handlers
                 messages.Add(new PartialProblemsMessage
                 {
                     Id = (ulong)problemToSolve.Id,
-                    PartialProblems = partials.Select(p => p.Problem).ToArray()
+                    PartialProblems = partials.Select(p => p.Problem).ToArray(),
+                    ProblemType = problemToSolve.ProblemType
                 });
             }
         }
