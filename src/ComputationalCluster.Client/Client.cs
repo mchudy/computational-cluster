@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
+using System.IO;
 
 
 namespace ComputationalCluster.Client
@@ -12,19 +13,30 @@ namespace ComputationalCluster.Client
 
         private readonly IMessenger messenger;
 
+        private byte[] problemData;
+
         public Client(IMessenger messenger)
         {
             this.messenger = messenger;
         }
 
-        public void Start()
+        public void Start(string problemFilePath)
+        {
+            if (problemFilePath == null || !File.Exists(problemFilePath))
+            {
+                throw new ArgumentException("No problem file provided");
+            }
+            problemData = File.ReadAllBytes(problemFilePath);
+            SendSolveRequest();
+        }
+
+        private void SendSolveRequest()
         {
             var message = new SolveRequestMessage()
             {
                 ProblemType = "DVRP",
                 SolvingTimeout = 99999,
-                Id = 123,
-                Data = new byte[] { 1, 2, 3 }
+                Data = problemData
             };
             try
             {
@@ -34,7 +46,6 @@ namespace ComputationalCluster.Client
             {
                 logger.Error(e.Message);
             }
-           
         }
     }
 }
