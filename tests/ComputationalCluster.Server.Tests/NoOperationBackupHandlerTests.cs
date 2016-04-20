@@ -3,6 +3,7 @@ using ComputationalCluster.Common.Objects;
 using ComputationalCluster.Server.BackupHandlers;
 using ComputationalCluster.Server.Configuration;
 using Moq;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -31,6 +32,8 @@ namespace ComputationalCluster.Server.Tests
             config.SetupGet(c => c.ListeningPort).Returns(localPort);
 
             context.SetupAllProperties();
+            context.SetupGet(c => c.BackupServers).Returns(
+                new List<BackupServer> { new BackupServer { Address = localAddress, Port = localPort } });
             context.SetupGet(c => c.Configuration).Returns(config.Object);
             context.Setup(c => c.LocalAddress).Returns(localAddress);
 
@@ -70,6 +73,13 @@ namespace ComputationalCluster.Server.Tests
         [Fact]
         public void WhenIsSecondBackupServer_ShouldChangeTheServerAddressToThisOfFirstBackupServer()
         {
+            context.SetupGet(c => c.BackupServers).Returns(new List<BackupServer>
+            {
+                new BackupServer {Address = backupServerAddress, Port = backupServerPort},
+                new BackupServer { Address = localAddress, Port = localPort },
+
+            });
+
             var message = GetMessage(
                 new BackupServer { Address = backupServerAddress, Port = backupServerPort },
                 new BackupServer { Address = localAddress, Port = localPort }
@@ -84,6 +94,11 @@ namespace ComputationalCluster.Server.Tests
         [Fact]
         public void WhenIsSecondBackupServerOnTheSameLocalAddress_ShouldChangeTheServerAddressToThisOfFirstBackupServer()
         {
+            context.SetupGet(c => c.BackupServers).Returns(new List<BackupServer>
+            {
+                new BackupServer {Address = "127.0.0.1", Port = backupServerPort},
+                new BackupServer { Address = "127.0.0.1", Port = localPort },
+            });
             context.SetupGet(c => c.LocalAddress).Returns("127.0.0.1");
             var message = GetMessage(
                 new BackupServer { Address = "127.0.0.1", Port = backupServerPort },

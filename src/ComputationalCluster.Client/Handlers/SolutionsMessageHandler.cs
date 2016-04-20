@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System.Text;
 
 namespace ComputationalCluster.Client.Handlers
 {
@@ -27,9 +28,10 @@ namespace ComputationalCluster.Client.Handlers
             }
             else if (response.Solutions[0].Type == SolutionType.Final)
             {
-                logger.Info("Final solution received");
                 context.CurrentProblemId = null;
-                //finalSolutionData = response.Solutions[0].Data;
+                byte[] finalSolutionData = response.Solutions[0].Data;
+                string solutionString = Encoding.UTF8.GetString(finalSolutionData);
+                logger.Info($"Final solution received: \n{solutionString}");
             }
         }
     }

@@ -1,12 +1,10 @@
 ﻿using ComputationalCluster.Client.Handlers;
-using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using Moq;
 using System;
-using System.Net.Sockets;
-using System.Threading;
+using System.Reflection;
 using Xunit;
 
 namespace ComputationalCluster.Client.Tests
@@ -19,7 +17,8 @@ namespace ComputationalCluster.Client.Tests
             var messenger = new Mock<IMessenger>();
             var node = new Client(messenger.Object);
 
-            node.Start();
+            //TODO: Filesystem wrapper!
+            node.Start(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
             messenger.Verify(m => m.SendMessage(It.Is<SolveRequestMessage>(msg => msg.ProblemType == "DVRP")),
                 Times.Once());
@@ -45,7 +44,7 @@ namespace ComputationalCluster.Client.Tests
             SolutionsMessageHandler hndl = new SolutionsMessageHandler(context.Object);
             var msg = new Mock<SolutionMessage>();
 
-            msg.Object.Solutions = new Solution[1] { new Solution() { Type = SolutionType.Final } };
+            msg.Object.Solutions = new Solution[1] { new Solution() { Type = SolutionType.Final, Data = new byte[1] } };
             context.Object.CurrentProblemId = 1;
 
             hndl.HandleResponse(msg.Object);
