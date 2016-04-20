@@ -139,8 +139,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
                 int depotIndex = int.Parse(items[0]);
                 int startHour = int.Parse(items[1]);
                 int endHour = int.Parse(items[2]);
-                depots[depotIndex].StartHour = startHour;
-                depots[depotIndex].EndHour = endHour;
+                depots[depotIndex].StartTime = startHour;
+                depots[depotIndex].EndTime = endHour;
             }
         }
 

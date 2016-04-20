@@ -8,8 +8,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
 {
     public class Depot : Location
     {
-        public int StartHour { get; set; }
-        public int EndHour { get; set; }
+        public int StartTime { get; set; }
+        public int EndTime { get; set; }
 
         public Depot() : base()
         {
@@ -18,8 +18,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
 
         public Depot(int X, int Y, int StartHour, int EndHour) : base(X,Y)
         {
-            this.StartHour = StartHour;
-            this.EndHour = EndHour;
+            this.StartTime = StartHour;
+            this.EndTime = EndHour;
         }
     }
 }
