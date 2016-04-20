@@ -12,26 +12,28 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             var solver = new DVRPTaskSolver(null);
         }
 
-        //[Fact]
-        //public void ShouldParseio2_5_plain_a_D()
-        //{
-        //    DVRPParser parser = new DVRPParser();
-        //    string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\io2_11_plain_a_D.vrp";
-        //    byte[] bytes = File.ReadAllBytes(path);
-        //    var ret = parser.ParseFile(bytes);
-        //    Assert.Equal(ret.Clients.Length, 11);
-        //    Assert.Equal(ret.Depots.Length, 1);
-        //    Assert.Equal(ret.VehicleCapacity, 100);
-        //    Assert.Equal(ret.VehiclesCount, 11);
-        //    Assert.Equal(ret.Clients[0].AvailableTime, 230);
-        //    Assert.Equal(ret.Clients[0].DemandSize, 15);
-        //    Assert.Equal(ret.Clients[0].UnloadTime, 20);
-        //    Assert.Equal(ret.Clients[0].X, 31);
-        //    Assert.Equal(ret.Clients[0].Y, 1);
-        //    Assert.Equal(ret.Depots[0].X, 0);
-        //    Assert.Equal(ret.Depots[0].Y, 0);
-        //    Assert.Equal(ret.Depots[0].StartHour, 0);
-        //    Assert.Equal(ret.Depots[0].EndHour, 620);
-        //}
+        [Fact]
+        public void ShouldParseio2_5_plain_a_D()
+        {
+            DVRPParser parser = new DVRPParser();
+            string path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\testFiles\\io2_11_plain_a_D.vrp";
+            FileStream fStream = new FileStream(path, FileMode.Open);
+            byte[] bytes = new byte[fStream.Length];
+            fStream.Read(bytes, 0, bytes.Length);
+            var ret = parser.ParseFile(bytes);
+            Assert.Equal(ret.Clients.Length, 11);
+            Assert.Equal(ret.Depots.Length, 1);
+            Assert.Equal(ret.VehicleCapacity, 100);
+            Assert.Equal(ret.VehiclesCount, 11);
+            Assert.Equal(ret.Clients[0].AvailableTime, 230);
+            Assert.Equal(ret.Clients[0].DemandSize, 15);
+            Assert.Equal(ret.Clients[0].UnloadTime, 20);
+            Assert.Equal(ret.Clients[0].X, 31);
+            Assert.Equal(ret.Clients[0].Y, 1);
+            Assert.Equal(ret.Depots[0].X, 0);
+            Assert.Equal(ret.Depots[0].Y, 0);
+            Assert.Equal(ret.Depots[0].StartHour, 0);
+            Assert.Equal(ret.Depots[0].EndHour, 620);
+        }
     }
 }

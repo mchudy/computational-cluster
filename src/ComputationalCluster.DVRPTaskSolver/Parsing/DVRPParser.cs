@@ -9,7 +9,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
         public DVRPProblemInstance ParseFile(byte[] data)
         {
             string text = Encoding.UTF8.GetString(data);
-            StreamReader reader = new StreamReader(text);
+            var reader = new StreamReader(new MemoryStream(data), Encoding.UTF8);
             return Parse(reader);
         }
 
