@@ -9,13 +9,20 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         private DVRPPartialProblem partialProblem;
         private DVRPProblemInstance problem;
         double minCost;
+        List<int>[] currentBestSolution;
         List<Partition> partitions;
+        List<Location> locations;
 
-        public DVRPSolver(DVRPPartialProblem partialProblem)
+        public DVRPSolver(DVRPPartialProblem partialProblem )
         {
             this.partialProblem = partialProblem;
             this.problem = partialProblem.ProblemInstance;
             minCost = double.MaxValue;
+            this.partitions = partialProblem.Partitions;
+            this.locations.Add(problem.Depots[0]);
+
+            for(int i=0; i<problem.Clients.Length; i++)
+                this.locations.Add(problem.Clients[i]);
         }
 
         public DVRPSolution Solve()
@@ -28,13 +35,26 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             return Math.Sqrt((l1.X - l2.X) * (l1.X - l2.X) + (l1.Y - l2.Y) * (l1.Y - l2.Y));
         }
 
-        double CheckTimesCapacityAndCost(List<int> route)
+        double CheckCapacitiesAndCost(List<int> route)
         {
-            for (int i = 0; i < route.Count; i++)
+            double currCost = 0;
+            int towar = problem.VehicleCapacity;
+            for (int i = 1; i < route.Count; i++)
             {
 
+                currCost += TravelDistance(locations[i], locations[i - 1]);
+
+                if (route[i] == 0)
+                    towar = problem.VehicleCapacity;
+                else
+                {
+                    if (towar < ((Client)locations[i]).DemandSize)
+                        return double.MaxValue;
+
+                    towar -= ((Client)locations[i]).DemandSize;
+                }
             }
-            return 0;
+            return currCost;
         }
 
 
