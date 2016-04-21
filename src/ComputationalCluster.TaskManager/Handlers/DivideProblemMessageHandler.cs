@@ -3,6 +3,8 @@ using ComputationalCluster.Common.Messages;
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System;
+using System.Threading.Tasks;
 
 namespace ComputationalCluster.TaskManager
 {
@@ -27,11 +29,22 @@ namespace ComputationalCluster.TaskManager
             var idleThread = context.TakeThread();
             if (idleThread != null)
             {
-                logger.Info($"Dividing problem {message.Id}");
-                idleThread.ProblemInstanceId = message.Id;
-                idleThread.ProblemType = message.ProblemType;
+                Task.Run(() => DivideProblem(message, idleThread));
+            }
+            else
+            {
+                logger.Error("No idle thread available");
+                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.ExceptionOccured });
+            }
+        }
 
-                //TODO: run on separate thread
+        private void DivideProblem(DivideProblemMessage message, StatusThread idleThread)
+        {
+            logger.Info($"Dividing problem {message.Id}");
+            idleThread.ProblemInstanceId = message.Id;
+            idleThread.ProblemType = message.ProblemType;
+            try
+            {
                 var taskSolver = taskSolverProvider.CreateTaskSolverInstance(message.ProblemType, message.Data);
                 var partialProblemsData = taskSolver.DivideProblem((int)message.ComputationalNodes);
 
@@ -52,12 +65,15 @@ namespace ComputationalCluster.TaskManager
                     PartialProblems = partialProblems
                 });
                 logger.Info($"Sending partial problems for problem {message.Id}");
-                context.ReleaseThread(idleThread);
             }
-            else
+            catch (Exception e)
             {
-                logger.Error("No idle thread available");
+                logger.Error(e.StackTrace);
                 messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.ExceptionOccured });
+            }
+            finally
+            {
+                context.ReleaseThread(idleThread);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Linq;
 using System.Text;
 
 namespace ComputationalCluster.DVRPTaskSolver.Problem
@@ -29,7 +30,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < finalSolution.Routes.Length; i++)
             {
-                if (finalSolution.Routes[i] == null)
+                if (finalSolution.Routes[i] == null || !finalSolution.Routes[i].Any())
                 {
                     builder.AppendLine("<empty>");
                     continue;
