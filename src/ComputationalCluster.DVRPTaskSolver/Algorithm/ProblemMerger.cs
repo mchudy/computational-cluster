@@ -1,12 +1,18 @@
 ﻿using ComputationalCluster.DVRPTaskSolver.Problem;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 {
     public class ProblemMerger
     {
+        
         public DVRPSolution MergeSolutions(DVRPSolution[] solutions)
         {
-            throw new System.NotImplementedException();
+            solutions.GroupBy(x => x.Cost);
+            return solutions[0];
         }
+
+
     }
 }
