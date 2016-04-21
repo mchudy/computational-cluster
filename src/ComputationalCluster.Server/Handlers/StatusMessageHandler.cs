@@ -118,6 +118,7 @@ namespace ComputationalCluster.Server.Handlers
                     {
                         Type = SolutionType.Partial,
                         TaskId = (ulong)i,
+                        Data = problemToMerge.PartialProblems[i].Solution
                     };
                 }
                 response.Add(new SolutionMessage

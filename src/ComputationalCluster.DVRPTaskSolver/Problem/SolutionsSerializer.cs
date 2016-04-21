@@ -29,12 +29,18 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < finalSolution.Routes.Length; i++)
             {
+                if (finalSolution.Routes[i] == null)
+                {
+                    builder.AppendLine("<empty>");
+                    continue;
+                }
                 foreach (var stop in finalSolution.Routes[i])
                 {
                     builder.Append(stop + ",");
                 }
                 builder.AppendLine();
             }
+            builder.AppendLine($"Cost: {finalSolution.Cost}");
             return Encoding.UTF8.GetBytes(builder.ToString());
         }
     }
