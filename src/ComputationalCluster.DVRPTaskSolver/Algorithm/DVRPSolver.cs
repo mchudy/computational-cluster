@@ -38,20 +38,20 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         double CheckCapacitiesAndCost(List<int> route)
         {
             double currCost = 0;
-            int towar = problem.VehicleCapacity;
+            int towar = problem.VehicleCapacity;            
             for (int i = 1; i < route.Count; i++)
-            {
+            {  
 
-                currCost += TravelDistance(locations[i], locations[i - 1]);
+                currCost += TravelDistance(locations[route[i]], locations[route[i - 1]]);
 
                 if (route[i] == 0)
                     towar = problem.VehicleCapacity;
                 else
                 {
-                    if (towar < ((Client)locations[i]).DemandSize)
+                    if (towar < ((Client)locations[route[i]]).DemandSize)
                         return double.MaxValue;
 
-                    towar -= ((Client)locations[i]).DemandSize;
+                    towar -= ((Client)locations[route[i]]).DemandSize;
                 }
             }
             return currCost;
