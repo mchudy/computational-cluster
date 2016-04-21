@@ -13,7 +13,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         List<Partition> partitions;
         List<Location> locations;
 
-        public DVRPSolver(DVRPPartialProblem partialProblem )
+        public DVRPSolver(DVRPPartialProblem partialProblem)
         {
             this.partialProblem = partialProblem;
             this.problem = partialProblem.ProblemInstance;
@@ -23,7 +23,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             this.locations = new List<Location>();
             this.locations.Add(problem.Depots[0]);
 
-            for(int i=0; i<problem.Clients.Length; i++)
+            for (int i = 0; i < problem.Clients.Length; i++)
                 this.locations.Add(problem.Clients[i]);
 
             currentBestSolution = new List<int>[problem.VehiclesCount];
@@ -33,11 +33,11 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         {
             DVRPSolution solution = new DVRPSolution();
 
-            foreach(var partition in partitions)
+            foreach (var partition in partitions)
             {
                 double currCost = 0;
                 List<int>[] currentSolution = new List<int>[problem.VehiclesCount];
-                for(int i =0; i<partition.truckClients.Length; i++)
+                for (int i = 0; i < partition.truckClients.Length; i++)
                 {
                     if (partition.truckClients[i].Count == 0)
                         continue;
@@ -52,10 +52,10 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     double bestCost = double.MaxValue;
                     List<int> bestRoute = null;
 
-                    foreach(var route in permutations)
+                    foreach (var route in permutations)
                     {
                         double c = CheckCapacitiesAndCost(route);
-                        if(c<bestCost)
+                        if (c < bestCost)
                         {
                             bestCost = c;
                             bestRoute = route;
@@ -65,7 +65,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     currCost += bestCost;
                     currentSolution[i] = bestRoute;
                 }
-                if(currCost < minCost)
+                if (currCost < minCost)
                 {
                     minCost = currCost;
                     solution.Cost = minCost;
@@ -81,18 +81,21 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             return Math.Sqrt((l1.X - l2.X) * (l1.X - l2.X) + (l1.Y - l2.Y) * (l1.Y - l2.Y));
         }
 
-        
 
-        double CheckCapacitiesAndCost(List<int> route)
+
+        double CheckCapacitiesTimeAndCost(List<int> route)
         {
             double currCost = 0;
             double currTime = problem.Depots[0].StartTime;
             int towar = problem.VehicleCapacity;
             double trlDist;
             for (int i = 1; i < route.Count; i++)
-            {  
-                trlDist= TravelDistance(locations[route[i]], locations[route[i - 1]]);
-                
+            {
+                trlDist = TravelDistance(locations[route[i]], locations[route[i - 1]]);
+                if (currTime + trlDist > problem.Clients[route[i]].AvailableTime)
+                    currTime += trlDist;
+                else
+                    currTime = problem.Clients[route[i]].AvailableTime;
                 currCost += trlDist;
 
                 if (route[i] == 0)
@@ -106,7 +109,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 }
             }
 
-            if (currCost > problem.Depots[0].EndTime - problem.Depots[0].StartTime)
+            if (currTime> problem.Depots[0].EndTime)
                 currCost = double.MaxValue;
 
             return currCost;
