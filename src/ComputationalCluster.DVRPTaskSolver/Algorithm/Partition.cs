@@ -3,10 +3,15 @@ using System.Collections.Generic;
 
 namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 {
-    [Serializable]
     public class Partition
     {
         public List<int>[] truckClients;
+
+        public Partition()
+        {
+
+        }
+
         public Partition(int trucks)
         {
             truckClients = new List<int>[trucks];

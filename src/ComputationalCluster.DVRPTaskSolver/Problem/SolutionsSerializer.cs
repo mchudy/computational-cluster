@@ -1,6 +1,5 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace ComputationalCluster.DVRPTaskSolver.Problem
 {
@@ -11,12 +10,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
             var solutions = new DVRPSolution[solutionsData.Length];
             for (int i = 0; i < solutionsData.Length; i++)
             {
-                var xml = Encoding.UTF8.GetString(solutionsData[i]);
-                var xmlSerializer = new XmlSerializer(typeof(DVRPSolution));
-                using (var reader = new StringReader(xml))
-                {
-                    solutions[i] = (DVRPSolution)xmlSerializer.Deserialize(reader);
-                }
+                var json = Encoding.UTF8.GetString(solutionsData[i]);
+                solutions[i] = JsonConvert.DeserializeObject<DVRPSolution>(json);
             }
             return solutions;
         }
@@ -24,14 +19,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
 
         public byte[] Serialize(DVRPSolution solution)
         {
-            var xmlSerializer = new XmlSerializer(typeof(DVRPSolution));
-            string xml;
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, solution);
-                xml = textWriter.ToString();
-            }
-            return Encoding.UTF8.GetBytes(xml);
+            string json = JsonConvert.SerializeObject(solution);
+            return Encoding.UTF8.GetBytes(json);
         }
 
         public byte[] SerializeForClient(DVRPSolution finalSolution)

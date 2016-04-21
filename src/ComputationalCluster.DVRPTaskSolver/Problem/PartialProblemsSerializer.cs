@@ -1,8 +1,7 @@
 ﻿using ComputationalCluster.DVRPTaskSolver.Algorithm;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace ComputationalCluster.DVRPTaskSolver.Problem
 {
@@ -18,28 +17,16 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
                     ProblemInstance = problemInstance,
                     Partitions = partitions[i]
                 };
-                var xmlSerializer = new XmlSerializer(typeof(DVRPPartialProblem));
-                string xml;
-                using (StringWriter textWriter = new StringWriter())
-                {
-                    xmlSerializer.Serialize(textWriter, partialProblem);
-                    xml = textWriter.ToString();
-                }
-                result[i] = Encoding.UTF8.GetBytes(xml);
+                string json = JsonConvert.SerializeObject(partialProblem);
+                result[i] = Encoding.UTF8.GetBytes(json);
             }
             return result;
         }
 
         public DVRPPartialProblem Deserialize(byte[] data)
         {
-            var xml = Encoding.UTF8.GetString(data);
-            var xmlSerializer = new XmlSerializer(typeof(DVRPPartialProblem));
-            DVRPPartialProblem partialProblem;
-            using (var reader = new StringReader(xml))
-            {
-                partialProblem = (DVRPPartialProblem)xmlSerializer.Deserialize(reader);
-            }
-            return partialProblem;
+            var json = Encoding.UTF8.GetString(data);
+            return JsonConvert.DeserializeObject<DVRPPartialProblem>(json);
         }
     }
 }
