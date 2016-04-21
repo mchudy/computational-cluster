@@ -55,7 +55,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     foreach (var route in permutations)
                     {
                         double c = CheckCapacitiesTimeAndCost(route);
-                        if (c < bestCost)
+                        if (c <= bestCost)
                         {
                             bestCost = c;
                             bestRoute = route;
@@ -65,12 +65,19 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     currCost += bestCost;
                     currentSolution[i] = bestRoute;
                 }
-                if (currCost < minCost)
+                if (currCost <= minCost)
                 {
                     minCost = currCost;
                     solution.Cost = minCost;
                     solution.Routes = currentSolution;
                 }
+            }
+
+
+            for(int i=0; i<solution.Routes.Length; i++)
+            {
+                if (solution.Routes[i] == null)
+                    solution.Routes[i] = new List<int>();
             }
 
             return solution;
@@ -100,8 +107,12 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                         currTime = problem.Clients[route[i] - 1].AvailableTime;
                     currCost += trlDist;
                 }
+
                 if (route[i] == 0)
+                {
                     towar = problem.VehicleCapacity;
+                    currCost += trlDist;
+                }
                 else
                 {
                     if (towar < ((Client)locations[route[i]]).DemandSize)
