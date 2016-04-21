@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ComputationalCluster.DVRPTaskSolver.Parsing
+namespace ComputationalCluster.DVRPTaskSolver.Problem
 {
+    [Serializable]
     public class Location
     {
 
@@ -20,7 +17,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
         public Location(int X, int Y)
         {
             this.X = X;
-            this.Y = Y; 
+            this.Y = Y;
         }
     }
 

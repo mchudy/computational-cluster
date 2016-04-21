@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using ComputationalCluster.DVRPTaskSolver.Problem;
 
 namespace ComputationalCluster.DVRPTaskSolver.Parsing
 {
     public class DVRPParser : IDVRPParser
     {
-        public DVRPProblemInstance ParseFile(byte[] data)
+        public DVRPProblemInstance Parse(byte[] data)
         {
             string text = Encoding.UTF8.GetString(data);
             var reader = new StreamReader(new MemoryStream(data), Encoding.UTF8);

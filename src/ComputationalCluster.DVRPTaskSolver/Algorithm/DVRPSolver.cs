@@ -1,23 +1,26 @@
-﻿using ComputationalCluster.DVRPTaskSolver.Parsing;
+﻿using ComputationalCluster.DVRPTaskSolver.Problem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ComputationalCluster.Common.DVRPAlgorithms
+namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 {
     public class DVRPSolver
     {
-
-        DVRPProblemInstance problem;
+        private DVRPPartialProblem partialProblem;
+        private DVRPProblemInstance problem;
         double minCost;
         List<Partition> partitions;
 
-        public DVRPSolver(DVRPProblemInstance problem)
+        public DVRPSolver(DVRPPartialProblem partialProblem)
         {
-            this.problem = problem;
+            this.partialProblem = partialProblem;
+            this.problem = partialProblem.ProblemInstance;
             minCost = double.MaxValue;
+        }
+
+        public DVRPSolution Solve()
+        {
+            throw new NotImplementedException();
         }
 
         private double TravelDistance(Location l1, Location l2)
@@ -27,7 +30,7 @@ namespace ComputationalCluster.Common.DVRPAlgorithms
 
         double CheckTimesCapacityAndCost(List<int> route)
         {
-            for(int i =0; i<route.Count; i++)
+            for (int i = 0; i < route.Count; i++)
             {
 
             }
@@ -35,14 +38,14 @@ namespace ComputationalCluster.Common.DVRPAlgorithms
         }
 
 
-        void generuj(int k, bool zDepot, List<int> permutacja, List<List<int>> ret, bool[] tab, bool flag)
+        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, bool flag)
         {
             if (k == problem.Clients.Length)
             {
-                permutacja.Add(0);
+                permutation.Add(0);
                 if (flag)
                 {
-                    ret.Add(permutacja);
+                    ret.Add(permutation);
                     flag = false;
                 }
                 else
@@ -52,17 +55,17 @@ namespace ComputationalCluster.Common.DVRPAlgorithms
 
             for (int m = 1; m < problem.Clients.Length + 1; ++m)
             {
-                var p = new List<int>(permutacja);
+                var p = new List<int>(permutation);
                 if (!tab[m - 1])
                 {
                     tab[m - 1] = true;
 
-                    if (zDepot || k ==0)
+                    if (zDepot || k == 0)
                         p.Add(0);
 
                     p.Add(m);
-                    generuj(k + 1, true, new List<int>(p), ret , tab, flag);
-                    generuj(k + 1, false, new List<int>(p), ret, tab, flag);
+                    Generate(k + 1, true, new List<int>(p), ret, tab, flag);
+                    Generate(k + 1, false, new List<int>(p), ret, tab, flag);
 
                     tab[m - 1] = false;
                 }
@@ -76,10 +79,9 @@ namespace ComputationalCluster.Common.DVRPAlgorithms
             bool fl = true;
             bool[] visited = new bool[problem.Clients.Length];
 
-            generuj(0, true, new List<int>(),  ret, visited,  fl);
+            Generate(0, true, new List<int>(), ret, visited, fl);
 
             return ret;
         }
-
     }
 }

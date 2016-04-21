@@ -21,7 +21,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.VehicleCapacity, 100);
             Assert.Equal(ret.VehiclesCount, 4);
 
@@ -36,7 +36,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.Clients.Length, 4);
 
             Assert.Equal(ret.Clients[0].AvailableTime, 339);
@@ -75,7 +75,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.Depots.Length, 1);
 
             Assert.Equal(ret.Depots[0].StartTime, 0);
@@ -95,7 +95,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.VehicleCapacity, 100);
             Assert.Equal(ret.VehiclesCount, 5);
 
@@ -110,7 +110,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.Clients.Length, 5);
 
             Assert.Equal(ret.Clients[0].AvailableTime, 372);
@@ -155,7 +155,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             byte[] bytes = new byte[fStream.Length];
             fStream.Read(bytes, 0, bytes.Length);
 
-            var ret = parser.ParseFile(bytes);
+            var ret = parser.Parse(bytes);
             Assert.Equal(ret.Depots.Length, 1);
 
             Assert.Equal(ret.Depots[0].StartTime, 0);

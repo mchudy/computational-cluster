@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ComputationalCluster.DVRPTaskSolver.Parsing
+namespace ComputationalCluster.DVRPTaskSolver.Problem
 {
+    [Serializable]
     public class Depot : Location
     {
         public int StartTime { get; set; }
@@ -16,7 +13,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Parsing
 
         }
 
-        public Depot(int X, int Y, int StartHour, int EndHour) : base(X,Y)
+        public Depot(int X, int Y, int StartHour, int EndHour) : base(X, Y)
         {
             this.StartTime = StartHour;
             this.EndTime = EndHour;

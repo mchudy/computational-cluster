@@ -1,11 +1,9 @@
-﻿using ComputationalCluster.DVRPTaskSolver.Parsing;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ComputationalCluster.DVRPTaskSolver.Parsing;
+using ComputationalCluster.DVRPTaskSolver.Problem;
 
-namespace ComputationalCluster.Common.DVRPAlgorithms
+namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 {
     public class ProblemDivider
     {

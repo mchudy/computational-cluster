@@ -1,12 +1,18 @@
-﻿using log4net;
+﻿using ComputationalCluster.DVRPTaskSolver.Algorithm;
+using ComputationalCluster.DVRPTaskSolver.Parsing;
+using ComputationalCluster.DVRPTaskSolver.Problem;
+using log4net;
 using System;
-using System.Text;
+using System.Collections.Generic;
 
 namespace ComputationalCluster.DVRPTaskSolver
 {
     public class DVRPTaskSolver : UCCTaskSolver.TaskSolver
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(DVRPTaskSolver));
+        private readonly IDVRPParser parser = new DVRPParser();
+        private readonly PartialProblemsSerializer partialProblemsSerializer = new PartialProblemsSerializer();
+        private readonly SolutionsSerializer solutionsSerializer = new SolutionsSerializer();
 
         public override string Name => "DVRP";
 
@@ -19,24 +25,28 @@ namespace ComputationalCluster.DVRPTaskSolver
         public override byte[][] DivideProblem(int threadCount)
         {
             logger.Info("[Task Solver] Dividing problem");
-            var partials = new byte[threadCount][];
-            for (int i = 0; i < threadCount; i++)
-            {
-                partials[i] = new byte[] { 1, 1 };
-            }
-            return partials;
+
+            DVRPProblemInstance problemInstance = parser.Parse(_problemData);
+            var divider = new ProblemDivider(problemInstance, threadCount);
+            List<Partition>[] partitions = divider.DividePartitions();
+            return partialProblemsSerializer.Serialize(problemInstance, partitions);
         }
 
-        public override byte[] MergeSolution(byte[][] solutions)
+        public override byte[] MergeSolution(byte[][] solutionsData)
         {
             logger.Info("[Task Solver] Merging solution");
-            return Encoding.UTF8.GetBytes("Hello!");
+            DVRPSolution[] solutions = solutionsSerializer.Deserialize(solutionsData);
+            DVRPSolution finalSolution = new ProblemMerger().MergeSolutions(solutions);
+            return solutionsSerializer.SerializeForClient(finalSolution);
         }
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             logger.Info("[Task Solver] Solving partial problem");
-            return new byte[] { 1, 1 };
+
+            DVRPPartialProblem partialProblem = partialProblemsSerializer.Deserialize(partialData);
+            var solution = new DVRPSolver(partialProblem).Solve();
+            return solutionsSerializer.Serialize(solution);
         }
     }
 }

@@ -51,13 +51,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\DVRPSolver.cs" />
+    <Compile Include="Algorithm\Partition.cs" />
+    <Compile Include="Algorithm\ProblemDivider.cs" />
+    <Compile Include="Algorithm\ProblemMerger.cs" />
     <Compile Include="DVRPTaskSolver.cs" />
-    <Compile Include="Parsing\Client.cs" />
-    <Compile Include="Parsing\Depot.cs" />
+    <Compile Include="Problem\Client.cs" />
+    <Compile Include="Problem\Depot.cs" />
     <Compile Include="Parsing\DVRPParser.cs" />
-    <Compile Include="Parsing\DVRPProblemInstance.cs" />
+    <Compile Include="Problem\DVRPPartialProblem.cs" />
+    <Compile Include="Problem\DVRPProblemInstance.cs" />
     <Compile Include="Parsing\IDVRPParser.cs" />
-    <Compile Include="Parsing\Location.cs" />
+    <Compile Include="Problem\DVRPSolution.cs" />
+    <Compile Include="Problem\Location.cs" />
+    <Compile Include="Problem\PartialProblemsSerializer.cs" />
+    <Compile Include="Problem\SolutionsSerializer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
