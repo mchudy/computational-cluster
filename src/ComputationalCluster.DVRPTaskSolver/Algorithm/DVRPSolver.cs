@@ -47,7 +47,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     foreach (var perm in permutations)
                         for (int j = 0; j < perm.Count; j++)
                             if (perm[j] != 0)
-                                perm[j] = partition.truckClients[i][perm[j]];
+                                perm[j] = partition.truckClients[i][perm[j] - 1];
 
                     double bestCost = double.MaxValue;
                     List<int> bestRoute = null;
@@ -92,12 +92,14 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             for (int i = 1; i < route.Count; i++)
             {
                 trlDist = TravelDistance(locations[route[i]], locations[route[i - 1]]);
-                if (currTime + trlDist > problem.Clients[route[i]].AvailableTime)
-                    currTime += trlDist;
-                else
-                    currTime = problem.Clients[route[i]].AvailableTime;
-                currCost += trlDist;
-
+                if (route[i] != 0)
+                {
+                    if (currTime + trlDist > problem.Clients[route[i] - 1].AvailableTime)
+                        currTime += trlDist;
+                    else
+                        currTime = problem.Clients[route[i] - 1].AvailableTime;
+                    currCost += trlDist;
+                }
                 if (route[i] == 0)
                     towar = problem.VehicleCapacity;
                 else

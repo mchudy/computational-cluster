@@ -62,7 +62,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         public List<Partition>[] DividePartitions()
         {
             List<Partition>[] ret = new List<Partition>[threadCount];
-
+            CreatePartitions();
             for (int i = 0; i < ret.Length; i++)
             {
                 ret[i] = new List<Partition>();
