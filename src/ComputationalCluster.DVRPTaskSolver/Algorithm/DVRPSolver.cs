@@ -81,14 +81,19 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             return Math.Sqrt((l1.X - l2.X) * (l1.X - l2.X) + (l1.Y - l2.Y) * (l1.Y - l2.Y));
         }
 
+        
+
         double CheckCapacitiesAndCost(List<int> route)
         {
             double currCost = 0;
-            int towar = problem.VehicleCapacity;            
+            double currTime = problem.Depots[0].StartTime;
+            int towar = problem.VehicleCapacity;
+            double trlDist;
             for (int i = 1; i < route.Count; i++)
             {  
-
-                currCost += TravelDistance(locations[route[i]], locations[route[i - 1]]);
+                trlDist= TravelDistance(locations[route[i]], locations[route[i - 1]]);
+                
+                currCost += trlDist;
 
                 if (route[i] == 0)
                     towar = problem.VehicleCapacity;
@@ -100,6 +105,10 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     towar -= ((Client)locations[route[i]]).DemandSize;
                 }
             }
+
+            if (currCost > problem.Depots[0].EndTime - problem.Depots[0].StartTime)
+                currCost = double.MaxValue;
+
             return currCost;
         }
 
