@@ -63,6 +63,11 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         {
             List<Partition>[] ret = new List<Partition>[threadCount];
 
+            for (int i = 0; i < ret.Length; i++)
+            {
+                ret[i] = new List<Partition>();
+            }
+
             for(int i = 0; i< partitions.Count; i++)
             {
                 ret[i % threadCount].Add(partitions[i]);
