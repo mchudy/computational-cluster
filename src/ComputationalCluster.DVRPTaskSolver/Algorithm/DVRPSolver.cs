@@ -19,15 +19,61 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             this.problem = partialProblem.ProblemInstance;
             minCost = double.MaxValue;
             this.partitions = partialProblem.Partitions;
+
+            this.locations = new List<Location>();
             this.locations.Add(problem.Depots[0]);
 
             for(int i=0; i<problem.Clients.Length; i++)
                 this.locations.Add(problem.Clients[i]);
+
+            currentBestSolution = new List<int>[problem.VehiclesCount];
         }
 
         public DVRPSolution Solve()
         {
-            throw new NotImplementedException();
+            DVRPSolution solution = new DVRPSolution();
+
+            foreach(var partition in partitions)
+            {
+                double currCost = 0;
+                List<int>[] currentSolution = new List<int>[problem.VehiclesCount];
+                for(int i =0; i<partition.truckClients.Length; i++)
+                {
+                    if (partition.truckClients[i].Count == 0)
+                        continue;
+
+                    List<List<int>> permutations = GenerateAllPermutations(partition.truckClients[i].Count);
+
+                    foreach (var perm in permutations)
+                        for (int j = 0; j < perm.Count; j++)
+                            if (perm[j] != 0)
+                                perm[j] = partition.truckClients[i][perm[j]];
+
+                    double bestCost = double.MaxValue;
+                    List<int> bestRoute = null;
+
+                    foreach(var route in permutations)
+                    {
+                        double c = CheckCapacitiesAndCost(route);
+                        if(c<bestCost)
+                        {
+                            bestCost = c;
+                            bestRoute = route;
+                        }
+                    }
+
+                    currCost += bestCost;
+                    currentSolution[i] = bestRoute;
+                }
+                if(currCost < minCost)
+                {
+                    minCost = currCost;
+                    solution.Cost = minCost;
+                    solution.Routes = currentSolution;
+                }
+            }
+
+            return solution;
         }
 
         private double TravelDistance(Location l1, Location l2)
@@ -58,9 +104,9 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         }
 
 
-        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, bool flag)
+        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, bool flag, int number)
         {
-            if (k == problem.Clients.Length)
+            if (k == number)
             {
                 permutation.Add(0);
                 if (flag)
@@ -73,7 +119,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 return;
             }
 
-            for (int m = 1; m < problem.Clients.Length + 1; ++m)
+            for (int m = 1; m < number + 1; ++m)
             {
                 var p = new List<int>(permutation);
                 if (!tab[m - 1])
@@ -84,8 +130,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                         p.Add(0);
 
                     p.Add(m);
-                    Generate(k + 1, true, new List<int>(p), ret, tab, flag);
-                    Generate(k + 1, false, new List<int>(p), ret, tab, flag);
+                    Generate(k + 1, true, new List<int>(p), ret, tab, flag, number);
+                    Generate(k + 1, false, new List<int>(p), ret, tab, flag, number);
 
                     tab[m - 1] = false;
                 }
@@ -93,13 +139,13 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
         }
 
-        List<List<int>> GenerateAllPermutations()
+        List<List<int>> GenerateAllPermutations(int numbers)
         {
             List<List<int>> ret = new List<List<int>>();
             bool fl = true;
             bool[] visited = new bool[problem.Clients.Length];
 
-            Generate(0, true, new List<int>(), ret, visited, fl);
+            Generate(0, true, new List<int>(), ret, visited, fl, numbers);
 
             return ret;
         }
