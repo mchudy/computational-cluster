@@ -58,6 +58,9 @@
   <ItemGroup>
     <Compile Include="Configuration\CommonOptions.cs" />
     <Compile Include="Configuration\CommonParameterParser.cs" />
+    <Compile Include="DVRPAlgorithms\DVRPSolver.cs" />
+    <Compile Include="DVRPAlgorithms\Partition.cs" />
+    <Compile Include="DVRPAlgorithms\ProblemDivider.cs" />
     <Compile Include="Exceptions\BadConfigException.cs" />
     <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Infrastructure\CommonModule.cs" />
@@ -113,7 +116,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ComputationalCluster.DVRPTaskSolver\ComputationalCluster.DVRPTaskSolver.csproj">
+      <Project>{e2eab193-3196-4bdf-99c5-daff165f64dd}</Project>
+      <Name>ComputationalCluster.DVRPTaskSolver</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
