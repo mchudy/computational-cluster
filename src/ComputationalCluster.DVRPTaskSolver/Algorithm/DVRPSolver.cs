@@ -54,7 +54,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
                     foreach (var route in permutations)
                     {
-                        double c = CheckCapacitiesAndCost(route);
+                        double c = CheckCapacitiesTimeAndCost(route);
                         if (c < bestCost)
                         {
                             bestCost = c;
