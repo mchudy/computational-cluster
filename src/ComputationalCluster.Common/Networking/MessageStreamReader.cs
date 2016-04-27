@@ -12,7 +12,7 @@ namespace ComputationalCluster.Common.Networking
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(MessageStreamReader));
 
-        public const int BufferSize = 20000;
+        public const int BufferSize = 1000000;
 
         private readonly INetworkStream stream;
         private readonly IMessageSerializer serializer;

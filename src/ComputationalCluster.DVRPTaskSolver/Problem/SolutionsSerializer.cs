@@ -32,16 +32,20 @@ namespace ComputationalCluster.DVRPTaskSolver.Problem
             {
                 if (finalSolution.Routes[i] == null || !finalSolution.Routes[i].Any())
                 {
-                    builder.AppendLine("<empty>");
                     continue;
                 }
-                foreach (var stop in finalSolution.Routes[i])
+                var clients = finalSolution.Routes[i].Where(x => x != 0).ToArray();
+                for (int j = 0; j < clients.Length; j++)
                 {
-                    builder.Append(stop + ",");
+                    builder.Append(clients[j]);
+                    if (j < clients.Length - 1)
+                    {
+                        builder.Append(", ");
+                    }
                 }
                 builder.AppendLine();
             }
-            builder.AppendLine($"Cost: {finalSolution.Cost}");
+            builder.Append($"Cost: {finalSolution.Cost}");
             return Encoding.UTF8.GetBytes(builder.ToString());
         }
     }

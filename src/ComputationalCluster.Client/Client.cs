@@ -30,10 +30,10 @@ namespace ComputationalCluster.Client
                 throw new ArgumentException("No problem file provided");
             }
             problemData = File.ReadAllBytes(problemFilePath);
-            SendSolveRequest();
+            SendSolveRequest(Path.GetFileName(problemFilePath));
         }
 
-        private void SendSolveRequest()
+        private void SendSolveRequest(string filename)
         {
             var message = new SolveRequestMessage()
             {
@@ -45,6 +45,7 @@ namespace ComputationalCluster.Client
             {
                 messenger.SendMessage(message);
                 context.Stopwatch = Stopwatch.StartNew();
+                context.ProblemFileName = filename;
             }
             catch (Exception e)
             {

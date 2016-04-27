@@ -5,6 +5,7 @@ using ComputationalCluster.Common.Objects;
 using Moq;
 using System;
 using System.Reflection;
+using System.Text;
 using Xunit;
 
 namespace ComputationalCluster.Client.Tests
@@ -44,7 +45,7 @@ namespace ComputationalCluster.Client.Tests
             SolutionsMessageHandler hndl = new SolutionsMessageHandler(context.Object);
             var msg = new Mock<SolutionMessage>();
 
-            msg.Object.Solutions = new Solution[1] { new Solution() { Type = SolutionType.Final, Data = new byte[1] } };
+            msg.Object.Solutions = new Solution[1] { new Solution() { Type = SolutionType.Final, Data = Encoding.UTF8.GetBytes("1\n2\n2\n") } };
             context.Object.CurrentProblemId = 1;
 
             hndl.HandleResponse(msg.Object);
