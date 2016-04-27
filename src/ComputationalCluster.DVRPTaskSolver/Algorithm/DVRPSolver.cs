@@ -74,7 +74,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             }
 
 
-            for(int i=0; i<solution.Routes.Length; i++)
+            for (int i = 0; i < solution.Routes.Length; i++)
             {
                 if (solution.Routes[i] == null)
                     solution.Routes[i] = new List<int>();
@@ -120,25 +120,22 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 }
             }
 
-            if (currTime> problem.Depots[0].EndTime)    //checking if we return to a depo before it closes
+            if (currTime > problem.Depots[0].EndTime)    //checking if we return to a depo before it closes
                 currCost = double.MaxValue;
 
             return currCost;
         }
 
 
-        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, bool flag, int number)
+        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, int number)
         {
             if (k == number)
             {
-                permutation.Add(0);
-                if (flag)
+                if (zDepot)
                 {
-                    ret.Add(permutation);
-                    flag = false;
+                    permutation.Add(0);
+                    ret.Add(permutation);                   
                 }
-                else
-                    flag = true;
                 return;
             }
 
@@ -153,8 +150,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                         p.Add(0);
 
                     p.Add(m);
-                    Generate(k + 1, true, new List<int>(p), ret, tab, flag, number);
-                    Generate(k + 1, false, new List<int>(p), ret, tab, flag, number);
+                    Generate(k + 1, true, new List<int>(p), ret, tab, number);
+                    Generate(k + 1, false, new List<int>(p), ret, tab, number);
 
                     tab[m - 1] = false;
                 }
@@ -164,12 +161,9 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
         List<List<int>> GenerateAllPermutations(int numbers)
         {
-            List<List<int>> ret = new List<List<int>>();
-            bool fl = true;
+            List<List<int>> ret = new List<List<int>>();            
             bool[] visited = new bool[problem.Clients.Length];
-
-            Generate(0, true, new List<int>(), ret, visited, fl, numbers);
-
+            Generate(0, true, new List<int>(), ret, visited, numbers);
             return ret;
         }
     }
