@@ -111,12 +111,12 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
                     towar -= ((Client)locations[route[i]]).DemandSize;  //updating cargo
 
-                    if (currTime + trlDist > problem.Clients[route[i]].AvailableTime) //checking if we arrive before an order becomes available
+                    if (currTime + trlDist > problem.Clients[route[i] - 1].AvailableTime) //checking if we arrive before an order becomes available
                         currTime += trlDist;
                     else
-                        currTime = problem.Clients[route[i]].AvailableTime;
+                        currTime = problem.Clients[route[i] - 1].AvailableTime;
                     currCost += trlDist;
-                    currTime += problem.Clients[route[i]].UnloadTime;   //update on time with time required to unload
+                    currTime += problem.Clients[route[i] - 1].UnloadTime;   //update on time with time required to unload
                 }
             }
 
@@ -134,7 +134,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 if (zDepot)
                 {
                     permutation.Add(0);
-                    ret.Add(permutation);                   
+                    ret.Add(permutation);
                 }
                 return;
             }
@@ -161,7 +161,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
         List<List<int>> GenerateAllPermutations(int numbers)
         {
-            List<List<int>> ret = new List<List<int>>();            
+            List<List<int>> ret = new List<List<int>>();
             bool[] visited = new bool[problem.Clients.Length];
             Generate(0, true, new List<int>(), ret, visited, numbers);
             return ret;

@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 
@@ -12,12 +13,14 @@ namespace ComputationalCluster.Client
         private static readonly ILog logger = LogManager.GetLogger(typeof(Client));
 
         private readonly IMessenger messenger;
+        private readonly ClientContext context;
 
         private byte[] problemData;
 
-        public Client(IMessenger messenger)
+        public Client(IMessenger messenger, ClientContext context)
         {
             this.messenger = messenger;
+            this.context = context;
         }
 
         public void Start(string problemFilePath)
@@ -41,6 +44,7 @@ namespace ComputationalCluster.Client
             try
             {
                 messenger.SendMessage(message);
+                context.Stopwatch = Stopwatch.StartNew();
             }
             catch (Exception e)
             {

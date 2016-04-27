@@ -29,9 +29,11 @@ namespace ComputationalCluster.Client.Handlers
             else if (response.Solutions[0].Type == SolutionType.Final)
             {
                 context.CurrentProblemId = null;
+                context.Stopwatch.Stop();
                 byte[] finalSolutionData = response.Solutions[0].Data;
                 string solutionString = Encoding.UTF8.GetString(finalSolutionData);
                 logger.Info($"Final solution received: \n{solutionString}");
+                logger.Info($"Total computation time: {context.Stopwatch.Elapsed}");
             }
         }
     }

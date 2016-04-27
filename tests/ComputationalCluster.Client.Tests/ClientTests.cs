@@ -15,7 +15,7 @@ namespace ComputationalCluster.Client.Tests
         public void Client_ShouldSendSolveRequestMessageOnStart()
         {
             var messenger = new Mock<IMessenger>();
-            var node = new Client(messenger.Object);
+            var node = new Client(messenger.Object, new Mock<ClientContext>().Object);
 
             //TODO: Filesystem wrapper!
             node.Start(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
