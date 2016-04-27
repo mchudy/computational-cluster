@@ -99,15 +99,6 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             for (int i = 1; i < route.Count; i++)
             {
                 trlDist = TravelDistance(locations[route[i]], locations[route[i - 1]]);
-                if (route[i] != 0)
-                {
-                    if (currTime + trlDist > problem.Clients[route[i] - 1].AvailableTime)
-                        currTime += trlDist;
-                    else
-                        currTime = problem.Clients[route[i] - 1].AvailableTime;
-                    currCost += trlDist;
-                }
-
                 if (route[i] == 0)
                 {
                     towar = problem.VehicleCapacity;
@@ -115,14 +106,21 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 }
                 else
                 {
-                    if (towar < ((Client)locations[route[i]]).DemandSize)
+                    if (towar < ((Client)locations[route[i]]).DemandSize)   //checking if there's enough cargo in the truck
                         return double.MaxValue;
 
-                    towar -= ((Client)locations[route[i]]).DemandSize;
+                    towar -= ((Client)locations[route[i]]).DemandSize;  //updating cargo
+
+                    if (currTime + trlDist > problem.Clients[route[i]].AvailableTime) //checking if we arrive before an order becomes available
+                        currTime += trlDist;
+                    else
+                        currTime = problem.Clients[route[i]].AvailableTime;
+                    currCost += trlDist;
+                    currTime += problem.Clients[route[i]].UnloadTime;   //update on time with time required to unload
                 }
             }
 
-            if (currTime> problem.Depots[0].EndTime)
+            if (currTime> problem.Depots[0].EndTime)    //checking if we return to a depo before it closes
                 currCost = double.MaxValue;
 
             return currCost;
