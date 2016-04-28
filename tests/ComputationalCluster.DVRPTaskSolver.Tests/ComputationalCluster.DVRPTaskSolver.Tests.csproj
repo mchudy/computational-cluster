@@ -72,8 +72,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmTests.cs" />
     <Compile Include="DVRPTaskSolverTests.cs" />
     <Compile Include="PartialProblemsSerializerTests.cs" />
+    <Compile Include="ProblemDividerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionsSerializerTests.cs" />
   </ItemGroup>
