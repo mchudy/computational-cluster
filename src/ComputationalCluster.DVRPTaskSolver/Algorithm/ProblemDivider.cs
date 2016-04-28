@@ -22,7 +22,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         private void CreatePartitions()
         {
             var numbers = Enumerable.Range(1, problem.Clients.Length);
-            foreach (var partition in GeneratePartitions(numbers.ToArray(), new List<int>(), problem.VehiclesCount))
+            foreach (var partition in new Partition().MakePartitions(problem.VehiclesCount))
             {
                 Partition p = new Partition(problem.VehiclesCount);
                 p.truckClients = partition;

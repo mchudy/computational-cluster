@@ -103,6 +103,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 {
                     towar = problem.VehicleCapacity;
                     currCost += trlDist;
+                    currTime += trlDist;
                 }
                 else
                 {
@@ -120,8 +121,8 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 }
             }
 
-            if (currTime > problem.Depots[0].EndTime)    //checking if we return to a depo before it closes
-                currCost = double.MaxValue;
+           // if (currTime > problem.Depots[0].EndTime )    //checking if we return to a depo before it closes
+         //       return double.MaxValue;
 
             return currCost;
         }
