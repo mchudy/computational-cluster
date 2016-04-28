@@ -15,26 +15,12 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
         private DVRPProblemInstance simpleProblem2;
         private DVRPProblemInstance problemInstance4;
         private DVRPProblemInstance problemInstance5;
+        private DVRPProblemInstance problemInstance6;
+        private DVRPProblemInstance problemInstance7;
         private int threadCount;
 
         public AlgorithmTests()
         {
-            simpleProblem1 = new DVRPProblemInstance
-            {
-                Depots = new Depot[] { new Depot(0, 0, 0, 500) },
-                Clients = new Client[] { new Client(-50, 0, 400, 20, 50), new Client(50, 0, 400, 20, 50) },
-                VehicleCapacity = 80,
-                VehiclesCount = 2
-            };
-
-            simpleProblem2 = new DVRPProblemInstance
-            {
-                Depots = new Depot[] { new Depot(0, 0, 0, 100) },
-                Clients = new Client[] { new Client(-50, 0, 80, 20, 50), new Client(50, 0, 80, 20, 50) },
-                VehicleCapacity = 80,
-                VehiclesCount = 2
-            };
-
             problemInstance4 = new DVRPProblemInstance
             {
                 Depots = new Depot[] { new Depot(0, 0, 0, 480) },
@@ -54,38 +40,32 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
                 VehiclesCount = 5
             };
 
+            problemInstance6 = new DVRPProblemInstance
+            {
+                Depots = new Depot[] { new Depot(0, 0, 0, 520) },
+                Clients = new Client[] { new Client(-87, 49, 512, 20, 38), new Client(-43, 50, 198, 20, 13),
+                                         new Client(-7, -16, 146, 20, 33), new Client(88, -98, 476, 20, 13),
+                                         new Client(53, -19, 1, 20, 30), new Client(-23, 85, 64, 20, 21)},
+                VehicleCapacity = 100,
+                VehiclesCount = 6
+            };
+
+            problemInstance7 = new DVRPProblemInstance
+            {
+                Depots = new Depot[] { new Depot(0, 0, 0, 540) },
+                Clients = new Client[] { new Client(-29, -95, 180, 20, 25), new Client(31, 48, 125, 20, 9),
+                                         new Client(-29, 25, 458, 20, 26), new Client(-93, 35, 190, 20, 26),
+                                         new Client(-84, -30, 493, 20, 23), new Client(-50, 42, 448, 20, 26),
+                                         new Client(-66, 55, 380, 20, 10)},
+                VehicleCapacity = 100,
+                VehiclesCount = 7
+            };
+
             threadCount = 4;
         }
 
         [Fact]
-        void Solve_ShouldSolveSimpleProblem1()
-        {
-            var ret = Solve(simpleProblem1);
-
-            SolutionsSerializer ss = new SolutionsSerializer();
-            string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
-
-            Assert.NotNull(ret);
-            Assert.Equal((int)ret.Cost, 200);
-            Assert.Contains("[0,2,0,1,0]", solutionString);
-        }
-
-        [Fact]
-        void Solve_ShouldSolveSimpleProblem2()
-        {
-            var ret = Solve(simpleProblem2);
-
-            SolutionsSerializer ss = new SolutionsSerializer();
-            string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
-
-            Assert.NotNull(ret);
-            Assert.Equal((int)ret.Cost, 200);
-            Assert.Contains("[0,2,0]", solutionString);
-            Assert.Contains("[0,1,0]", solutionString);
-        }
-
-        [Fact]
-        void Solve_ShouldSolve4Client1Depot()
+        void Solve_ShouldSolve4Client1Depot_CheckRoute()
         {
             var ret = Solve(problemInstance4);
 
@@ -93,13 +73,25 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
             string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
 
             Assert.NotNull(ret);
-            Assert.Equal((int)ret.Cost, 374);
             Assert.Contains("4,1", solutionString);
-            Assert.Contains("3,2", solutionString);
+            Assert.Contains("2,3", solutionString);
         }
 
         [Fact]
-        void Solve_ShouldSolve5Client1Depot()
+        void Solve_ShouldSolve5Client1Depot_CheckRoute()
+        {
+            var ret = Solve(problemInstance5);
+
+            SolutionsSerializer ss = new SolutionsSerializer();
+            string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
+
+            Assert.NotNull(ret);
+            Assert.Contains("3,5,1", solutionString);
+            Assert.Contains("4,2", solutionString);
+        }
+
+        [Fact]
+        void Solve_ShouldSolve5Client1Depot_CheckCost()
         {
             var ret = Solve(problemInstance5);
 
@@ -108,11 +100,33 @@ namespace ComputationalCluster.DVRPTaskSolver.Tests
 
             Assert.NotNull(ret);
             Assert.Equal((int)ret.Cost, 446);
-            Assert.Contains("5,1,3", solutionString);
-            Assert.Contains("4,2", solutionString);
         }
 
-      
+        [Fact]
+        void Solve_ShouldSolve6Client1Depot_CheckCost()
+        {
+            var ret = Solve(problemInstance6);
+
+            SolutionsSerializer ss = new SolutionsSerializer();
+            string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
+
+            Assert.NotNull(ret);
+            Assert.Equal((int)ret.Cost, 557);
+        }
+
+        [Fact]
+        void Solve_ShouldSolve6Client1Depot_CheckRoute()
+        {
+            var ret = Solve(problemInstance6);
+
+            SolutionsSerializer ss = new SolutionsSerializer();
+            string solutionString = Encoding.UTF8.GetString(ss.Serialize(ret));
+
+            Assert.NotNull(ret);
+            Assert.Contains("6,1,2", solutionString);
+            Assert.Contains("5,4,3", solutionString);
+        }
+
 
         private DVRPSolution Solve(DVRPProblemInstance problemInstance)
         {
