@@ -1,11 +1,14 @@
 ﻿using ComputationalCluster.DVRPTaskSolver.Problem;
+using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 {
     public class DVRPSolver
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(DVRPSolver));
         private DVRPPartialProblem partialProblem;
         private DVRPProblemInstance problem;
         double minCost;
@@ -32,7 +35,12 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         public DVRPSolution Solve()
         {
             DVRPSolution solution = new DVRPSolution();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
+            var allPartitions = partitions.Count;
+            logger.Info($"[Task Solver] Checking {allPartitions} partitions");
+
+            int current = 0;
             foreach (var partition in partitions)
             {
                 double currCost = 0;
@@ -42,26 +50,21 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     if (partition.truckClients[i].Count == 0)
                         continue;
 
-                    List<List<int>> permutations = GenerateAllPermutations(partition.truckClients[i].Count);
-
-                    foreach (var perm in permutations)
+                    double bestCost = double.MaxValue;
+                    List<int> bestRoute = null;
+                    foreach (var perm in GenerateAllPermutations(partition.truckClients[i].Count))
+                    {
                         for (int j = 0; j < perm.Count; j++)
                             if (perm[j] != 0)
                                 perm[j] = partition.truckClients[i][perm[j] - 1];
 
-                    double bestCost = double.MaxValue;
-                    List<int> bestRoute = null;
-
-                    foreach (var route in permutations)
-                    {
-                        double c = CheckCapacitiesTimeAndCost(route);
+                        double c = CheckCapacitiesTimeAndCost(perm);
                         if (c <= bestCost)
                         {
                             bestCost = c;
-                            bestRoute = route;
+                            bestRoute = perm;
                         }
                     }
-
                     currCost += bestCost;
                     currentSolution[i] = bestRoute;
                 }
@@ -71,8 +74,10 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     solution.Cost = minCost;
                     solution.Routes = currentSolution;
                 }
+                current++;
+                double progress = ((double)current / allPartitions);
+                Console.Write("\r{0:P2}", progress);
             }
-
 
             for (int i = 0; i < solution.Routes.Length; i++)
             {
@@ -80,15 +85,18 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                     solution.Routes[i] = new List<int>();
             }
 
+            stopwatch.Stop();
+#if DEBUG
+            Console.WriteLine();
+#endif
+            logger.Info($"[Task Solver] Computation time: {stopwatch.Elapsed}");
             return solution;
         }
 
-        private double TravelDistance(Location l1, Location l2)
+        private static double TravelDistance(Location l1, Location l2)
         {
             return Math.Sqrt((l1.X - l2.X) * (l1.X - l2.X) + (l1.Y - l2.Y) * (l1.Y - l2.Y));
         }
-
-
 
         double CheckCapacitiesTimeAndCost(List<int> route)
         {
@@ -121,23 +129,22 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                 }
             }
 
-           // if (currTime > problem.Depots[0].EndTime )    //checking if we return to a depo before it closes
-         //       return double.MaxValue;
+            // if (currTime > problem.Depots[0].EndTime )    //checking if we return to a depo before it closes
+            //       return double.MaxValue;
 
             return currCost;
         }
 
 
-        void Generate(int k, bool zDepot, List<int> permutation, List<List<int>> ret, bool[] tab, int number)
+        private static IEnumerable<List<int>> Generate(int k, bool zDepot, List<int> permutation, bool[] tab, int number)
         {
             if (k == number)
             {
                 if (zDepot)
                 {
                     permutation.Add(0);
-                    ret.Add(permutation);
+                    yield return permutation;
                 }
-                return;
             }
 
             for (int m = 1; m < number + 1; ++m)
@@ -151,8 +158,14 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                         p.Add(0);
 
                     p.Add(m);
-                    Generate(k + 1, true, new List<int>(p), ret, tab, number);
-                    Generate(k + 1, false, new List<int>(p), ret, tab, number);
+                    foreach (var pe in Generate(k + 1, true, new List<int>(p), tab, number))
+                    {
+                        yield return pe;
+                    }
+                    foreach (var pe in Generate(k + 1, false, new List<int>(p), tab, number))
+                    {
+                        yield return pe;
+                    }
 
                     tab[m - 1] = false;
                 }
@@ -160,12 +173,10 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
 
         }
 
-        List<List<int>> GenerateAllPermutations(int numbers)
+        private IEnumerable<List<int>> GenerateAllPermutations(int numbers)
         {
-            List<List<int>> ret = new List<List<int>>();
             bool[] visited = new bool[problem.Clients.Length];
-            Generate(0, true, new List<int>(), ret, visited, numbers);
-            return ret;
+            return Generate(0, true, new List<int>(), visited, numbers);
         }
     }
 }

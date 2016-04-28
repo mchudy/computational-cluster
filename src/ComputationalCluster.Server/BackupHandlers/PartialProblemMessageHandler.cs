@@ -28,6 +28,7 @@ namespace ComputationalCluster.Server.BackupHandlers
                     Problem = p,
                     State = PartialProblemState.New
                 }).ToArray();
+                logger.Info($"Received partial problems for problem {problem.Id}");
             }
         }
     }
