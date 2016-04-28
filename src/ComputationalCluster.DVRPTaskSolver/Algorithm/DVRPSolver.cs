@@ -58,7 +58,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                             if (perm[j] != 0)
                                 perm[j] = partition.truckClients[i][perm[j] - 1];
 
-                        double c = CheckCapacitiesTimeAndCost(perm);
+                        double c = CheckCapacitiesTimeAndCost(perm,problem, locations);
                         if (c <= bestCost)
                         {
                             bestCost = c;
@@ -98,7 +98,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
             return Math.Sqrt((l1.X - l2.X) * (l1.X - l2.X) + (l1.Y - l2.Y) * (l1.Y - l2.Y));
         }
 
-        double CheckCapacitiesTimeAndCost(List<int> route)
+        static double CheckCapacitiesTimeAndCost(List<int> route, DVRPProblemInstance problem, List<Location> locations)
         {
             double currCost = 0;
             double currTime = problem.Depots[0].StartTime;
@@ -136,8 +136,12 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         }
 
 
-        private static IEnumerable<List<int>> Generate(int k, bool zDepot, List<int> permutation, bool[] tab, int number)
+        private static IEnumerable<List<int>> Generate(int k, bool zDepot, List<int> permutation, bool[] tab, int number, DVRPSolver solver)
         {
+
+            if (permutation.Count > 1)
+                if (CheckCapacitiesTimeAndCost(permutation, solver.problem, solver.locations) == double.MaxValue)
+                    yield break;
             if (k == number)
             {
                 if (zDepot)
@@ -158,11 +162,11 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
                         p.Add(0);
 
                     p.Add(m);
-                    foreach (var pe in Generate(k + 1, true, new List<int>(p), tab, number))
+                    foreach (var pe in Generate(k + 1, true, new List<int>(p), tab, number,solver))
                     {
                         yield return pe;
                     }
-                    foreach (var pe in Generate(k + 1, false, new List<int>(p), tab, number))
+                    foreach (var pe in Generate(k + 1, false, new List<int>(p), tab, number,solver))
                     {
                         yield return pe;
                     }
@@ -176,7 +180,7 @@ namespace ComputationalCluster.DVRPTaskSolver.Algorithm
         private IEnumerable<List<int>> GenerateAllPermutations(int numbers)
         {
             bool[] visited = new bool[problem.Clients.Length];
-            return Generate(0, true, new List<int>(), visited, numbers);
+            return Generate(0, true, new List<int>(), visited, numbers,this);
         }
     }
 }
