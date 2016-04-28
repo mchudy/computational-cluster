@@ -4,7 +4,7 @@ using ComputationalCluster.Common;
 using ComputationalCluster.Common.Messaging;
 using log4net;
 using System;
-using System.Configuration;
+using System.Linq;
 
 namespace ComputationalCluster.Client
 {
@@ -14,7 +14,9 @@ namespace ComputationalCluster.Client
 
         static void Main(string[] args)
         {
-            CommonParameterParser.LoadCommandLineParameters(args);
+            // skipping file path
+            string[] argsToParse = args.Take(args.Length - 1).ToArray();
+            CommonParameterParser.LoadCommandLineParameters(argsToParse);
 
             var builder = new ContainerBuilder();
 
@@ -32,13 +34,17 @@ namespace ComputationalCluster.Client
             try
             {
                 var client = container.Resolve<Client>();
-                client.Start();
+                client.Start(args.LastOrDefault());
+                Console.ReadLine();
             }
             catch (DependencyResolutionException e)
             {
                 logger.Error(e.InnerException.Message);
             }
-            Console.ReadLine();
+            catch (ArgumentException e)
+            {
+                logger.Error(e.Message);
+            }
         }
     }
 }

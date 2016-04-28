@@ -24,6 +24,24 @@ namespace ComputationalCluster.Server.BackupHandlers
                 case ClientComponentType.TaskManager:
                     HandleTaskManager(message);
                     break;
+                case ClientComponentType.CommunicationServer:
+                    HandleBackupServer(message);
+                    break;
+            }
+        }
+
+        private void HandleBackupServer(RegisterMessage message)
+        {
+            if (message.Deregister)
+            {
+                context.BackupServers.RemoveAll(b => b.Id == (int)message.Id);
+            }
+            else
+            {
+                context.BackupServers.Add(new BackupServer
+                {
+                    Id = (int)message.Id
+                });
             }
         }
 

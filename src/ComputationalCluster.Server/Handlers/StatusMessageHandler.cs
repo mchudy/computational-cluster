@@ -23,16 +23,24 @@ namespace ComputationalCluster.Server.Handlers
 
         public void HandleMessage(StatusMessage message, ITcpClient client)
         {
+            List<Message> response = new List<Message>();
             if (!context.IsPrimary)
             {
-                logger.Error("Message not allowed in backup mode");
-                messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                var backup = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
+                if (backup != null)
+                {
+                    HandleBackupServer(response, backup);
+                    messenger.SendMessages(response, client.GetStream());
+                }
+                else
+                {
+                    logger.Error("Message not allowed in backup mode");
+                    messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.NotAPrimaryServer }, client.GetStream());
+                }
                 return;
             }
 
             logger.Debug("Received status message from component of id: " + message.Id);
-
-            List<Message> response = new List<Message>();
 
             var node = context.Nodes.FirstOrDefault(n => n.Id == (int)message.Id);
             if (node != null)
@@ -53,7 +61,12 @@ namespace ComputationalCluster.Server.Handlers
             var backupServer = context.BackupServers.FirstOrDefault(t => t.Id == (int)message.Id);
             if (backupServer != null)
             {
-                HandleBackupServer(response);
+                // sychronization queue should be sent only to the first backup server 
+                // (backup servers should form a queue)
+                if (context.BackupServers[0] == backupServer)
+                {
+                    HandleBackupServer(response, backupServer);
+                }
                 response.Add(context.GetNoOperationMessage());
                 messenger.SendMessages(response, client.GetStream());
                 return;
@@ -62,8 +75,9 @@ namespace ComputationalCluster.Server.Handlers
             messenger.SendMessage(new ErrMessage { ErrorType = ErrorErrorType.UnknownSender }, client.GetStream());
         }
 
-        private void HandleBackupServer(List<Message> response)
+        private void HandleBackupServer(List<Message> response, BackupServer backup)
         {
+            backup.ReceivedStatus = true;
             Message backupMessage;
             while (context.BackupMessages.TryDequeue(out backupMessage))
             {
@@ -104,6 +118,7 @@ namespace ComputationalCluster.Server.Handlers
                     {
                         Type = SolutionType.Partial,
                         TaskId = (ulong)i,
+                        Data = problemToMerge.PartialProblems[i].Solution
                     };
                 }
                 response.Add(new SolutionMessage
@@ -128,7 +143,8 @@ namespace ComputationalCluster.Server.Handlers
                     Id = (ulong)problemToDivide.Id,
                     ComputationalNodes = (ulong)context.Nodes.Sum(n => n.ThreadsCount),
                     NodeID = (ulong)taskManager.Id,
-                    ProblemType = problemToDivide.ProblemType
+                    ProblemType = problemToDivide.ProblemType,
+                    Data = problemToDivide.Data
                 };
                 response.Add(divideMessage);
                 context.BackupMessages.Enqueue(divideMessage);
@@ -157,7 +173,8 @@ namespace ComputationalCluster.Server.Handlers
                 messages.Add(new PartialProblemsMessage
                 {
                     Id = (ulong)problemToSolve.Id,
-                    PartialProblems = partials.Select(p => p.Problem).ToArray()
+                    PartialProblems = partials.Select(p => p.Problem).ToArray(),
+                    ProblemType = problemToSolve.ProblemType
                 });
             }
         }

@@ -29,7 +29,10 @@ namespace ComputationalCluster.Server
 
         public void Add(BackupServer server)
         {
-
+            if (context.IsPrimary && context.BackupServers.Count == 0)
+            {
+                Task.Run(() => CheckBackupTimeout(server));
+            }
         }
 
         public void Add(TaskManager manager)
@@ -86,6 +89,21 @@ namespace ComputationalCluster.Server
                     break;
                 }
                 manager.ReceivedStatus = false;
+            }
+        }
+
+        private void CheckBackupTimeout(BackupServer backup)
+        {
+            while (true)
+            {
+                Thread.Sleep((int)(context.Configuration.Timeout * 1000));
+                if (!backup.ReceivedStatus)
+                {
+                    context.BackupServers.Clear();
+                    logger.Warn($"FAILURE - backup with id {backup.Id}");
+                    break;
+                }
+                backup.ReceivedStatus = false;
             }
         }
     }

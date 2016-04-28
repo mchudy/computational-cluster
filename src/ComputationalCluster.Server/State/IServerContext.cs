@@ -12,12 +12,16 @@ namespace ComputationalCluster.Server
         IList<ComputationalNode> Nodes { get; }
         IList<ProblemInstance> Problems { get; }
         IList<TaskManager> TaskManagers { get; }
+
+        bool IsMasterServerSet { get; set; }
         bool IsPrimary { get; }
         int Id { get; set; }
+        string LocalAddress { get; set; }
+
         int GetNextComponentId();
         int GetNextProblemId();
+
         ConcurrentQueue<Message> BackupMessages { get; }
         NoOperationMessage GetNoOperationMessage();
-
     }
 }

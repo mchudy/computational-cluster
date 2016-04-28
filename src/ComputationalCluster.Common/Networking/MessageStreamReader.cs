@@ -12,6 +12,8 @@ namespace ComputationalCluster.Common.Networking
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(MessageStreamReader));
 
+        public const int BufferSize = 1000000;
+
         private readonly INetworkStream stream;
         private readonly IMessageSerializer serializer;
 
@@ -40,14 +42,16 @@ namespace ComputationalCluster.Common.Networking
                     continue;
                 }
                 logger.Debug(messageXml);
-                response.Add(serializer.Deserialize(messageXml));
+                logger.Debug("----------------------------------------------------");
+                var message = serializer.Deserialize(messageXml);
+                response.Add(message);
             }
             return response;
         }
 
         private string ReadToCharOrEndOfStream(char delimiter)
         {
-            byte[] buffer = new byte[Constants.BufferSize];
+            byte[] buffer = new byte[BufferSize];
             using (var writer = new MemoryStream())
             {
                 do
@@ -71,7 +75,7 @@ namespace ComputationalCluster.Common.Networking
 
         private string ReadStreamToEnd()
         {
-            byte[] readBuffer = new byte[Constants.BufferSize];
+            byte[] readBuffer = new byte[BufferSize];
             using (var writer = new MemoryStream())
             {
                 do

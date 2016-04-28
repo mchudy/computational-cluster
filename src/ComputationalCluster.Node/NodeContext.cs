@@ -9,7 +9,7 @@ namespace ComputationalCluster.Node
     {
         private static readonly object lockObject = new object();
 
-        public const int ParallelThreads = 3;
+        public const int ParallelThreads = 1;
 
         public NodeContext()
         {

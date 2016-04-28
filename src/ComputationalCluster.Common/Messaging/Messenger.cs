@@ -2,6 +2,7 @@
 using ComputationalCluster.Common.Networking;
 using ComputationalCluster.Common.Networking.Factories;
 using log4net;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,22 +35,10 @@ namespace ComputationalCluster.Common.Messaging
                 {
                     using (var networkStream = OpenStream(client))
                     {
-                        var writer = streamFactory.CreateWriter(networkStream);
-                        writer.WriteMessage(message);
-                        var reader = streamFactory.CreateReader(networkStream);
-                        var response = reader.ReadToEnd();
-                        if (response.Count > 0 && response?[0] is ErrMessage)
+                        var response = SendAndGetResponse(message, networkStream);
+                        if (response.Count > 0 && response[0] is ErrMessage)
                         {
-                            var err = (ErrMessage)response[0];
-                            if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)
-                            {
-                                logger.Error("Got a NotAPrimaryServer error. Trying again...");
-                                Thread.Sleep(500);
-                            }
-                            else
-                            {
-                                gotPrimaryServerError = false;
-                            }
+                            gotPrimaryServerError = HandleErrorMessage(response);
                         }
                         else
                         {
@@ -62,6 +51,30 @@ namespace ComputationalCluster.Common.Messaging
                     }
                 }
             }
+        }
+
+        private static bool HandleErrorMessage(IList<Message> response)
+        {
+            var err = (ErrMessage)response[0];
+            if (err.ErrorType == ErrorErrorType.NotAPrimaryServer)
+            {
+                logger.Error("Got a NotAPrimaryServer error. Trying again...");
+                Thread.Sleep(500);
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private IList<Message> SendAndGetResponse(Message message, INetworkStream networkStream)
+        {
+            var writer = streamFactory.CreateWriter(networkStream);
+            writer.WriteMessage(message);
+            var reader = streamFactory.CreateReader(networkStream);
+            var response = reader.ReadToEnd();
+            return response;
         }
 
         private INetworkStream OpenStream(ITcpClient client)

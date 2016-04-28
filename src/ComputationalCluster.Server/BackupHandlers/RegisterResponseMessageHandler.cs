@@ -30,7 +30,6 @@ namespace ComputationalCluster.Server.BackupHandlers
             Task.Run(() => SendStatus());
         }
 
-        //TODO: separate class
         private void SendStatus()
         {
             while (!context.IsPrimary)
@@ -42,6 +41,7 @@ namespace ComputationalCluster.Server.BackupHandlers
                     logger.Debug("Sending status");
                     Thread.Sleep((int)(context.Configuration.Timeout * 1000 / 2));
                 }
+                //TODO: custom exception
                 catch (SocketException)
                 {
                     SwitchToPrimary();
@@ -54,7 +54,14 @@ namespace ComputationalCluster.Server.BackupHandlers
         {
             logger.Warn("Primary server failure");
             logger.Info("Switching to primary mode");
-            context.BackupServers.RemoveAt(0);
+            if(context.BackupServers.Count == 1)
+            {
+                context.BackupServers.Clear();
+            }
+            else
+            {
+                context.BackupServers.RemoveAt(0);
+            }
             context.Configuration.Mode = ServerMode.Primary;
             foreach (var node in context.Nodes)
             {

@@ -24,7 +24,11 @@ namespace ComputationalCluster.Common.Infrastructure
             builder.RegisterType<MessageStreamFactory>()
                    .AsImplementedInterfaces();
             builder.RegisterType<AutofacResponseDispatcher>()
-                   .AsImplementedInterfaces();
+                    .AsImplementedInterfaces()
+                    .SingleInstance();
+            builder.RegisterType<TaskSolverProvider>()
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
         }
     }
 }

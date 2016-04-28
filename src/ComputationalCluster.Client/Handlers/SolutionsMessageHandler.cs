@@ -2,6 +2,9 @@
 using ComputationalCluster.Common.Messaging;
 using ComputationalCluster.Common.Objects;
 using log4net;
+using System;
+using System.IO;
+using System.Text;
 
 namespace ComputationalCluster.Client.Handlers
 {
@@ -27,10 +30,26 @@ namespace ComputationalCluster.Client.Handlers
             }
             else if (response.Solutions[0].Type == SolutionType.Final)
             {
-                logger.Info("Final solution received");
                 context.CurrentProblemId = null;
-                //finalSolutionData = response.Solutions[0].Data;
+                context.Stopwatch?.Stop();
+                byte[] finalSolutionData = response.Solutions[0].Data;
+                string solutionString = Encoding.UTF8.GetString(finalSolutionData);
+                logger.Info($"Final solution received: \n{solutionString}");
+                logger.Info($"Total computation time: {context.Stopwatch?.Elapsed}");
+                WriteFile(solutionString);
+            }
+        }
+
+        private void WriteFile(string solutionString)
+        {
+            int lastLine = solutionString.LastIndexOf(Environment.NewLine, StringComparison.Ordinal);
+            if (lastLine > 0)
+            {
+                string pureSolution = solutionString.Remove(lastLine);
+                logger.Info("Creating file with solution");
+                File.WriteAllText(context.ProblemFileName + ".solution.txt", pureSolution);
             }
         }
     }
 }
+

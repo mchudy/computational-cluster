@@ -34,21 +34,24 @@ namespace ComputationalCluster.Client.Handlers
             while (context.CurrentProblemId != null)
             {
                 Thread.Sleep((int)(context.WaitTime * 1000));
-                var message = new SolutionRequestMessage()
+                if (context.CurrentProblemId != null)
                 {
-                    Id = (ulong)context.CurrentProblemId
-                };
-                try
-                {
-                    messenger.SendMessage(message);
-                    logger.Debug("Checking for solution...");
-                }
-                catch (SocketException e)
-                {
-                    
-                    logger.Warn("Server failure");
-                    if (!RegisterToBackup())
-                        break;
+                    var message = new SolutionRequestMessage()
+                    {
+                        Id = (ulong)context.CurrentProblemId
+                    };
+                    try
+                    {
+                        messenger.SendMessage(message);
+                        logger.Debug("Checking for solution...");
+                    }
+                    catch (SocketException e)
+                    {
+
+                        logger.Warn("Server failure");
+                        if (!RegisterToBackup())
+                            break;
+                    }
                 }
             }
         }

@@ -74,12 +74,14 @@ namespace ComputationalCluster.Server.Handlers
         private void HandleBackupServer(ITcpClient client, int id, int port)
         {
             logger.Info($"New backup server registered - id {id}");
-            context.BackupServers.Add(new BackupServer()
+            var backup = new BackupServer()
             {
                 Address = client.EndPoint.Address.ToString(),
                 Port = (ushort)port,
                 Id = id
-            });
+            };
+            context.BackupServers.Add(backup);
+            statusChecker.Add(backup);
         }
 
         private void HandleTaskManager(RegisterMessage message, int id)
